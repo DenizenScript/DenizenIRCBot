@@ -9,7 +9,7 @@ namespace DenizenIRCBot
 {
     public class Logger
     {
-        public static bool Debugging = true; // TODO: Disable by default
+        public static bool Debugging = false;
 
         public static Object Locker = new Object();
 
