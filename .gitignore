@@ -1,0 +1,15 @@
+obj/
+debug/
+*.suo
+*.user
+*.pdb
+*.exe
+*.pak
+clientdefaultsettings.cfg
+serverdefaultsettings.cfg
+x64/
+models/
+fonts/
+sounds/
+textures/
+animations/
