@@ -38,7 +38,6 @@ namespace DenizenIRCBot
                     dynamic nobj = obj.ContainsKey(data[i]) ? obj[data[i]] : null;
                     if (nobj == null || !(nobj is Dictionary<string, dynamic> || nobj is Dictionary<string, object> || nobj is Dictionary<object, object>))
                     {
-                        Logger.Output(LogType.DEBUG, "Path: " + path + ", I: " + i + ", nobj: " + nobj);
                         return def;
                     }
                     obj = nobj;

@@ -237,6 +237,7 @@ namespace DenizenIRCBot
                                                     try
                                                     {
                                                         LowTimeoutWebclient ltwc = new LowTimeoutWebclient();
+                                                        ltwc.Encoding = UTF8;
                                                         string web = ltwc.DownloadString(str);
                                                         if (web.Contains("<title>") && web.Contains("</title>"))
                                                         {
@@ -404,12 +405,12 @@ namespace DenizenIRCBot
             {
                 if (string.IsNullOrEmpty(data))
                 {
-                    Logger.Output(LogType.DEBUG, "Sent: " + Encoding.ASCII.GetString(UTF8.GetBytes(command.ToUpper())));
+                    Logger.Output(LogType.DEBUG, "Sent: " + command.ToUpper());
                     IRCSocket.Send(UTF8.GetBytes(command.ToUpper() + "\n"));
                 }
                 else
                 {
-                    Logger.Output(LogType.DEBUG, "Sent: " + Encoding.ASCII.GetString(UTF8.GetBytes(command.ToUpper() + " " + data)));
+                    Logger.Output(LogType.DEBUG, "Sent: " + command.ToUpper() + " " + data);
                     IRCSocket.Send(UTF8.GetBytes(command.ToUpper() + " " + data + "\n"));
                 }
             }
