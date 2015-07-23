@@ -439,7 +439,9 @@ namespace DenizenIRCBot
                     break;
                 case "log":
                 case "logs":
-				    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A log of this channel is available at  http://mcmonkey.org/denizen/logs/denizen-dev");
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A log of this channel is available at " + ColorLink + " http://mcmonkey.org/denizen/logs/denizen-dev");
+                    }
                     break;
                 case "voice":
                     // TODO
