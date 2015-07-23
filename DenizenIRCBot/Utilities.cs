@@ -32,6 +32,16 @@ namespace DenizenIRCBot
             return 0;
         }
 
+        public static double StringToDouble(string input)
+        {
+            double outp;
+            if (double.TryParse(input, out outp))
+            {
+                return outp;
+            }
+            return 0;
+        }
+
         public static string FormatNumber(int input)
         {
             if (input < 10 && input >= 0)
@@ -56,6 +66,49 @@ namespace DenizenIRCBot
                 }
             }
             return outp.ToString();
+        }
+
+        public static TimeSpan StringToDuration(string orig)
+        {
+            if (orig.Length <= 1)
+            {
+                return new TimeSpan(0, 0, StringToInt(orig));
+            }
+            float mult = 1;
+            bool hassuffix = true;
+            if (orig.EndsWith("t"))
+            {
+                mult = 1 / 20;
+            }
+            else if (orig.EndsWith("s"))
+            {
+                mult = 1;
+            }
+            else if (orig.EndsWith("m"))
+            {
+                mult = 60;
+            }
+            else if (orig.EndsWith("h"))
+            {
+                mult = 60 * 60;
+            }
+            else if (orig.EndsWith("d"))
+            {
+                mult = 60 * 60 * 24;
+            }
+            else if (orig.EndsWith("w"))
+            {
+                mult = 60 * 60 * 24 * 7;
+            }
+            else
+            {
+                hassuffix = false;
+            }
+            if (hassuffix)
+            {
+                orig = orig.Substring(0, orig.Length - 1);
+            }
+            return new TimeSpan(0, 0, (int)(StringToDouble(orig) * mult));
         }
 
         public static string DateToString(DateTime date)

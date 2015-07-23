@@ -67,7 +67,7 @@ namespace DenizenIRCBot
                 case "tell":
                 case "mail":
                 case "message":
-                    // TODO
+                    MessageCommand(command);
                     break;
                 case "remind":
                 case "rem":
@@ -75,7 +75,7 @@ namespace DenizenIRCBot
                 case "tellmelater":
                 case "delayedmsg":
                 case "delayedmessage":
-                    // TODO
+                    ReminderCommand(command);
                     break;
                 case "ts":
                 case "ts3":

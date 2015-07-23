@@ -26,6 +26,46 @@ namespace DenizenIRCBot
 
         public Dictionary<string, dynamic> Data;
 
+        public List<string> ReadList(string path)
+        {
+            try
+            {
+                string[] data = path.Split('.');
+                int i = 0;
+                dynamic obj = Data;
+                while (i < data.Length - 1)
+                {
+                    dynamic nobj = obj.ContainsKey(data[i]) ? obj[data[i]] : null;
+                    if (nobj == null || !(nobj is Dictionary<string, dynamic> || nobj is Dictionary<string, object> || nobj is Dictionary<object, object>))
+                    {
+                        return null;
+                    }
+                    obj = nobj;
+                    i++;
+                }
+                if (!obj.ContainsKey(data[i]) || !(obj[data[i]] is List<string> || obj[data[i]] is List<object>))
+                {
+                    return null;
+                }
+                if (obj[data[i]] is List<object>)
+                {
+                    List<object> objs = (List<object>)obj[data[i]];
+                    List<string> nstr = new List<string>();
+                    for (int x = 0; x < objs.Count; x++)
+                    {
+                        nstr.Add(objs[x] + "");
+                    }
+                    return nstr;
+                }
+                return (List<string>)obj[data[i]];
+            }
+            catch (Exception ex)
+            {
+                Logger.Output(LogType.DEBUG, "Caught exception while reading YAML: " + ex.ToString());
+            }
+            return null;
+        }
+
         public string Read(string path, string def)
         {
             try
@@ -43,6 +83,10 @@ namespace DenizenIRCBot
                     obj = nobj;
                     i++;
                 }
+                if (!obj.ContainsKey(data[i]))
+                {
+                    return def;
+                }
                 return obj[data[i]].ToString();
             }
             catch (Exception ex)
@@ -52,7 +96,7 @@ namespace DenizenIRCBot
             return def;
         }
 
-        public void Set(string path, string val)
+        public void Set(string path, object val)
         {
             string[] data = path.Split('.');
             int i = 0;
@@ -68,7 +112,14 @@ namespace DenizenIRCBot
                 obj = nobj;
                 i++;
             }
-            obj[data[i]] = val;
+            if (val == null)
+            {
+                obj.Remove(data[i]);
+            }
+            else
+            {
+                obj[data[i]] = val;
+            }
         }
 
         public string SaveToString()

@@ -10,13 +10,35 @@ namespace DenizenIRCBot
     {
         public static Dictionary<string, YAMLConfiguration> AllConfigs = new Dictionary<string, YAMLConfiguration>();
 
-        public string GetFileName()
+        public static string GetFileName(string Name)
         {
             return "data/irc_users/" + Name.ToLower().Replace('|', '_').Replace('@', '_')
                 .Replace('!', '_').Replace('#', '_').Replace('$', '_').Replace('%', '_').Replace('^', '_')
                 .Replace('&', '_').Replace('*', '_').Replace('(', '_').Replace(')', '_').Replace('+', '_')
                 .Replace('=', '_').Replace('[', '_').Replace(']', '_').Replace('{', '_').Replace('}', '_')
                 .Replace('<', '_').Replace('>', '_').Replace(',', '_').Replace('/', '_').Replace('\\', '_') + ".yml";
+        }
+
+        public string GetFileName()
+        {
+            return GetFileName(Name);
+        }
+
+        public static bool Exists(string username)
+        {
+            lock (SaveLock)
+            {
+                string fileName = GetFileName(username);
+                if (AllConfigs.ContainsKey(fileName))
+                {
+                    return true;
+                }
+                if (File.Exists(fileName))
+                {
+                    return true;
+                }
+                return false;
+            }
         }
 
         public IRCUser(string mask)
@@ -125,6 +147,58 @@ namespace DenizenIRCBot
             Settings.Set("general.last_seen.1.time", Utilities.DateToString(DateTime.Now));
             Settings.Set("general.last_seen.1.doing", doing);
             Save();
+        }
+
+        public List<string> GetReminders()
+        {
+            lock (SaveLock)
+            {
+                List<string> messages = Settings.ReadList("general.messages");
+                if (messages == null || messages.Count == 0)
+                {
+                    return new List<string>();
+                }
+                List<string> sendMessages = new List<string>();
+                for (int i = 0; i < messages.Count; i++)
+                {
+                    string[] dat = messages[i].Split(new char[] { ':' }, 2);
+                    DateTime arrival = Utilities.StringToDate(dat[0]).ToLocalTime();
+                    if (arrival.CompareTo(DateTime.Now) <= 0)
+                    {
+                        sendMessages.Add(dat[1]);
+                        messages.RemoveAt(i--);
+                    }
+                    else
+                    {
+                        Logger.Output(LogType.INFO, "Ignoring " + Utilities.FormatDateRelative(arrival) + ", ahead-of-date!");
+                    }
+                }
+                if (sendMessages.Count > 0)
+                {
+                    Settings.Set("general.messages", messages.Count == 0 ? null: messages);
+                    Save();
+                    return sendMessages;
+                }
+                else
+                {
+                    return new List<string>();
+                }
+            }
+        }
+
+        public void SendReminder(string message, DateTime arriveAt)
+        {
+            lock (SaveLock)
+            {
+                List<string> messages = Settings.ReadList("general.messages");
+                if (messages == null)
+                {
+                    messages = new List<string>();
+                }
+                messages.Add(Utilities.DateToString(arriveAt) + ":" + Utilities.FormatDate(DateTime.Now) + ": " + message);
+                Settings.Set("general.messages", messages);
+                Save();
+            }
         }
 
         public static Object SaveLock = new Object();

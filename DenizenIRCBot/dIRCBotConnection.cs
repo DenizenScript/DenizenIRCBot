@@ -294,6 +294,7 @@ namespace DenizenIRCBot
                                     {
                                         iuser.ParseMask(user);
                                     }
+                                    CheckReminders(iuser, chan);
                                     if (chan.RecordSeen)
                                     {
                                         Task.Factory.StartNew(() =>
