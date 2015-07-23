@@ -125,7 +125,10 @@ namespace DenizenIRCBot
                                     {
                                         SendCommand("JOIN", "#" + channel);
                                         Logger.Output(LogType.INFO, "Join Channel: #" + channel.ToLower());
-                                        Channels.Add(new IRCChannel() { Name = "#" + channel.ToLower() });
+                                        IRCChannel chan = new IRCChannel() { Name = "#" + channel.ToLower() };
+                                        chan.LinkRead = Configuration["dircbot"]["irc"]["channels"][channel.ToLower()]["link_read"].ToString().StartsWith("t");
+                                        chan.RecordSeen = Configuration["dircbot"]["irc"]["channels"][channel.ToLower()]["record_seen"].ToString().StartsWith("t");
+                                        Channels.Add(chan);
                                     }
                                 }
                                 break;
@@ -207,7 +210,8 @@ namespace DenizenIRCBot
                             case "privmsg": // Chat message
                                 {
                                     string channel = data[0].ToLower();
-                                    string privmsg = Utilities.Concat(data, 1).Substring(1);
+                                    data[1] = data[1].Substring(1);
+                                    string privmsg = Utilities.Concat(data, 1);
                                     Logger.Output(LogType.DEBUG, "User " + user + " spoke in channel " + channel + ", saying " + privmsg);
                                     IRCChannel chan = null;
                                     foreach (IRCChannel chann in Channels)
@@ -219,12 +223,69 @@ namespace DenizenIRCBot
                                     }
                                     if (chan == null)
                                     {
-                                        return;
+                                        break;
+                                    }
+                                    if (chan.LinkRead)
+                                    {
+                                        foreach (string str in data)
+                                        {
+                                            if (str.StartsWith("http://") || str.StartsWith("https://"))
+                                            {
+                                                Task.Factory.StartNew(() =>
+                                                {
+                                                    try
+                                                    {
+                                                        LowTimeoutWebclient ltwc = new LowTimeoutWebclient();
+                                                        string web = ltwc.DownloadString(str);
+                                                        if (web.Contains("<title>") && web.Contains("</title>"))
+                                                        {
+                                                            web = web.Substring(web.IndexOf("<title>") + 7);
+                                                            web = web.Substring(0, web.IndexOf("</title>"));
+                                                            web = web.Replace("\r", "").Replace("\n", "");
+                                                            web = web.Replace("&lt;", "<").Replace("&gt;", ">");
+                                                            web = web.Replace("&quot;", "\"").Replace("&amp;", (char)0x01 + "amp");
+                                                            string webtitle = "";
+                                                            bool flip = false;
+                                                            for (int x = 0; x < web.Length; x++)
+                                                            {
+                                                                if (web[x] == '&')
+                                                                {
+                                                                    flip = true;
+                                                                    continue;
+                                                                }
+                                                                else if (web[x] == ';')
+                                                                {
+                                                                    if (flip)
+                                                                    {
+                                                                        flip = false;
+                                                                        continue;
+                                                                    }
+                                                                }
+                                                                else if (web[x] == ' ' && x > 0 && web[x - 1] == ' ')
+                                                                {
+                                                                    continue;
+                                                                }
+                                                                if (!flip)
+                                                                {
+                                                                    webtitle += web[x].ToString();
+                                                                }
+                                                            }
+                                                            webtitle = webtitle.Trim().Replace("Citizens", "Cit.izens").Replace((char)0x01 + "amp", "&");
+                                                            Chat(chan.Name, ColorGeneral + ": Title --> " + ColorHighlightMinor + webtitle.Trim(), 1);
+                                                        }
+                                                    }
+                                                    catch (Exception)
+                                                    {
+                                                        Logger.Output(LogType.DEBUG, "Failed to read webpage " + str);
+                                                    }
+                                                });
+                                            }
+                                        }
                                     }
                                     bool cmd = false;
                                     List<string> cmds = new List<string>(data);
                                     cmds.RemoveAt(0);
-                                    string cmdlow = cmds[0].ToLower().Substring(1);
+                                    string cmdlow = cmds[0].ToLower();
                                     if (cmdlow.StartsWith(Name.ToLower()))
                                     {
                                         Logger.Output(LogType.DEBUG, "Was pinged by " + cmdlow);
@@ -238,7 +299,7 @@ namespace DenizenIRCBot
                                             if (cmdlow.StartsWith(prefix.ToLower()))
                                             {
                                                 cmd = true;
-                                                cmds[0] = cmds[0].Substring(1 + prefix.Length);
+                                                cmds[0] = cmds[0].Substring(prefix.Length);
                                                 Logger.Output(LogType.DEBUG, "Recognized " + prefix + " in " + cmds[0]);
                                                 break;
                                             }

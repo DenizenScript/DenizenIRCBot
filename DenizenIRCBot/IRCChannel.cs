@@ -13,6 +13,10 @@ namespace DenizenIRCBot
         
         public List<IRCUser> Users = new List<IRCUser>();
 
+        public bool LinkRead = false;
+
+        public bool RecordSeen = false;
+
         public IRCUser GetUser(string name)
         {
             string nl = name.ToLower();

@@ -92,6 +92,7 @@ namespace DenizenIRCBot
                 try
                 {
                     ConnectAndRun();
+                    throw new Exception("Somehow escape while loop?");
                 }
                 catch (Exception ex)
                 {
@@ -100,6 +101,7 @@ namespace DenizenIRCBot
                         throw ex;
                     }
                     Logger.Output(LogType.ERROR, "Error in primary run: " + ex.ToString());
+                    Thread.Sleep(5000);
                 }
             }
         }
