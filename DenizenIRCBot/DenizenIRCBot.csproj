@@ -46,8 +46,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dIRCBotColors.cs" />
     <Compile Include="dIRCBotConnection.cs" />
     <Compile Include="dIRCBotCore.cs" />
+    <Compile Include="IRCChannel.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities.cs" />

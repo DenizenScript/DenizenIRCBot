@@ -14,6 +14,8 @@ namespace DenizenIRCBot
     /// </summary>
     public partial class dIRCBot
     {
+        public static Encoding UTF8 = new UTF8Encoding(false);
+
         /// <summary>
         /// Global program entry point.
         /// </summary>
@@ -64,11 +66,28 @@ namespace DenizenIRCBot
         public void Init()
         {
             PrepareConfig();
-            ServerAddress = Configuration["dircbot"]["irc"]["server"];
-            ServerPort = Utilities.StringToUShort(Configuration["dircbot"]["irc"]["port"]);
-            Name = Configuration["dircbot"]["irc"]["username"];
-            Logger.Output(LogType.INFO, "Connecting to " + ServerAddress + ":" + ServerPort +" as user " + Name + "...");
-            Console.ReadLine();
+            while (true)
+            {
+                try
+                {
+                    ServerAddress = Configuration["dircbot"]["irc"]["server"];
+                    ServerPort = Utilities.StringToUShort(Configuration["dircbot"]["irc"]["port"]);
+                    Name = Configuration["dircbot"]["irc"]["username"];
+                    foreach (string channel in Configuration["dircbot"]["irc"]["channels"].Keys)
+                    {
+                        BaseChannels.Add(Configuration["dircbot"]["irc"]["channels"][channel]["name"]);
+                    }
+                    ConnectAndRun();
+                }
+                catch (Exception ex)
+                {
+                    if (ex is ThreadAbortException)
+                    {
+                        throw ex;
+                    }
+                    Logger.Output(LogType.ERROR, "Error in primary run: " + ex.ToString());
+                }
+            }
         }
     }
 }
