@@ -439,7 +439,12 @@ namespace DenizenIRCBot
                     break;
                 case "log":
                 case "logs":
-                    // TODO
+                    {
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A log of this channel is available at " + ColorLink + " http://mcmonkey.org/denizen/logs/denizen-dev");
+                        }
+                    }
                     break;
                 case "voice":
                     // TODO
