@@ -34,5 +34,6 @@ namespace DenizenIRCBot
         public string ColorGeneral = S_RED;
         public string ColorHighlightMinor = S_BROWN;
         public string ColorHighlightMajor = S_ORANGE;
+        public string ColorLink = S_DARKBLUE;
     }
 }

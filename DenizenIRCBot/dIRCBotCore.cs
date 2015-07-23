@@ -46,12 +46,28 @@ namespace DenizenIRCBot
         /// </summary>
         public Dictionary<string, dynamic> Configuration;
 
+        public string[] Prefixes = null;
+
         void PrepareConfig()
         {
             try
             {
                 Deserializer des = new Deserializer();
                 Configuration = des.Deserialize<Dictionary<string, dynamic>>(new StringReader(GetConfig()));
+                ServerAddress = Configuration["dircbot"]["irc"]["server"];
+                ServerPort = Utilities.StringToUShort(Configuration["dircbot"]["irc"]["port"]);
+                Name = Configuration["dircbot"]["irc"]["username"];
+                BaseChannels.Clear();
+                foreach (string channel in Configuration["dircbot"]["irc"]["channels"].Keys)
+                {
+                    BaseChannels.Add(Configuration["dircbot"]["irc"]["channels"][channel]["name"]);
+                }
+                List<object> pref = Configuration["dircbot"]["prefixes"];
+                Prefixes = new string[pref.Count];
+                for (int i = 0; i < pref.Count; i++)
+                {
+                    Prefixes[i] = pref[i].ToString();
+                }
             }
             catch (Exception ex)
             {
@@ -66,17 +82,15 @@ namespace DenizenIRCBot
         public void Init()
         {
             PrepareConfig();
+            if (string.IsNullOrEmpty(ServerAddress))
+            {
+                Logger.Output(LogType.ERROR, "No address given, quitting.");
+                return;
+            }
             while (true)
             {
                 try
                 {
-                    ServerAddress = Configuration["dircbot"]["irc"]["server"];
-                    ServerPort = Utilities.StringToUShort(Configuration["dircbot"]["irc"]["port"]);
-                    Name = Configuration["dircbot"]["irc"]["username"];
-                    foreach (string channel in Configuration["dircbot"]["irc"]["channels"].Keys)
-                    {
-                        BaseChannels.Add(Configuration["dircbot"]["irc"]["channels"][channel]["name"]);
-                    }
                     ConnectAndRun();
                 }
                 catch (Exception ex)

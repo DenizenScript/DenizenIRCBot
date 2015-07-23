@@ -58,7 +58,6 @@ namespace DenizenIRCBot
                 byte[] receivedNow = new byte[avail > 1024 ? 1024: avail];
                 IRCSocket.Receive(receivedNow, receivedNow.Length, SocketFlags.None);
                 string got = UTF8.GetString(receivedNow).Replace("\r", "");
-                Logger.Output(LogType.DEBUG, "Recieved " + avail + ", which yielded " + got.Replace("\n", "\\n"));
                 receivedAlready += got;
                 while (receivedAlready.Contains('\n'))
                 {
@@ -83,61 +82,211 @@ namespace DenizenIRCBot
                             command = "null";
                         }
                     }
-                    switch (command.ToLower())
+                    try
                     {
-                        case "ping": // Respond to server-given PING's
-                            SendCommand("pong", data.Count > 0 ? data[1]: null);
-                            break;
-                        case "433": // Nickname In Use
-                            SendCommand("NICK", Name + "_" + Utilities.random.Next(999));
-                            SendCommand("NS", "identify " + Name + " " + Configuration["dircbot"]["irc"]["nickserv"]["password"]);
-                            SendCommand("NS", "ghost " + Name);
-                            SendCommand("NICK", Name);
-                            break;
-                        case "376": // Ready To Join And Identify
-                            SendCommand("NS", "identify " + Configuration["dircbot"]["irc"]["nickserv"]["password"]);
-                            foreach (string channel in BaseChannels)
-                            {
-                                SendCommand("JOIN", "#" + channel);
-                            }
-                            break;
-                        case "477": // Error joining channel
-                            foreach (string channel in BaseChannels)
-                            {
-                                SendCommand("JOIN", "#" + channel);
-                            }
-                            break;
-                        case "332": // Topic for channel
-                            // TODO: RECORD
-                            break;
-                        case "topic": // Fresh topic set on channel
-                            // TODO: RECORD
-                            break;
-                        case "join": // Someone joined
-                            // TODO: RECORD
-                            break;
-                        case "mode": // User mode set
-                            // TODO: RECORD
-                            break;
-                        case "353": // User list for channel
-                            // TODO: RECORD
-                            break;
-                        case "part": // Someone left the channel
-                            break;
-                        case "quit": // Someone left the server
-                            break;
-                        case "nick": // Someone changed their name
-                            break;
-                        case "privmsg": // Chat message
-                            {
-                                string privmsg = Utilities.Concat(data, 1).Substring(1);
-                                Logger.Output(LogType.DEBUG, "User " + user + " spoke in channel " + data[0] + ", saying " + privmsg);
-                            }
-                            break;
-                        case "notice": // NOTICE message
-                            break;
-                        default:
-                            break;
+                        switch (command.ToLower())
+                        {
+                            case "ping": // Respond to server-given PING's
+                                {
+                                    SendCommand("pong", data.Count > 0 ? data[1] : null);
+                                }
+                                break;
+                            case "433": // Nickname In Use
+                                {
+                                    SendCommand("NICK", Name + "_" + Utilities.random.Next(999));
+                                    SendCommand("NS", "identify " + Name + " " + Configuration["dircbot"]["irc"]["nickserv"]["password"]);
+                                    SendCommand("NS", "ghost " + Name);
+                                    SendCommand("NICK", Name);
+                                }
+                                break;
+                            case "376": // End of MOTD -> Ready To Join And Identify
+                                {
+                                    SendCommand("NS", "identify " + Configuration["dircbot"]["irc"]["nickserv"]["password"]);
+                                    Channels.Clear();
+                                    foreach (string channel in BaseChannels)
+                                    {
+                                        SendCommand("JOIN", "#" + channel);
+                                        Logger.Output(LogType.INFO, "Join Channel: #" + channel.ToLower());
+                                        Channels.Add(new IRCChannel() { Name = "#" + channel.ToLower() });
+                                    }
+                                }
+                                break;
+                            case "477": // Error joining channel
+                                {
+                                    foreach (string channel in BaseChannels)
+                                    {
+                                        SendCommand("JOIN", "#" + channel);
+                                    }
+                                }
+                                break;
+                            case "332": // Topic for channel
+                                {
+                                    string channel = data[1].ToLower();
+                                    string topic = Utilities.Concat(data, 2).Substring(1);
+                                    Logger.Output(LogType.INFO, "Topic for channel: " + channel);
+                                    foreach (IRCChannel chan in Channels)
+                                    {
+                                        if (channel == chan.Name)
+                                        {
+                                            chan.Topic += topic;
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            case "topic": // Fresh topic set on channel
+                                {
+                                    // TODO: RECORD
+                                }
+                                break;
+                            case "join": // Someone joined
+                                {
+                                    // TODO: RECORD
+                                }
+                                break;
+                            case "mode": // User mode set
+                                {
+                                    // TODO: RECORD
+                                }
+                                break;
+                            case "353": // User list for channel
+                                {
+                                    string channel = data[2].ToLower();
+                                    List<string> users = new List<string>(data);
+                                    users.RemoveRange(0, 4);
+                                    Logger.Output(LogType.INFO, "User list for channel: " + channel);
+                                    foreach (IRCChannel chan in Channels)
+                                    {
+                                        if (channel == chan.Name)
+                                        {
+                                            chan.Users.Clear();
+                                            chan.Users.Add(new IRCUser(Name + "!" + Name + "@"));
+                                            foreach (string usr in users)
+                                            {
+                                                Logger.Output(LogType.DEBUG, "Recognize user " + usr);
+                                                chan.Users.Add(new IRCUser(usr + "!@"));
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            case "part": // Someone left the channel
+                                {
+                                    // TODO: RECORD
+                                }
+                                break;
+                            case "quit": // Someone left the server
+                                {
+                                    // TODO: RECORD
+                                }
+                                break;
+                            case "nick": // Someone changed their name
+                                {
+                                    // TODO: RECORD
+                                }
+                                break;
+                            case "privmsg": // Chat message
+                                {
+                                    string channel = data[0].ToLower();
+                                    string privmsg = Utilities.Concat(data, 1).Substring(1);
+                                    Logger.Output(LogType.DEBUG, "User " + user + " spoke in channel " + channel + ", saying " + privmsg);
+                                    IRCChannel chan = null;
+                                    foreach (IRCChannel chann in Channels)
+                                    {
+                                        if (chann.Name == channel)
+                                        {
+                                            chan = chann;
+                                        }
+                                    }
+                                    if (chan == null)
+                                    {
+                                        return;
+                                    }
+                                    bool cmd = false;
+                                    List<string> cmds = new List<string>(data);
+                                    cmds.RemoveAt(0);
+                                    string cmdlow = cmds[0].ToLower().Substring(1);
+                                    if (cmdlow.StartsWith(Name.ToLower()))
+                                    {
+                                        Logger.Output(LogType.DEBUG, "Was pinged by " + cmdlow);
+                                        cmd = true;
+                                        cmds.RemoveAt(0);
+                                    }
+                                    else
+                                    {
+                                        foreach (string prefix in Prefixes)
+                                        {
+                                            if (cmdlow.StartsWith(prefix.ToLower()))
+                                            {
+                                                cmd = true;
+                                                cmds[0] = cmds[0].Substring(1 + prefix.Length);
+                                                Logger.Output(LogType.DEBUG, "Recognized " + prefix + " in " + cmds[0]);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (cmd)
+                                    {
+                                        CommandDetails details = new CommandDetails();
+                                        details.Name = cmds[0];
+                                        cmds.RemoveAt(0);
+                                        details.Arguments = cmds;
+                                        details.Channel = chan;
+                                        details.User = chan.GetUser(user);
+                                        details.Pinger = "";
+                                        if (details.User != null)
+                                        {
+                                            Logger.Output(LogType.INFO, "Try command " + details.Name + " for " + details.User.Name);
+                                            if (cmds.Count > 0)
+                                            {
+                                                string cmdlast = cmds[cmds.Count - 1];
+                                                if (cmdlast.Contains("@"))
+                                                {
+                                                    string pingme = cmdlast.Replace("@", "");
+                                                    IRCUser usr = chan.GetUser(pingme);
+                                                    if (usr != null)
+                                                    {
+                                                        details.Pinger = usr.Name + ": ";
+                                                    }
+                                                }
+                                            }
+                                            Task.Factory.StartNew(() =>
+                                            {
+                                                try
+                                                {
+                                                    TryCommand(details);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    if (ex is ThreadAbortException)
+                                                    {
+                                                        throw ex;
+                                                    }
+                                                    Logger.Output(LogType.ERROR, "Command parsing of " + details.Name + ":: " + ex.ToString());
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            Logger.Output(LogType.INFO, "Null user sent message to channel!");
+                                        }
+                                    }
+                                }
+                                break;
+                            case "notice": // NOTICE message
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is SocketException)
+                        {
+                            throw ex;
+                        }
+                        Logger.Output(LogType.ERROR, "Error: " + ex.ToString());
                     }
                 }
             }
