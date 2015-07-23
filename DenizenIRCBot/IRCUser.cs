@@ -8,6 +8,8 @@ namespace DenizenIRCBot
 {
     public class IRCUser
     {
+        public static Dictionary<string, YAMLConfiguration> AllConfigs = new Dictionary<string, YAMLConfiguration>();
+
         public string GetFileName()
         {
             return "data/irc_users/" + Name.ToLower().Replace('|', '_').Replace('@', '_')
@@ -21,24 +23,32 @@ namespace DenizenIRCBot
         {
             ParseMask(mask);
             string fileName = GetFileName();
-            try
+            lock (SaveLock)
             {
-                if (File.Exists(fileName))
+                if (!AllConfigs.TryGetValue(fileName, out Settings))
                 {
-                    Settings = new YAMLConfiguration(File.ReadAllText(fileName));
+                    try
+                    {
+                        if (File.Exists(fileName))
+                        {
+                            Settings = new YAMLConfiguration(File.ReadAllText(fileName));
+                            AllConfigs.Add(fileName, Settings);
+                        }
+                        else
+                        {
+                            Logger.Output(LogType.DEBUG, "Can't find settings for " + fileName);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Output(LogType.ERROR, "Loading settings for " + fileName + ": " + ex.ToString());
+                    }
+                    if (Settings == null)
+                    {
+                        Settings = new YAMLConfiguration(null);
+                        AllConfigs.Add(fileName, Settings);
+                    }
                 }
-                else
-                {
-                    Logger.Output(LogType.DEBUG, "Can't find settings for " + fileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Output(LogType.ERROR, "Loading settings for " + fileName + ": " + ex.ToString());
-            }
-            if (Settings == null)
-            {
-                Settings = new YAMLConfiguration(null);
             }
         }
 
@@ -117,12 +127,17 @@ namespace DenizenIRCBot
             Save();
         }
 
+        public static Object SaveLock = new Object();
+
         public void Save()
         {
             string fileName = GetFileName();
             try
             {
-                File.WriteAllText(fileName, Settings.SaveToString());
+                lock (SaveLock)
+                {
+                    File.WriteAllText(fileName, Settings.SaveToString());
+                }
             }
             catch (Exception ex)
             {
