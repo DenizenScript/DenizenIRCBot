@@ -60,7 +60,7 @@ namespace DenizenIRCBot
                 BaseChannels.Clear();
                 foreach (string channel in Configuration["dircbot"]["irc"]["channels"].Keys)
                 {
-                    BaseChannels.Add(Configuration["dircbot"]["irc"]["channels"][channel]["name"]);
+                    BaseChannels.Add(channel);
                 }
                 List<object> pref = Configuration["dircbot"]["prefixes"];
                 Prefixes = new string[pref.Count];

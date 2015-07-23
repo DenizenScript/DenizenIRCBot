@@ -27,7 +27,6 @@ namespace DenizenIRCBot
                 case "link":
                 case "url":
                 case "greet":
-                case "say":
                     {
                     Chat(command.Channel.Name, command.Pinger + ColorGeneral +
                         "Hello! I am a bot designed to assist with Denizen Scripting! I have a website too, at" +
@@ -75,8 +74,13 @@ namespace DenizenIRCBot
                 case "ts3":
                 case "teamspeak":
                 case "teamspeak3":
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
                     {
                         Chat(command.Channel.Name, command.Pinger + "Denizen users are all welcome to voice chat together at the TeamSpeak3 server ts3.mcmonkey.org in the channel 'Denizen'!");
+                    }
+                    else
+                    {
+                        Chat(command.Channel.Name, command.Pinger + "All bot users are all welcome to voice chat together at the TeamSpeak3 server ts3.mcmonkey.org!");
                     }
                     break;
                 case "please":
@@ -88,6 +92,7 @@ namespace DenizenIRCBot
                 case "sir,":
                 case "sir:":
                 case "do":
+                case "say":
                     {
                         if (command.Arguments.Count > 0)
                         {
@@ -107,13 +112,20 @@ namespace DenizenIRCBot
                 case "commands":
                 case "cmds":
                 case "c":
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "evt":
                 case "evts":
                 case "event":
                 case "events":
                 case "e":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "mec":
                 case "mecs":
@@ -121,7 +133,10 @@ namespace DenizenIRCBot
                 case "mechs":
                 case "mechanism":
                 case "mechanisms":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "language":
                 case "languages":
@@ -137,7 +152,10 @@ namespace DenizenIRCBot
                 case "lang":
                 case "langs":
                 case "lingo":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "tutorial":
                 case "tut":
@@ -151,26 +169,38 @@ namespace DenizenIRCBot
                 case "exams":
                 case "examp":
                 case "examps":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "tag":
                 case "tags":
                 case "t":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "vid":
                 case "vids":
                 case "v":
                 case "video":
                 case "videos":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "act":
                 case "acts":
                 case "action":
                 case "actions":
                 case "a":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "item":
                 case "items":
@@ -181,7 +211,10 @@ namespace DenizenIRCBot
                 case "mats":
                 case "materials":
                 case "i":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "m":
                 case "math":
@@ -197,13 +230,25 @@ namespace DenizenIRCBot
                 case "repos":
                 case "repositories":
                 case "scripts":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Check out scripts made by other users -" + ColorLink + " " + "http://mcmonkey.org/denizen/repo/list");
-                    Chat(command.Channel.Name, ColorGeneral + "Old repo -" + ColorLink + " http://bit.ly/19lCpfV");
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Check out scripts made by other users -" + ColorLink + " " + "http://mcmonkey.org/denizen/repo/list");
+                        Chat(command.Channel.Name, ColorGeneral + "Old repo -" + ColorLink + " http://bit.ly/19lCpfV");
+                    }
                     break;
                 case "issue":
                 case "issues":
                 case "iss":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Post Denizen issues here:" + ColorLink + " https://github.com/DenizenScript/Denizen-For-Bukkit/issues");
+                    {
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Post Denizen issues here:" + ColorLink + " https://github.com/DenizenScript/Denizen-For-Bukkit/issues");
+                        }
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Post Denizen issues here:" + ColorLink + " https://github.com/CitizensDev/Citizens2/issues");
+                        }
+                    }
                     break;
                 case "enchant":
                 case "enchantment":
@@ -212,10 +257,12 @@ namespace DenizenIRCBot
                 case "ench":
                 case "enches":
                 case "enchs":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral +
-                        "A list of all valid bukkit enchantments is available here:" + ColorLink +
-                        " https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html");
-                    Chat(command.Channel.Name, ColorGeneral + "They do not follow the same naming conventions as they do in game, so be careful.");
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral +
+                            "A list of all valid bukkit enchantments is available here:" + ColorLink +
+                            " https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html");
+                        Chat(command.Channel.Name, ColorGeneral + "They do not follow the same naming conventions as they do in game, so be careful.");
+                    }
                     break;
                 case "entity":
                 case "entitys":
@@ -223,7 +270,9 @@ namespace DenizenIRCBot
                 case "entitie":
                 case "entitytype":
                 case "entitytypes":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A list of all Entity types is available here:" + ColorLink + " http://bit.ly/1sos3dT");
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A list of all Entity types is available here:" + ColorLink + " http://bit.ly/1sos3dT");
+                    }
                     break;
                 case "thank":
                 case "thanks":
@@ -234,54 +283,68 @@ namespace DenizenIRCBot
                 case "thankyou":
                 case "donate":
                 case "don":
-                    Chat(command.Channel.Name,ColorGeneral + "Donate to fullwall (Head of the Citizens project) at:" + ColorLink + " http://bit.ly/19UVDtp");
-                    Chat(command.Channel.Name, ColorGeneral + "Donate to mcmonkey (Current head of Denizen development) at:" + ColorLink + " " + "http://mcmonkey.org/donate");
+                    {
+                        Chat(command.Channel.Name, ColorGeneral + "Donate to fullwall (Head of the Citizens project) at:" + ColorLink + " http://bit.ly/19UVDtp");
+                        Chat(command.Channel.Name, ColorGeneral + "Donate to mcmonkey (Current head of Denizen development) at:" + ColorLink + " " + "http://mcmonkey.org/donate");
+                    }
                     break;
                 case "potion":
                 case "potions":
                 case "effect":
                 case "effects":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A list of all Bukkit Potion Effects is available here:" + ColorLink + " http://bit.ly/1LnDvvv");
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A list of all Bukkit Potion Effects is available here:" + ColorLink + " http://bit.ly/1LnDvvv");
+                    }
                     break;
                 case "test":
                 case "tet":
                 case "tes":
                 case "tst":
                 case "?":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "All systems functional!");
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "All systems functional!");
+                    }
                     break;
                 case "help":
                 case "halp":
                 case "hlp":
                 case "hep":
                 case "hap":
-                    string prefix = Prefixes[0];
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Hello, I am DenizenBot, a bot dedicated to assisting you in maximizing your Denizen scripting potential."
-                                                            + "   If you're new to Denizen, type " + ColorHighlightMinor + prefix + "getstarted");
-                    Chat(command.Channel.Name, ColorGeneral + "To check your script for errors, type " + ColorHighlightMinor + prefix + "script");
-                    Chat(command.Channel.Name, ColorGeneral + "Available meta search commands: " + ColorHighlightMinor + prefix + "cmds " + prefix + "tags " + prefix + "events "
-                                                                    + prefix + "requirements " + prefix + "languages "
-                                                                    + prefix + "tutorials " + prefix + "mechanisms " + prefix + "actions " + prefix + "items " + prefix + "skins " + prefix + "search "
-                                                                    + prefix + "videos");
-                    Chat(command.Channel.Name, ColorGeneral + "Available informational commands: " + ColorHighlightMinor + prefix + "repo " + prefix + "enchantments " + prefix + "entities " + prefix + "anchors "
-                                                                    + prefix + "tags " + prefix + "potions " + prefix + "assignments " + prefix + "update " + prefix + "newconfig "
-                                                                    + prefix + "wiki " + prefix + "sounds " + prefix + "handbook " + prefix + "debug " + prefix + "mcve ");
-                    Chat(command.Channel.Name, ColorGeneral + "Available interactive commands: " + ColorHighlightMinor + prefix + "seen " + prefix + "message " + prefix + "hello "
-                                                                    + prefix + "showoff " + prefix + "math " + prefix + "mcping "
-                                                                    + prefix + "help " + prefix + "paste " + prefix + "logs " + prefix + "yaml " + prefix + "yes " + prefix + "reload " + prefix + "voice "
-                                                                    + prefix + "quote " + prefix + "savelog " + prefix + "botsnack " + prefix + "regex " + prefix + "regexvalue ");
+                    {
+                        string prefix = Prefixes[0];
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Hello, I am DenizenBot, a bot dedicated to assisting you in maximizing your Denizen scripting potential."
+                                                                    + "   If you're new to Denizen, type " + ColorHighlightMinor + prefix + "getstarted");
+                            Chat(command.Channel.Name, ColorGeneral + "To check your script for errors, type " + ColorHighlightMinor + prefix + "script");
+                            Chat(command.Channel.Name, ColorGeneral + "Available meta search commands: " + ColorHighlightMinor + prefix + "cmds " + prefix + "tags " + prefix + "events "
+                                                                            + prefix + "requirements " + prefix + "languages "
+                                                                            + prefix + "tutorials " + prefix + "mechanisms " + prefix + "actions " + prefix + "items " + prefix + "skins " + prefix + "search "
+                                                                            + prefix + "videos");
+                            Chat(command.Channel.Name, ColorGeneral + "Available informational commands: " + ColorHighlightMinor + prefix + "repo " + prefix + "enchantments " + prefix + "entities " + prefix + "anchors "
+                                                                            + prefix + "tags " + prefix + "potions " + prefix + "assignments " + prefix + "update " + prefix + "newconfig "
+                                                                            + prefix + "wiki " + prefix + "sounds " + prefix + "handbook " + prefix + "debug " + prefix + "mcve ");
+                        }
+                        Chat(command.Channel.Name, ColorGeneral + "Available interactive commands: " + ColorHighlightMinor + prefix + "seen " + prefix + "message " + prefix + "hello "
+                                                                        + prefix + "showoff " + prefix + "math " + prefix + "mcping "
+                                                                        + prefix + "help " + prefix + "paste " + prefix + "logs " + prefix + "yaml " + prefix + "yes " + prefix + "reload " + prefix + "voice "
+                                                                        + prefix + "quote " + prefix + "savelog " + prefix + "botsnack " + prefix + "regex " + prefix + "regexvalue ");
+                    }
                     break;
                 case "skins":
                 case "skin":
                 case "skinssearch":
                 case "skinsearch":
-                    if (command.Arguments.Count > 1)
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
                     {
-                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A list of matching skins for your NPCs is at:" + ColorLink + " " + "http://mcmonkey.org/denizen/skin/" + command.Arguments[1]);
-                    }
-                    else
-                    {
-                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Your can search for skins for your NPCs at:" + ColorLink + " " + "http://mcmonkey.org/denizen/skin");
+                        if (command.Arguments.Count > 1)
+                        {
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "A list of matching skins for your NPCs is at:" + ColorLink + " " + "http://mcmonkey.org/denizen/skin/" + command.Arguments[1]);
+                        }
+                        else
+                        {
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Your can search for skins for your NPCs at:" + ColorLink + " " + "http://mcmonkey.org/denizen/skin");
+                        }
                     }
                     break;
                 case "hastebin":
@@ -302,13 +365,16 @@ namespace DenizenIRCBot
                     break;
                 case "debug":
                 case "db":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Need help with a script issue or server error? "
-                    + "- Help us help you by pasting your script to" + ColorLink + " " + "http://mcmonkey.org/haste "
-                    + ColorGeneral + "- From there, save the page and paste the link back in this channel.");
-                    Chat(command.Channel.Name, ColorGeneral + "In-game, type '" + ColorHighlightMajor + "/denizen debug -r" + ColorGeneral
-                        + "', then run through the broken parts of the script, then type '" + ColorHighlightMajor +
-                        "/denizen submit" + ColorGeneral + "'. Open the link it gives you, and paste that link back in this channel as well.");
-                    Chat(command.Channel.Name, ColorGeneral + "For more information on how to read debug, see " + ColorLink + " http://mcmonkey.org/denizen/vids/debug");
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Need help with a script issue or server error? "
+                        + "- Help us help you by pasting your script to" + ColorLink + " " + "http://mcmonkey.org/haste "
+                        + ColorGeneral + "- From there, save the page and paste the link back in this channel.");
+                        Chat(command.Channel.Name, ColorGeneral + "In-game, type '" + ColorHighlightMajor + "/denizen debug -r" + ColorGeneral
+                            + "', then run through the broken parts of the script, then type '" + ColorHighlightMajor +
+                            "/denizen submit" + ColorGeneral + "'. Open the link it gives you, and paste that link back in this channel as well.");
+                        Chat(command.Channel.Name, ColorGeneral + "For more information on how to read debug, see " + ColorLink + " http://mcmonkey.org/denizen/vids/debug");
+                    }
                     break;
                 case "update":
                 case "latest":
@@ -319,25 +385,50 @@ namespace DenizenIRCBot
                 case "spigot":
                 case "spig":
                 case "sp":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Due to the nature of our project, Denizen is always built against the "
-                        + ColorHighlightMajor + "development" + ColorGeneral + " builds of Spigot and Citizens."
-                        + " Most errors can be fixed by updating them all.");
-                    Chat(command.Channel.Name, ColorGeneral +S_BOLD + "Denizen-" + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Denizen/lastSuccessfulBuild");
-                    Chat(command.Channel.Name, ColorGeneral +S_BOLD + "Denizen (Developmental)-" + S_NORMAL + ColorLink + " http://ci.mineconomy.org/job/Denizen_Developmental/lastSuccessfulBuild/");
-                    Chat(command.Channel.Name, ColorGeneral +S_BOLD + "Citizens-" + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Citizens2/lastSuccessfulBuild");
-                    Chat(command.Channel.Name, ColorGeneral +S_BOLD + "Spigot-" + S_NORMAL + ColorLink + " http://bit.ly/15RZsn6");
-                    Chat(command.Channel.Name, ColorGeneral +S_BOLD + "Depenizen (Optional)- " + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Depenizen/lastSuccessfulBuild/");
+                    {
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Due to the nature of our project, Denizen is always built against the "
+                                + ColorHighlightMajor + "development" + ColorGeneral + " builds of Spigot and Citizens."
+                                + " Most errors can be fixed by updating them all.");
+                        }
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Denizen-" + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Denizen/lastSuccessfulBuild");
+                            Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Denizen (Developmental)-" + S_NORMAL + ColorLink + " http://ci.mineconomy.org/job/Denizen_Developmental/lastSuccessfulBuild/");
+                        }
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Citizens-" + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Citizens2/lastSuccessfulBuild");
+                        }
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Spigot-" + S_NORMAL + ColorLink + " http://bit.ly/15RZsn6");
+                            Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Depenizen (Optional)- " + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Depenizen/lastSuccessfulBuild/");
+                        }
+                    }
                     break;
                 case "nc":
                 case "newconfig":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "If you are having issues or are unable to find a setting, you may be using the old config file.");
-                    Chat(command.Channel.Name, ColorGeneral + "You can easily generate a new one by deleteing your current config.yml file in the Denizen folder.");
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "If you are having issues or are unable to find a setting, you may be using the old config file.");
+                        Chat(command.Channel.Name, ColorGeneral + "You can easily generate a new one by deleteing your current config.yml file in the Denizen folder.");
+                    }
                     break;
                 case "wiki":
-                    Chat(command.Channel.Name, ColorGeneral + "Citizens Wiki:" + ColorLink + " http://wiki.citizensnpcs.co");
-                    Chat(command.Channel.Name, ColorGeneral + "Denizen Wiki:" + ColorLink + " http://wiki.citizensnpcs.co/Denizen");
-                    Chat(command.Channel.Name, ColorGeneral + "Depenizen Wiki:" + ColorLink + " http://wiki.citizensnpcs.co/Depenizen");
-                    Chat(command.Channel.Name, ColorGeneral + "dIRCBot Wiki:" + ColorLink + " http://wiki.citizensnpcs.co/dIRCBot");
+                    {
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, ColorGeneral + "Citizens Wiki:" + ColorLink + " http://wiki.citizensnpcs.co");
+                        }
+                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        {
+                            Chat(command.Channel.Name, ColorGeneral + "Denizen Wiki:" + ColorLink + " http://wiki.citizensnpcs.co/Denizen");
+                            Chat(command.Channel.Name, ColorGeneral + "Depenizen Wiki:" + ColorLink + " http://wiki.citizensnpcs.co/Depenizen");
+                            Chat(command.Channel.Name, ColorGeneral + "dIRCBot Wiki:" + ColorLink + " http://wiki.citizensnpcs.co/dIRCBot");
+                        }
+                    }
                     break;
                 case "log":
                 case "logs":
@@ -355,7 +446,10 @@ namespace DenizenIRCBot
                 case "script":
                 case "ch":
                 case "check":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "search":
                 case "find":
@@ -376,32 +470,44 @@ namespace DenizenIRCBot
                 case "document":
                 case "documents":
                 case "documentations":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "sounds":
                 case "sound":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Here is the list of all valid bukkit sounds -" + ColorLink + " http://bit.ly/1AfW8wu");
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Here is the list of all valid bukkit sounds -" + ColorLink + " http://bit.ly/1AfW8wu");
+                    }
                     break;
                 case "gs":
                 case "getstarted":
                 case "start":
-                    Chat(command.Channel.Name, ColorGeneral + "If you're trying to use Denizen for the first time, these web resources will help you (in addition to help received here on this IRC)");
-                    Chat(command.Channel.Name, ColorGeneral + "Tutorial Videos[Updated] -" + ColorLink + " " + "http://mcmonkey.org/denizen/vids");
-                    Chat(command.Channel.Name, ColorGeneral + "Script Repo[Varies] -" + ColorLink + " " + "http://mcmonkey.org/denizen/repo/list");
-                    Chat(command.Channel.Name, ColorGeneral + "Old Script Repo[Outdated] -" + ColorLink + " http://bit.ly/19lCpfV");
-                    Chat(command.Channel.Name, ColorGeneral + "Denizen Wiki[Semi-recent] -" + ColorLink + " http://bit.ly/14o3kdq");
-                    Chat(command.Channel.Name, ColorGeneral + "Denizen Handbook[Outdated] -" + ColorLink + " http://bit.ly/XaWBLN");
-                    Chat(command.Channel.Name, ColorGeneral + "Beginner's Guide[Outdated] -" + ColorLink + " http://bit.ly/1bHkByR");
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        Chat(command.Channel.Name, ColorGeneral + "If you're trying to use Denizen for the first time, these web resources will help you (in addition to help received here on this IRC)");
+                        Chat(command.Channel.Name, ColorGeneral + "Tutorial Videos[Updated] -" + ColorLink + " " + "http://mcmonkey.org/denizen/vids");
+                        Chat(command.Channel.Name, ColorGeneral + "Script Repo[Varies] -" + ColorLink + " " + "http://mcmonkey.org/denizen/repo/list");
+                        Chat(command.Channel.Name, ColorGeneral + "Old Script Repo[Outdated] -" + ColorLink + " http://bit.ly/19lCpfV");
+                        Chat(command.Channel.Name, ColorGeneral + "Denizen Wiki[Semi-recent] -" + ColorLink + " http://bit.ly/14o3kdq");
+                        Chat(command.Channel.Name, ColorGeneral + "Denizen Handbook[Outdated] -" + ColorLink + " http://bit.ly/XaWBLN");
+                        Chat(command.Channel.Name, ColorGeneral + "Beginner's Guide[Outdated] -" + ColorLink + " http://bit.ly/1bHkByR");
+                    }
                     break;
                 case "yes":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Yes.   Si.   Ja.   Oui.   Da.");
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Yes.   Si.   Ja.   Oui.   Da.");
+                    }
                     break;
                 case "mcve":
                 case "minimal":
                 case "min":
                 case "complete":
                 case "comp":
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Please create a Minimal, Complete, and Verifiable Example:" + ColorLink + " https://stackoverflow.com/help/mcve");
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Please create a Minimal, Complete, and Verifiable Example:" + ColorLink + " https://stackoverflow.com/help/mcve");
+                    }
                     break;
                 case "myip":
                 case "pingip":
@@ -417,13 +523,27 @@ namespace DenizenIRCBot
                     // TODO
                     break;
                 case "reload":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    {
+                        // TODO
+                    }
                     break;
                 case "quotes":
                 case "quote":
                 case "qs":
                 case "q":
                     // TODO
+                    break;
+                case "debugtoggle":
+                    if (!command.User.OP)
+                    {
+                        Chat(command.Channel.Name, ColorGeneral + "You can't do that!");
+                    }
+                    else
+                    {
+                        Logger.Debugging = !Logger.Debugging;
+                        Chat(command.Channel.Name, ColorGeneral + "Debugging now " + ColorHighlightMajor + (Logger.Debugging ? "ON" : "OFF"));
+                    }
                     break;
                 default:
                     // Unknown command.

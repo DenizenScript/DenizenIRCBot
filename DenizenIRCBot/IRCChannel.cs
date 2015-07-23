@@ -10,7 +10,7 @@ namespace DenizenIRCBot
         public string Name = "";
 
         public string Topic = "";
-
+        
         public List<IRCUser> Users = new List<IRCUser>();
 
         public IRCUser GetUser(string name)
