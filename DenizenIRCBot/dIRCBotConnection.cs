@@ -248,6 +248,7 @@ namespace DenizenIRCBot
                                                     if (usr != null)
                                                     {
                                                         details.Pinger = usr.Name + ": ";
+                                                        cmds.RemoveAt(cmds.Count - 1);
                                                     }
                                                 }
                                             }
