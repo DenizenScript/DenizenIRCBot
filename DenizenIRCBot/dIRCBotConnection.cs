@@ -128,6 +128,7 @@ namespace DenizenIRCBot
                                         IRCChannel chan = new IRCChannel() { Name = "#" + channel.ToLower() };
                                         chan.LinkRead = Configuration["dircbot"]["irc"]["channels"][channel.ToLower()]["link_read"].ToString().StartsWith("t");
                                         chan.RecordSeen = Configuration["dircbot"]["irc"]["channels"][channel.ToLower()]["record_seen"].ToString().StartsWith("t");
+                                        chan.Greet = Configuration["dircbot"]["irc"]["channels"][channel.ToLower()]["greet"].ToString().StartsWith("t");
                                         Channels.Add(chan);
                                     }
                                 }
@@ -185,7 +186,7 @@ namespace DenizenIRCBot
                                             foreach (string usr in users)
                                             {
                                                 Logger.Output(LogType.DEBUG, "Recognize user " + usr);
-                                                chan.Users.Add(new IRCUser(usr + "!@"));
+                                                chan.Users.Add(new IRCUser(usr));
                                             }
                                             break;
                                         }
@@ -282,6 +283,30 @@ namespace DenizenIRCBot
                                             }
                                         }
                                     }
+                                    IRCUser iuser = chan.GetUser(user);
+                                    if (iuser == null)
+                                    {
+                                        Logger.Output(LogType.INFO, "Null user sent message to channel!");
+                                        break;
+                                    }
+                                    if (String.IsNullOrEmpty(iuser.IP))
+                                    {
+                                        iuser.ParseMask(user);
+                                    }
+                                    if (chan.RecordSeen)
+                                    {
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            try
+                                            {
+                                                iuser.SetSeen("in " + chan.Name + ", saying " + privmsg);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Logger.Output(LogType.ERROR, "SEEN user " + iuser.OriginalMask + ": " + ex.ToString());
+                                            }
+                                        });
+                                    }
                                     bool cmd = false;
                                     List<string> cmds = new List<string>(data);
                                     cmds.RemoveAt(0);
@@ -312,45 +337,38 @@ namespace DenizenIRCBot
                                         cmds.RemoveAt(0);
                                         details.Arguments = cmds;
                                         details.Channel = chan;
-                                        details.User = chan.GetUser(user);
+                                        details.User = iuser;
                                         details.Pinger = "";
-                                        if (details.User != null)
+                                        Logger.Output(LogType.INFO, "Try command " + details.Name + " for " + details.User.Name);
+                                        if (cmds.Count > 0)
                                         {
-                                            Logger.Output(LogType.INFO, "Try command " + details.Name + " for " + details.User.Name);
-                                            if (cmds.Count > 0)
+                                            string cmdlast = cmds[cmds.Count - 1];
+                                            if (cmdlast.Contains("@"))
                                             {
-                                                string cmdlast = cmds[cmds.Count - 1];
-                                                if (cmdlast.Contains("@"))
+                                                string pingme = cmdlast.Replace("@", "");
+                                                IRCUser usr = chan.GetUser(pingme);
+                                                if (usr != null)
                                                 {
-                                                    string pingme = cmdlast.Replace("@", "");
-                                                    IRCUser usr = chan.GetUser(pingme);
-                                                    if (usr != null)
-                                                    {
-                                                        details.Pinger = usr.Name + ": ";
-                                                        cmds.RemoveAt(cmds.Count - 1);
-                                                    }
+                                                    details.Pinger = usr.Name + ": ";
+                                                    cmds.RemoveAt(cmds.Count - 1);
                                                 }
                                             }
-                                            Task.Factory.StartNew(() =>
-                                            {
-                                                try
-                                                {
-                                                    TryCommand(details);
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    if (ex is ThreadAbortException)
-                                                    {
-                                                        throw ex;
-                                                    }
-                                                    Logger.Output(LogType.ERROR, "Command parsing of " + details.Name + ":: " + ex.ToString());
-                                                }
-                                            });
                                         }
-                                        else
+                                        Task.Factory.StartNew(() =>
                                         {
-                                            Logger.Output(LogType.INFO, "Null user sent message to channel!");
-                                        }
+                                            try
+                                            {
+                                                TryCommand(details);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                if (ex is ThreadAbortException)
+                                                {
+                                                    throw ex;
+                                                }
+                                                Logger.Output(LogType.ERROR, "Command parsing of " + details.Name + ":: " + ex.ToString());
+                                            }
+                                        });
                                     }
                                 }
                                 break;

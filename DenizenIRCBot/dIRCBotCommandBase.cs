@@ -53,7 +53,14 @@ namespace DenizenIRCBot
                     // TODO
                     break;
                 case "seen":
-                    // TODO
+                    SeenCommand(command);
+                    break;
+                case "recent":
+                case "recentseen":
+                case "seenrecently":
+                case "recently":
+                case "recentlyseen":
+                    RecentCommand(command);
                     break;
                 case "msg":
                 case "send":

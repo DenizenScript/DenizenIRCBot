@@ -11,22 +11,13 @@ namespace DenizenIRCBot
     {
         public static bool Debugging = true; // TODO: Disable by default
 
-        static string FormatNumber(int input)
-        {
-            if (input < 10 && input >= 0)
-            {
-                return "0" + input;
-            }
-            return input.ToString();
-        }
-
         public static Object Locker = new Object();
 
         public static void Output(LogType type, string info)
         {
             DateTime now = DateTime.Now;
-            string prefix = now.Year + "/" + FormatNumber(now.Month) + "/" + FormatNumber(now.Day)
-                + " " + FormatNumber(now.Hour) + ":" + FormatNumber(now.Minute) + ":" + FormatNumber(now.Second);
+            string prefix = now.Year + "/" + Utilities.FormatNumber(now.Month) + "/" + Utilities.FormatNumber(now.Day)
+                + " " + Utilities.FormatNumber(now.Hour) + ":" + Utilities.FormatNumber(now.Minute) + ":" + Utilities.FormatNumber(now.Second);
             string outp = null;
             ConsoleColor color = ConsoleColor.White;
 

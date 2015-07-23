@@ -17,6 +17,8 @@ namespace DenizenIRCBot
 
         public bool RecordSeen = false;
 
+        public bool Greet = false;
+
         public IRCUser GetUser(string name)
         {
             string nl = name.ToLower();
