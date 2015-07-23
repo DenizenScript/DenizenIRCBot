@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace DenizenIRCBot
 {
@@ -50,8 +51,25 @@ namespace DenizenIRCBot
             string receivedAlready = string.Empty;
             while (true)
             {
+                long timePassed = 0;
+                bool pinged = false;
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 while (IRCSocket.Available <= 0)
                 {
+                    sw.Stop();
+                    timePassed += sw.ElapsedMilliseconds;
+                    if (timePassed > 60 * 1000 && !pinged)
+                    {
+                        SendCommand("PING", Utilities.random.Next(10000).ToString());
+                        pinged = true;
+                    }
+                    if (timePassed > 120 * 1000)
+                    {
+                        throw new Exception("Ping timed out!");
+                    }
+                    sw.Reset();
+                    sw.Start();
                     Thread.Sleep(1);
                 }
                 int avail = IRCSocket.Available;
