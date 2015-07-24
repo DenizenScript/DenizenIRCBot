@@ -427,7 +427,7 @@ namespace DenizenIRCBot
                     {
                         if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
                         {
-                            Chat(command.Channel.Name, ColorGeneral + "Citizens Wiki:" + ColorLink + " http://wiki.citizensnpcs.co");
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Citizens Wiki:" + ColorLink + " http://wiki.citizensnpcs.co");
                         }
                         if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
                         {
@@ -439,7 +439,10 @@ namespace DenizenIRCBot
                     break;
                 case "log":
                 case "logs":
-                    // TODO
+                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["has_log_page"].ToString().StartsWith("t"))
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Full logs of this channel are available at" + ColorLink + " http://mcmonkey.org/denizen/logs/" + command.Channel.Name.Replace("#", ""));
+                    }
                     break;
                 case "voice":
                     // TODO
