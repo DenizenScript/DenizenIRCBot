@@ -530,11 +530,15 @@ namespace DenizenIRCBot
                     break;
                 case "myip":
                 case "pingip":
-                    // TODO
+                    {
+                        MyIPCommand(command);
+                    }
                     break;
                 case "ping":
                 case "mcping":
-                    // TODO
+                    {
+                        MCPingCommand(command);
+                    }
                     break;
                 case "d":
                 case "def":

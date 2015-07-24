@@ -196,5 +196,24 @@ namespace DenizenIRCBot
             int second = StringToInt(dat[5]);
             return new DateTime(year, month, day, hour, minute, second, 0, DateTimeKind.Utc);
         }
+
+        public static string webtoirc(string text)
+        {
+            string AC = ((char)0x01).ToString();
+            string NC = dIRCBot.C_S_COLOR.ToString();
+            return text.Replace(AC + "0", NC + "01").Replace(AC + "1", NC + "02").Replace(AC + "2", NC + "03").Replace(AC + "3", NC + "10").Replace(AC + "4", NC + "04").Replace(AC + "5", NC + "06")
+                            .Replace(AC + "6", NC + "08").Replace(AC + "7", NC + "15").Replace(AC + "8", NC + "15").Replace(AC + "9", NC + "02").Replace(AC + "a", NC + "03")
+                            .Replace(AC + "b", NC + "11").Replace(AC + "c", NC + "04").Replace(AC + "d", NC + "06").Replace(AC + "e", NC + "08").Replace(AC + "f", NC + "15")
+                            .Replace(AC + "A", NC + "03").Replace(AC + "B", NC + "11").Replace(AC + "C", NC + "04").Replace(AC + "D", NC + "06").Replace(AC + "E", NC + "08")
+                            .Replace(AC + "F", NC + "15").Replace(AC + "L", dIRCBot.C_S_BOLD.ToString()).Replace(AC + "l", dIRCBot.C_S_BOLD.ToString())
+                            .Replace(AC + "r", dIRCBot.C_S_NORMAL.ToString()).Replace(AC + "R", dIRCBot.C_S_NORMAL.ToString()).Replace(AC + "N", dIRCBot.C_S_UNDERLINE.ToString())
+                            .Replace(AC + "n", dIRCBot.C_S_UNDERLINE.ToString()).Replace(AC + "k", "").Replace(AC + "K", "").Replace(AC + "o", "").Replace(AC + "O", "")
+                            .Replace(AC + "M", "").Replace(AC + "m", "").Replace('\n', ' ').Replace("\r", "");
+        }
+
+        public static string mctoirc(string text)
+        {
+            return webtoirc(text.Replace('§', ((char)0x01)));
+        }
     }
 }

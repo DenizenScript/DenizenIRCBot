@@ -31,7 +31,7 @@ namespace DenizenIRCBot
         static string S_DARKGRAY = C_S_COLOR.ToString() + "14";
         static string S_GRAY = C_S_COLOR.ToString() + "15";
 
-        public string ColorGeneral = S_RED;
+        public string ColorGeneral = S_NORMAL + S_RED;
         public string ColorHighlightMinor = S_BROWN;
         public string ColorHighlightMajor = S_ORANGE;
         public string ColorLink = S_DARKBLUE;
