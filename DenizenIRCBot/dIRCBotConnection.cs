@@ -167,6 +167,7 @@ namespace DenizenIRCBot
                                         {
                                             IRCUser newuser = new IRCUser(user);
                                             chan.Users.Add(newuser);
+                                            Logger.Output(LogType.DEBUG, "Recognizing join of " + newuser.Name + " into " + chan.Name);
                                             if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greet", "false").StartsWith("t"))
                                             {
                                                 foreach (string msg in Configuration.ReadList("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greeting"))
@@ -208,17 +209,66 @@ namespace DenizenIRCBot
                                 break;
                             case "part": // Someone left the channel
                                 {
-                                    // TODO: RECORD
+                                    string channel = data[0].ToLower();
+                                    foreach (IRCChannel chan in Channels)
+                                    {
+                                        if (channel == chan.Name)
+                                        {
+                                            IRCUser quitter = new IRCUser(user);
+                                            string name = quitter.Name.ToLower();
+                                            for (int i = 0; i < chan.Users.Count; i++)
+                                            {
+                                                if (chan.Users[i].Name.ToLower() == name)
+                                                {
+                                                    Logger.Output(LogType.DEBUG, "Recognizing leave of " + chan.Users[i].Name + " from " + chan.Name);
+                                                    chan.Users.RemoveAt(i--);
+                                                    break;
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
                                 }
                                 break;
                             case "quit": // Someone left the server
                                 {
-                                    // TODO: RECORD
+                                    IRCUser quitter = new IRCUser(user);
+                                    string name = quitter.Name.ToLower();
+                                    // quitreason = concat(data, 0).substring(1);
+                                    foreach (IRCChannel chan in Channels)
+                                    {
+                                        for (int i = 0; i < chan.Users.Count; i++)
+                                        {
+                                            if (chan.Users[i].Name.ToLower() == name)
+                                            {
+                                                Logger.Output(LogType.DEBUG, "Recognizing quit of " + chan.Users[i].Name + " from " + chan.Name);
+                                                chan.Users.RemoveAt(i--);
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                                 break;
                             case "nick": // Someone changed their name
                                 {
-                                    // TODO: RECORD
+                                    IRCUser renamer = new IRCUser(user);
+                                    string nicknew = data[0].Substring(1);
+                                    string name = renamer.Name.ToLower();
+                                    renamer.SetSeen("renaming to " + nicknew);
+                                    foreach (IRCChannel chan in Channels)
+                                    {
+                                        for (int i = 0; i < chan.Users.Count; i++)
+                                        {
+                                            if (chan.Users[i].Name.ToLower() == name)
+                                            {
+                                                Logger.Output(LogType.DEBUG, "Recognizing rename of " + chan.Users[i].Name + " to " + nicknew);
+                                                IRCUser theusr = chan.Users[i];
+                                                chan.Users.RemoveAt(i--);
+                                                chan.Users.Add(new IRCUser(nicknew + "!" + theusr.Ident + "@" + theusr.IP) { Voice = theusr.Voice, OP = theusr.OP, EverHadVoice = theusr.EverHadVoice });
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                                 break;
                             case "privmsg": // Chat message
