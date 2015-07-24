@@ -116,9 +116,30 @@ namespace DenizenIRCBot
 
         public void SetSeen(string doing)
         {
+            SetSeen(doing, DateTime.Now);
+        }
+
+        public void SetSeen(string doing, DateTime dt)
+        {
+            string l5_time = Settings.Read("general.last_seen.5.time", null);
+            if (l5_time != null)
+            {
+                DateTime l5_dt = Utilities.StringToDate(l5_time);
+                if (dt.CompareTo(l5_dt) < 0)
+                {
+                    return;
+                }
+            }
             string l4_time = Settings.Read("general.last_seen.4.time", null);
             if (l4_time != null)
             {
+                DateTime l4_dt = Utilities.StringToDate(l4_time);
+                if (dt.CompareTo(l4_dt) < 0)
+                {
+                    Settings.Set("general.last_seen.5.time", Utilities.DateToString(dt));
+                    Settings.Set("general.last_seen.5.doing", doing);
+                    return;
+                }
                 string l4_doing = Settings.Read("general.last_seen.4.doing", null);
                 Settings.Set("general.last_seen.5.time", l4_time);
                 Settings.Set("general.last_seen.5.doing", l4_doing);
@@ -126,6 +147,13 @@ namespace DenizenIRCBot
             string l3_time = Settings.Read("general.last_seen.3.time", null);
             if (l3_time != null)
             {
+                DateTime l3_dt = Utilities.StringToDate(l3_time);
+                if (dt.CompareTo(l3_dt) < 0)
+                {
+                    Settings.Set("general.last_seen.4.time", Utilities.DateToString(dt));
+                    Settings.Set("general.last_seen.4.doing", doing);
+                    return;
+                }
                 string l3_doing = Settings.Read("general.last_seen.3.doing", null);
                 Settings.Set("general.last_seen.4.time", l3_time);
                 Settings.Set("general.last_seen.4.doing", l3_doing);
@@ -133,6 +161,13 @@ namespace DenizenIRCBot
             string l2_time = Settings.Read("general.last_seen.2.time", null);
             if (l2_time != null)
             {
+                DateTime l2_dt = Utilities.StringToDate(l2_time);
+                if (dt.CompareTo(l2_dt) < 0)
+                {
+                    Settings.Set("general.last_seen.3.time", Utilities.DateToString(dt));
+                    Settings.Set("general.last_seen.3.doing", doing);
+                    return;
+                }
                 string l2_doing = Settings.Read("general.last_seen.2.doing", null);
                 Settings.Set("general.last_seen.3.time", l2_time);
                 Settings.Set("general.last_seen.3.doing", l2_doing);
@@ -140,11 +175,18 @@ namespace DenizenIRCBot
             string l1_time = Settings.Read("general.last_seen.1.time", null);
             if (l1_time != null)
             {
+                DateTime l1_dt = Utilities.StringToDate(l1_time);
+                if (dt.CompareTo(l1_dt) < 0)
+                {
+                    Settings.Set("general.last_seen.2.time", Utilities.DateToString(dt));
+                    Settings.Set("general.last_seen.2.doing", doing);
+                    return;
+                }
                 string l1_doing = Settings.Read("general.last_seen.1.doing", null);
                 Settings.Set("general.last_seen.2.time", l1_time);
                 Settings.Set("general.last_seen.2.doing", l1_doing);
             }
-            Settings.Set("general.last_seen.1.time", Utilities.DateToString(DateTime.Now));
+            Settings.Set("general.last_seen.1.time", Utilities.DateToString(dt));
             Settings.Set("general.last_seen.1.doing", doing);
             Save();
         }

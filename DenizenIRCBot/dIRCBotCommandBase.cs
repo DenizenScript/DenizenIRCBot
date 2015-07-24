@@ -568,6 +568,16 @@ namespace DenizenIRCBot
                 case "q":
                     // TODO
                     break;
+                case "readlogs":
+                    if (!command.User.OP)
+                    {
+                        Chat(command.Channel.Name, ColorGeneral + "You can't do that!");
+                    }
+                    else
+                    {
+                        ReadLogs();
+                    }
+                    break;
                 case "debugtoggle":
                     if (!command.User.OP)
                     {
