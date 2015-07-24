@@ -213,7 +213,7 @@ namespace DenizenIRCBot
                                     string channel = data[0].ToLower();
                                     data[1] = data[1].Substring(1);
                                     string privmsg = Utilities.Concat(data, 1);
-                                    Logger.Output(LogType.DEBUG, "User " + user + " spoke in channel " + channel + ", saying " + privmsg);
+                                    Logger.Output(LogType.INFO, "User " + user + " spoke in channel " + channel + ", saying " + privmsg);
                                     IRCChannel chan = null;
                                     foreach (IRCChannel chann in Channels)
                                     {

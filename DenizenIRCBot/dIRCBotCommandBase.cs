@@ -445,7 +445,14 @@ namespace DenizenIRCBot
                     }
                     break;
                 case "voice":
-                    // TODO
+                    if (command.User.EverHadVoice && command.Channel.GetUser(Name).OP)
+                    {
+                        SendCommand("MODE", command.Channel.Name + " " + (command.User.Voice ? "-" : "+") + "v " + command.User.Name);
+                    }
+                    else
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "I'm sorry, " + ColorHighlightMajor + command.User.Name + ColorGeneral + ", I can't do that.");
+                    }
                     break;
                 case "yml":
                 case "yaml":
