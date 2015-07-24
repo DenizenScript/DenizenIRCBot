@@ -435,7 +435,7 @@ namespace DenizenIRCBot
                 chats = Chat(channel, second, chats);
                 return chats;
             }
-            SendCommand("PRIVMSG", channel + " :" + message);
+            SendCommand("PRIVMSG", channel + " :" + message.Replace("\n", "\\n").Replace("\r", "\\r"));
             return limit - 1;
         }
 

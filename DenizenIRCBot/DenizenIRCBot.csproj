@@ -56,6 +56,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="MessagingCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptcheckCommands.cs" />
     <Compile Include="UserHistoryCommands.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="WebclientExtensions.cs" />

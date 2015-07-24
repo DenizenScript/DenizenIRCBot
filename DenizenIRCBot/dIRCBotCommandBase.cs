@@ -456,7 +456,9 @@ namespace DenizenIRCBot
                     break;
                 case "yml":
                 case "yaml":
-                    // TODO
+                    {
+                        YAMLCommand(command);
+                    }
                     break;
                 case "dscript":
                 case "ds":
