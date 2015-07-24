@@ -139,6 +139,19 @@ namespace DenizenIRCBot
             return FormatDate(dt) + " (" + tstostr(DateTime.UtcNow.ToFileTimeUtc() - dt.ToFileTimeUtc()) + " ago)";
         }
 
+        public static int CountChar(string input, char c)
+        {
+            int toret = 0;
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i] == c)
+                {
+                    toret++;
+                }
+            }
+            return toret;
+        }
+
         public static string tstostr(long input)
         {
             long sec = (long)(input / 10000000);

@@ -55,6 +55,7 @@
     <Compile Include="IRCUser.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MessagingCommands.cs" />
+    <Compile Include="OlddScriptValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptcheckCommands.cs" />
     <Compile Include="UserHistoryCommands.cs" />

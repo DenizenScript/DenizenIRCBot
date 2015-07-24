@@ -68,5 +68,35 @@ namespace DenizenIRCBot
                 Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Error in your YAML: " + ColorHighlightMajor + ex.Message);
             }
         }
+
+        void OLDdScriptCommand(CommandDetails command)
+        {
+            string outp = scriptcommand_base(command);
+            if (outp == null)
+            {
+                return;
+            }
+            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Scanning " + ColorHighlightMajor + (Utilities.CountChar(outp, '\n') + 1) + ColorGeneral + " lines...");
+            try
+            {
+                YamlStream ys = new YamlStream();
+                ys.Load(new StringReader(outp));
+                int nodes = 0;
+                for (int i = 0; i < ys.Documents.Count; i++)
+                {
+                    nodes += ys.Documents[i].AllNodes.ToArray().Length;
+                }
+            }
+            catch (Exception ex)
+            {
+                Chat(command.Channel.Name, ColorGeneral + "Error in your YAML: " + ColorHighlightMajor + ex.Message);
+            }
+            List<string> warnings = dsCheck(outp);
+            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Found " + ColorHighlightMajor + warnings.Count + ColorGeneral + " potential issues.");
+            for (int i = 0; i < warnings.Count && i < 8; i++)
+            {
+                Chat(command.Channel.Name, ColorHighlightMinor + "- " + i + ") " + warnings[i]);
+            }
+        }
     }
 }

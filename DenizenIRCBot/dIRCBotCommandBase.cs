@@ -467,7 +467,7 @@ namespace DenizenIRCBot
                 case "check":
                     if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
                     {
-                        // TODO
+                        OLDdScriptCommand(command);
                     }
                     break;
                 case "search":
