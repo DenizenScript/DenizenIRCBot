@@ -467,6 +467,16 @@ namespace DenizenIRCBot
                 case "check":
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
+                        dScriptCommand(command);
+                    }
+                    break;
+                case "olddscript":
+                case "oldds":
+                case "oldscript":
+                case "oldch":
+                case "oldcheck":
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
+                    {
                         OLDdScriptCommand(command);
                     }
                     break;

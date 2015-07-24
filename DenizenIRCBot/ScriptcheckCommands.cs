@@ -92,10 +92,46 @@ namespace DenizenIRCBot
                 Chat(command.Channel.Name, ColorGeneral + "Error in your YAML: " + ColorHighlightMajor + ex.Message);
             }
             List<string> warnings = dsCheck(outp);
-            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Found " + ColorHighlightMajor + warnings.Count + ColorGeneral + " potential issues.");
+            Chat(command.Channel.Name, ColorGeneral + "Found " + ColorHighlightMajor + warnings.Count + ColorGeneral + " potential issues.");
             for (int i = 0; i < warnings.Count && i < 8; i++)
             {
                 Chat(command.Channel.Name, ColorHighlightMinor + "- " + i + ") " + warnings[i]);
+            }
+        }
+
+        void dScriptCommand(CommandDetails command)
+        {
+            string outp = scriptcommand_base(command);
+            if (outp == null)
+            {
+                return;
+            }
+            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Scanning " + ColorHighlightMajor + (Utilities.CountChar(outp, '\n') + 1) + ColorGeneral + " lines...");
+            int start = 0;
+            if (command.Arguments.Count >= 2)
+            {
+                start = Math.Abs(Utilities.StringToInt(command.Arguments[1]));
+            }
+            try
+            {
+                List<string> errors = dScriptCheck(outp);
+                Chat(command.Channel.Name, ColorGeneral + "Found " + ColorHighlightMajor + errors.Count + ColorGeneral + " potential issues.");
+                int i = start;
+                while (i < start + 8 && i < errors.Count)
+                {
+                    Chat(command.Channel.Name, ColorHighlightMinor + "- " + (i + 1) + ") " + errors[i]);
+                    i++;
+                }
+                if (i < errors.Count)
+                {
+                    Chat(command.Channel.Name, ColorGeneral + "And " + (errors.Count - i) + " more... type "
+                        + ColorHighlightMajor + Prefixes[0] + command.Name + " <link> " + i + ColorGeneral + " to see the rest.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Output(LogType.ERROR, ex.ToString());
+                Chat(command.Channel.Name, ColorGeneral + "Internal error processing script: " + ex.GetType().ToString() + ": " + ex.Message);
             }
         }
     }

@@ -67,7 +67,7 @@ namespace DenizenIRCBot
                     }
                     if (Settings == null)
                     {
-                        Settings = new YAMLConfiguration(null);
+                        Settings = new YAMLConfiguration("");
                         AllConfigs.Add(fileName, Settings);
                     }
                 }
