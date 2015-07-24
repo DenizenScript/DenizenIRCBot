@@ -44,7 +44,7 @@ namespace DenizenIRCBot
         /// <summary>
         /// The bot's configuration data (config.yml).
         /// </summary>
-        public Dictionary<string, dynamic> Configuration;
+        public YAMLConfiguration Configuration;
 
         public string[] Prefixes = null;
 
@@ -53,21 +53,16 @@ namespace DenizenIRCBot
             try
             {
                 Deserializer des = new Deserializer();
-                Configuration = des.Deserialize<Dictionary<string, dynamic>>(new StringReader(GetConfig()));
-                ServerAddress = Configuration["dircbot"]["irc"]["server"];
-                ServerPort = Utilities.StringToUShort(Configuration["dircbot"]["irc"]["port"]);
-                Name = Configuration["dircbot"]["irc"]["username"];
+                Configuration = new YAMLConfiguration(GetConfig());
+                ServerAddress = Configuration.Read("dircbot.irc.server", "");
+                ServerPort = Utilities.StringToUShort(Configuration.Read("dircbot.irc.port", ""));
+                Name = Configuration.Read("dircbot.irc.username", "");
                 BaseChannels.Clear();
-                foreach (string channel in Configuration["dircbot"]["irc"]["channels"].Keys)
+                foreach (string channel in Configuration.Data["dircbot"]["irc"]["channels"].Keys) // TODO: GetKeys()
                 {
                     BaseChannels.Add(channel);
                 }
-                List<object> pref = Configuration["dircbot"]["prefixes"];
-                Prefixes = new string[pref.Count];
-                for (int i = 0; i < pref.Count; i++)
-                {
-                    Prefixes[i] = pref[i].ToString();
-                }
+                Prefixes = Configuration.ReadList("dircbot.prefixes").ToArray();
             }
             catch (Exception ex)
             {

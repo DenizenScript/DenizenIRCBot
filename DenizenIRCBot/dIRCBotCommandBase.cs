@@ -81,7 +81,7 @@ namespace DenizenIRCBot
                 case "ts3":
                 case "teamspeak":
                 case "teamspeak3":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         Chat(command.Channel.Name, command.Pinger + "Denizen users are all welcome to voice chat together at the TeamSpeak3 server ts3.mcmonkey.org in the channel 'Denizen'!");
                     }
@@ -119,7 +119,7 @@ namespace DenizenIRCBot
                 case "commands":
                 case "cmds":
                 case "c":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -129,7 +129,7 @@ namespace DenizenIRCBot
                 case "event":
                 case "events":
                 case "e":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -140,7 +140,7 @@ namespace DenizenIRCBot
                 case "mechs":
                 case "mechanism":
                 case "mechanisms":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -159,7 +159,7 @@ namespace DenizenIRCBot
                 case "lang":
                 case "langs":
                 case "lingo":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -176,7 +176,7 @@ namespace DenizenIRCBot
                 case "exams":
                 case "examp":
                 case "examps":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -184,7 +184,7 @@ namespace DenizenIRCBot
                 case "tag":
                 case "tags":
                 case "t":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -194,7 +194,7 @@ namespace DenizenIRCBot
                 case "v":
                 case "video":
                 case "videos":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -204,7 +204,7 @@ namespace DenizenIRCBot
                 case "action":
                 case "actions":
                 case "a":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -218,7 +218,7 @@ namespace DenizenIRCBot
                 case "mats":
                 case "materials":
                 case "i":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -237,7 +237,7 @@ namespace DenizenIRCBot
                 case "repos":
                 case "repositories":
                 case "scripts":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Check out scripts made by other users -" + ColorLink + " " + "http://mcmonkey.org/denizen/repo/list");
                         Chat(command.Channel.Name, ColorGeneral + "Old repo -" + ColorLink + " http://bit.ly/19lCpfV");
@@ -247,11 +247,11 @@ namespace DenizenIRCBot
                 case "issues":
                 case "iss":
                     {
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Post Denizen issues here:" + ColorLink + " https://github.com/DenizenScript/Denizen-For-Bukkit/issues");
                         }
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".citizens_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Post Denizen issues here:" + ColorLink + " https://github.com/CitizensDev/Citizens2/issues");
                         }
@@ -319,7 +319,7 @@ namespace DenizenIRCBot
                 case "hap":
                     {
                         string prefix = Prefixes[0];
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Hello, I am DenizenBot, a bot dedicated to assisting you in maximizing your Denizen scripting potential."
                                                                     + "   If you're new to Denizen, type " + ColorHighlightMinor + prefix + "getstarted");
@@ -342,7 +342,7 @@ namespace DenizenIRCBot
                 case "skin":
                 case "skinssearch":
                 case "skinsearch":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".citizens_meta", "false").StartsWith("t"))
                     {
                         if (command.Arguments.Count > 1)
                         {
@@ -372,7 +372,7 @@ namespace DenizenIRCBot
                     break;
                 case "debug":
                 case "db":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Need help with a script issue or server error? "
                         + "- Help us help you by pasting your script to" + ColorLink + " " + "http://mcmonkey.org/haste "
@@ -393,22 +393,22 @@ namespace DenizenIRCBot
                 case "spig":
                 case "sp":
                     {
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Due to the nature of our project, Denizen is always built against the "
                                 + ColorHighlightMajor + "development" + ColorGeneral + " builds of Spigot and Citizens."
                                 + " Most errors can be fixed by updating them all.");
                         }
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Denizen-" + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Denizen/lastSuccessfulBuild");
                             Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Denizen (Developmental)-" + S_NORMAL + ColorLink + " http://ci.mineconomy.org/job/Denizen_Developmental/lastSuccessfulBuild/");
                         }
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".citizens_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Citizens-" + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Citizens2/lastSuccessfulBuild");
                         }
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Spigot-" + S_NORMAL + ColorLink + " http://bit.ly/15RZsn6");
                             Chat(command.Channel.Name, ColorGeneral + S_BOLD + "Depenizen (Optional)- " + S_NORMAL + ColorLink + " http://ci.citizensnpcs.co/job/Depenizen/lastSuccessfulBuild/");
@@ -417,7 +417,7 @@ namespace DenizenIRCBot
                     break;
                 case "nc":
                 case "newconfig":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         Chat(command.Channel.Name, command.Pinger + ColorGeneral + "If you are having issues or are unable to find a setting, you may be using the old config file.");
                         Chat(command.Channel.Name, ColorGeneral + "You can easily generate a new one by deleteing your current config.yml file in the Denizen folder.");
@@ -425,11 +425,11 @@ namespace DenizenIRCBot
                     break;
                 case "wiki":
                     {
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["citizens_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".citizens_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Citizens Wiki:" + ColorLink + " http://wiki.citizensnpcs.co");
                         }
-                        if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                        if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                         {
                             Chat(command.Channel.Name, ColorGeneral + "Denizen Wiki:" + ColorLink + " http://wiki.citizensnpcs.co/Denizen");
                             Chat(command.Channel.Name, ColorGeneral + "Depenizen Wiki:" + ColorLink + " http://wiki.citizensnpcs.co/Depenizen");
@@ -439,7 +439,7 @@ namespace DenizenIRCBot
                     break;
                 case "log":
                 case "logs":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["has_log_page"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".has_log_page", "false").StartsWith("t"))
                     {
                         Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Full logs of this channel are available at" + ColorLink + " http://mcmonkey.org/denizen/logs/" + command.Channel.Name.Replace("#", ""));
                     }
@@ -465,7 +465,7 @@ namespace DenizenIRCBot
                 case "script":
                 case "ch":
                 case "check":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         OLDdScriptCommand(command);
                     }
@@ -489,7 +489,7 @@ namespace DenizenIRCBot
                 case "document":
                 case "documents":
                 case "documentations":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }
@@ -503,7 +503,7 @@ namespace DenizenIRCBot
                 case "gs":
                 case "getstarted":
                 case "start":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         Chat(command.Channel.Name, ColorGeneral + "If you're trying to use Denizen for the first time, these web resources will help you (in addition to help received here on this IRC)");
                         Chat(command.Channel.Name, ColorGeneral + "Tutorial Videos[Updated] -" + ColorLink + " " + "http://mcmonkey.org/denizen/vids");
@@ -536,13 +536,14 @@ namespace DenizenIRCBot
                 case "mcping":
                     // TODO
                     break;
+                case "d":
                 case "def":
                 case "define":
                 case "definition":
                     // TODO
                     break;
                 case "reload":
-                    if (Configuration["dircbot"]["irc"]["channels"][command.Channel.Name.Replace("#", "")]["denizen_meta"].ToString().StartsWith("t"))
+                    if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         // TODO
                     }

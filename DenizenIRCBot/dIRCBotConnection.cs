@@ -45,7 +45,7 @@ namespace DenizenIRCBot
             IRCSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IRCSocket.Connect(ServerAddress, ServerPort);
             Logger.Output(LogType.INFO, "Connected to " + IRCSocket.RemoteEndPoint.ToString());
-            string host = Configuration["dircbot"]["irc"]["host"];
+            string host = Configuration.Read("dircbot.irc.host", "unknown");
             SendCommand("USER", Name + " " + host + " " + host + " :" + Name);
             SendCommand("NICK", Name);
             string receivedAlready = string.Empty;
@@ -112,23 +112,20 @@ namespace DenizenIRCBot
                             case "433": // Nickname In Use
                                 {
                                     SendCommand("NICK", Name + "_" + Utilities.random.Next(999));
-                                    SendCommand("NS", "identify " + Name + " " + Configuration["dircbot"]["irc"]["nickserv"]["password"]);
+                                    SendCommand("NS", "identify " + Name + " " + Configuration.Read("dircbot.irc.nickserv.password", ""));
                                     SendCommand("NS", "ghost " + Name);
                                     SendCommand("NICK", Name);
                                 }
                                 break;
                             case "376": // End of MOTD -> Ready To Join And Identify
                                 {
-                                    SendCommand("NS", "identify " + Configuration["dircbot"]["irc"]["nickserv"]["password"]);
+                                    SendCommand("NS", "identify " + Configuration.Read("dircbot.irc.nickserv.password", ""));
                                     Channels.Clear();
                                     foreach (string channel in BaseChannels)
                                     {
                                         SendCommand("JOIN", "#" + channel);
                                         Logger.Output(LogType.INFO, "Join Channel: #" + channel.ToLower());
                                         IRCChannel chan = new IRCChannel() { Name = "#" + channel.ToLower() };
-                                        chan.LinkRead = Configuration["dircbot"]["irc"]["channels"][channel.ToLower()]["link_read"].ToString().StartsWith("t");
-                                        chan.RecordSeen = Configuration["dircbot"]["irc"]["channels"][channel.ToLower()]["record_seen"].ToString().StartsWith("t");
-                                        chan.Greet = Configuration["dircbot"]["irc"]["channels"][channel.ToLower()]["greet"].ToString().StartsWith("t");
                                         Channels.Add(chan);
                                     }
                                 }
@@ -163,7 +160,23 @@ namespace DenizenIRCBot
                                 break;
                             case "join": // Someone joined
                                 {
-                                    // TODO: RECORD
+                                    string channel = data[0].ToLower();
+                                    foreach (IRCChannel chan in Channels)
+                                    {
+                                        if (channel == chan.Name)
+                                        {
+                                            IRCUser newuser = new IRCUser(user);
+                                            chan.Users.Add(newuser);
+                                            if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greet", "false").StartsWith("t"))
+                                            {
+                                                foreach (string msg in Configuration.ReadList("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greeting"))
+                                                {
+                                                    Notice(newuser.Name, msg.Replace("<BASE>", ColorGeneral).Replace("<MAJOR>", ColorHighlightMajor).Replace("<MINOR>", ColorHighlightMinor));
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
                                 }
                                 break;
                             case "mode": // User mode set
@@ -226,7 +239,7 @@ namespace DenizenIRCBot
                                     {
                                         break;
                                     }
-                                    if (chan.LinkRead)
+                                    if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".link_read", "false").StartsWith("t"))
                                     {
                                         foreach (string str in data)
                                         {
@@ -276,9 +289,9 @@ namespace DenizenIRCBot
                                                             Chat(chan.Name, ColorGeneral + ": Title --> " + ColorHighlightMinor + webtitle.Trim(), 1);
                                                         }
                                                     }
-                                                    catch (Exception)
+                                                    catch (Exception ex)
                                                     {
-                                                        Logger.Output(LogType.DEBUG, "Failed to read webpage " + str);
+                                                        Logger.Output(LogType.DEBUG, "Failed to read webpage " + str + ": " + ex.ToString());
                                                     }
                                                 });
                                             }
@@ -295,7 +308,7 @@ namespace DenizenIRCBot
                                         iuser.ParseMask(user);
                                     }
                                     CheckReminders(iuser, chan);
-                                    if (chan.RecordSeen)
+                                    if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".record_seen", "false").StartsWith("t"))
                                     {
                                         Task.Factory.StartNew(() =>
                                         {
