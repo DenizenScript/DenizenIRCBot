@@ -61,6 +61,8 @@
     <Compile Include="IRCUser.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MessagingCommands.cs" />
+    <Compile Include="MetaObjects.cs" />
+    <Compile Include="MetaReadingEngine.cs" />
     <Compile Include="MinecraftCommands.cs" />
     <Compile Include="OlddScriptValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
