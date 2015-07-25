@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DenizenIRCBot
 {
@@ -26,19 +27,19 @@ namespace DenizenIRCBot
             switch (type)
             {
                 case "group":
-                    Group = var.Replace('\n', ' ');
+                    Group = var.Replace('\n', ' ').Trim();
                     break;
                 case "plugin":
-                    Plugin = var.Replace('\n', ' ');
+                    Plugin = var.Replace('\n', ' ').Trim();
                     break;
                 case "warning":
-                    Warning = var.Replace('\n', ' ');
+                    Warning = var.Replace('\n', ' ').Trim();
                     break;
                 case "video":
-                    Video = var.Replace('\n', ' ');
+                    Video = var.Replace('\n', ' ').Trim();
                     break;
                 case "deprecated":
-                    Deprecated = var.Replace('\n', ' ');
+                    Deprecated = var.Replace('\n', ' ').Trim();
                     break;
                 default:
                     Logger.Output(LogType.ERROR, "Invalid var type: " + type + " in " + FileName);
@@ -62,7 +63,7 @@ namespace DenizenIRCBot
 
         public string Triggers = "";
 
-        public string Regex = "";
+        public Regex Regex = null;
 
         public List<string> Determine = new List<string>();
 
@@ -76,10 +77,10 @@ namespace DenizenIRCBot
                     Context = var.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     break;
                 case "triggers":
-                    Triggers = var.Replace('\n', ' ');
+                    Triggers = var.Replace('\n', ' ').Trim();
                     break;
                 case "regex":
-                    Regex = var.Replace('\n', ' ');
+                    Regex = new Regex(var.Replace('\n', ' ').Trim());
                     break;
                 case "determine":
                     Determine = var.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -117,10 +118,10 @@ namespace DenizenIRCBot
             switch (type)
             {
                 case "name":
-                    Name = var.Replace('\n', ' ');
+                    Name = var.Replace('\n', ' ').Trim();
                     break;
                 case "description":
-                    Description = var.Replace('\n', ' ');
+                    Description = var.Replace('\n', ' ').Trim();
                     break;
                 default:
                     base.ApplyVar(type, var);
@@ -159,26 +160,26 @@ namespace DenizenIRCBot
             switch (type)
             {
                 case "name":
-                    Name = var.Replace('\n', ' ');
+                    Name = var.Replace('\n', ' ').Trim();
                     break;
                 case "info":
                 case "syntax":
-                    Info = var.Replace('\n', ' ');
+                    Info = var.Replace('\n', ' ').Trim();
                     break;
                 case "description":
-                    Description = var.Replace('\n', ' ');
+                    Description = var.Replace('\n', ' ').Trim();
                     break;
                 case "author":
-                    Author = var.Replace('\n', ' ');
+                    Author = var.Replace('\n', ' ').Trim();
                     break;
                 case "stable":
-                    Stable = var.Replace('\n', ' ');
+                    Stable = var.Replace('\n', ' ').Trim();
                     break;
                 case "tags":
                     Tags = var.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     break;
                 case "short":
-                    Short = var.Replace('\n', ' ');
+                    Short = var.Replace('\n', ' ').Trim();
                     break;
                 case "reqs":
                 case "required":
@@ -217,18 +218,18 @@ namespace DenizenIRCBot
             {
                 case "name":
                 case "attribute":
-                    Name = var.Replace('\n', ' ');
+                    Name = var.Replace('\n', ' ').Trim();
                     Alt = TagCleanse(Name);
                     break;
                 case "returns":
-                    Returns = var.Replace('\n', ' ');
+                    Returns = var.Replace('\n', ' ').Trim();
                     break;
                 case "mechanism":
-                    Mechanism = var.Replace('\n', ' ');
+                    Mechanism = var.Replace('\n', ' ').Trim();
                     break;
                 case "info":
                 case "description":
-                    Info = var.Replace('\n', ' ');
+                    Info = var.Replace('\n', ' ').Trim();
                     break;
                 default:
                     base.ApplyVar(type, var);
@@ -290,13 +291,13 @@ namespace DenizenIRCBot
             {
                 case "name":
                 case "attribute":
-                    Name = var.Replace('\n', ' ');
+                    Name = var.Replace('\n', ' ').Trim();
                     break;
                 case "object":
-                    Objectd = var.Replace('\n', ' ');
+                    Objectd = var.Replace('\n', ' ').Trim();
                     break;
                 case "input":
-                    Input = var.Replace('\n', ' ');
+                    Input = var.Replace('\n', ' ').Trim();
                     break;
                 case "tag":
                 case "tags":
@@ -304,7 +305,7 @@ namespace DenizenIRCBot
                     break;
                 case "info":
                 case "description":
-                    Description = var.Replace('\n', ' ');
+                    Description = var.Replace('\n', ' ').Trim();
                     break;
                 default:
                     base.ApplyVar(type, var);
@@ -332,16 +333,16 @@ namespace DenizenIRCBot
             {
                 case "name":
                 case "title":
-                    Name = var.Replace('\n', ' ');
+                    Name = var.Replace('\n', ' ').Trim();
                     break;
                 case "script":
                 case "code":
                 case "full":
-                    Code = var.Replace('\n', ' ');
+                    Code = var.Replace('\n', ' ').Trim();
                     break;
                 case "info":
                 case "description":
-                    Description = var.Replace('\n', ' ');
+                    Description = var.Replace('\n', ' ').Trim();
                     break;
                 default:
                     base.ApplyVar(type, var);
@@ -370,7 +371,7 @@ namespace DenizenIRCBot
             switch (type)
             {
                 case "triggers":
-                    Triggers = var.Replace('\n', ' ');
+                    Triggers = var.Replace('\n', ' ').Trim();
                     break;
                 case "determine":
                     Determine = var.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();

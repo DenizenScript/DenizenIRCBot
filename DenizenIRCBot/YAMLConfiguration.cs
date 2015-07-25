@@ -82,7 +82,7 @@ namespace DenizenIRCBot
             }
             catch (Exception ex)
             {
-                Logger.Output(LogType.DEBUG, "Caught exception while reading YAML: " + ex.ToString());
+                Logger.Output(LogType.ERROR, "Caught exception while reading YAML: " + ex.ToString());
             }
             return null;
         }
@@ -112,7 +112,7 @@ namespace DenizenIRCBot
             }
             catch (Exception ex)
             {
-                Logger.Output(LogType.DEBUG, "Caught exception while reading YAML: " + ex.ToString());
+                Logger.Output(LogType.ERROR, "Caught exception while reading YAML: " + ex.ToString());
             }
             return def;
         }
@@ -145,28 +145,30 @@ namespace DenizenIRCBot
                 }
                 if (!obj.ContainsKey(data[i]))
                 {
+                    Logger.Output(LogType.DEBUG, "Missing entry for GetKeys");
                     return new List<string>();
                 }
                 dynamic tobj = obj[data[i]];
                 if (tobj is Dictionary<object, object>)
                 {
-                    List<object> objs = tobj.Keys;
+                    Dictionary<object, object>.KeyCollection objs = tobj.Keys;
                     List<string> toret = new List<string>();
-                    for (int x = 0; x < objs.Count; x++)
+                    foreach (object o in objs)
                     {
-                        toret.Add(objs[i] + "");
+                        toret.Add(o + "");
                     }
                     return toret;
                 }
                 if (!(tobj is Dictionary<string, dynamic> || tobj is Dictionary<string, object>))
                 {
+                    Logger.Output(LogType.DEBUG, "Invalid object type for GetKeys");
                     return new List<string>();
                 }
                 return new List<string>(tobj.Keys);
             }
             catch (Exception ex)
             {
-                Logger.Output(LogType.DEBUG, "Caught exception while reading YAML: " + ex.ToString());
+                Logger.Output(LogType.ERROR, "Caught exception while reading YAML: " + ex.ToString());
             }
             return new List<string>();
         }
@@ -215,7 +217,7 @@ namespace DenizenIRCBot
             }
             catch (Exception ex)
             {
-                Logger.Output(LogType.DEBUG, "Caught exception while reading YAML: " + ex.ToString());
+                Logger.Output(LogType.ERROR, "Caught exception while reading YAML: " + ex.ToString());
             }
             return null;
         }

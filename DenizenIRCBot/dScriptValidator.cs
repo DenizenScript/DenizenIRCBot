@@ -90,7 +90,33 @@ namespace DenizenIRCBot
                     // Note: Nothing required here
                     break;
                 case "entity":
-                    // TODO: Entity required keys
+                    {
+                        if (!script.HasKey(null, "entity_type"))
+                        {
+                            Warn(warnings, WarnType.MINOR, "Missing ENTITY_TYPE key for script '" + scriptname + "'!");
+                        }
+                        List<string> keys = script.GetKeys(null);
+                        foreach (string key in keys)
+                        {
+                            if (key != "entity_type" && key != "type")
+                            {
+                                bool exists = false;
+                                for (int i = 0; i < AllMeta.Mechanisms.Count; i++)
+                                {
+                                    if (AllMeta.Mechanisms[i].Objectd.ToLower() == "dentity"
+                                        && AllMeta.Mechanisms[i].Name.ToLower() == key)
+                                    {
+                                        exists = true;
+                                        break;
+                                    }
+                                }
+                                if (!exists)
+                                {
+                                    Warn(warnings, WarnType.WARNING, "Unrecognized entity mechanism '" + key + "' for " + scriptname);
+                                }
+                            }
+                        }
+                    }
                     break;
                 case "custom":
                     // Note: Nothing required here
@@ -125,33 +151,80 @@ namespace DenizenIRCBot
                     }
                     break;
                 case "procedure":
-                    if (!script.HasKey(null, "script"))
                     {
-                        Warn(warnings, WarnType.ERROR, "Missing SCRIPT key for script '" + scriptname + "'!");
+                        if (!script.HasKey(null, "script"))
+                        {
+                            Warn(warnings, WarnType.ERROR, "Missing SCRIPT key for script '" + scriptname + "'!");
+                        }
+                        List<string> keys = script.GetKeys(null);
+                        for (int i = 0; i < keys.Count; i++)
+                        {
+                            if (script.IsList(keys[i]))
+                            {
+                                List<object> scriptData = script.ReadList(keys[i]);
+                                ReadScriptData(warnings, scriptData, scriptname + "." + keys[i], "");
+                            }
+                        }
                     }
-                    // TODO: Procedure required keys
                     break;
                 case "world":
-                    if (!script.HasKey(null, "events"))
                     {
-                        Warn(warnings, WarnType.ERROR, "Missing EVENTS key for script '" + scriptname + "'!");
+                        if (!script.HasKey(null, "events"))
+                        {
+                            Warn(warnings, WarnType.ERROR, "Missing EVENTS key for script '" + scriptname + "'!");
+                        }
+                        List<string> keys = script.GetKeys(null);
+                        for (int i = 0; i < keys.Count; i++)
+                        {
+                            if (script.IsList(keys[i]))
+                            {
+                                List<object> scriptData = script.ReadList(keys[i]);
+                                ReadScriptData(warnings, scriptData, scriptname + "." + keys[i], "");
+                            }
+                        }
+                        keys = script.GetKeys("events");
+                        for (int i = 0; i < keys.Count; i++)
+                        {
+                            if (script.IsList("events." + keys[i]))
+                            {
+                                ValidateEvent(warnings, keys[i], scriptname + ".events");
+                                List<object> scriptData = script.ReadList("events." + keys[i]);
+                                ReadScriptData(warnings, scriptData, scriptname + ".events." + keys[i], "");
+                            }
+                            else
+                            {
+                                Warn(warnings, WarnType.ERROR, "Invalid EVENTS sub-key '" + keys[i] + "' for " + scriptname);
+                            }
+                        }
                     }
                     break;
                 case "book":
                     // TODO: Book required keys
                     break;
                 case "command":
-                    if (!script.HasKey(null, "script"))
                     {
-                        Warn(warnings, WarnType.ERROR, "Missing SCRIPT key for script '" + scriptname + "'!");
+                        if (!script.HasKey(null, "script"))
+                        {
+                            Warn(warnings, WarnType.ERROR, "Missing SCRIPT key for script '" + scriptname + "'!");
+                        }
+                        // TODO: Command required keys
+                        List<string> keys = script.GetKeys(null);
+                        for (int i = 0; i < keys.Count; i++)
+                        {
+                            if (keys[i].ToLower() != "aliases" && script.IsList(keys[i]))
+                            {
+                                List<object> scriptData = script.ReadList(keys[i]);
+                                ReadScriptData(warnings, scriptData, scriptname + "." + keys[i], "");
+                            }
+                        }
                     }
-                    // TODO: Command required keys
                     break;
                 case "format":
                     if (!script.HasKey(null, "format"))
                     {
                         Warn(warnings, WarnType.ERROR, "Missing FORMAT key for script '" + scriptname + "'!");
                     }
+                    // TODO: Validate format line
                     break;
                 case "inventory":
                     // TODO: Inventory required keys
@@ -172,6 +245,77 @@ namespace DenizenIRCBot
                 default:
                     Warn(warnings, WarnType.ERROR, "Unknown script type '" + script_type + "' for script '" + scriptname + "'!");
                     break;
+            }
+        }
+        
+        public string StripSwitches(List<string> warnings, string evtname, string scriptName, out List<string[]> switches)
+        {
+            string[] dat = evtname.Split(' ');
+            StringBuilder res = new StringBuilder();
+            List<string[]> tswitches = new List<string[]>();
+            foreach (string datum in dat)
+            {
+                if (!datum.Contains(':'))
+                {
+                    res.Append(datum).Append(' ');
+                }
+                else
+                {
+                    tswitches.Add(datum.Split(new char[] { ':' }, 2));
+                }
+            }
+            switches = tswitches;
+            return res.ToString().Trim();
+        }
+
+        public void ValidateEvent(List<string> warnings, string eventname, string scriptName)
+        {
+            if (!eventname.StartsWith("on"))
+            {
+                Warn(warnings, WarnType.ERROR, "Fully invalid event '" + eventname + "', has no 'ON' in it, for " + scriptName);
+                return;
+            }
+            if (eventname.Contains("@"))
+            {
+                Warn(warnings, WarnType.ERROR, "Fully invalid event '" + eventname + "', has 'x@' object notation, for " + scriptName);
+                return;
+            }
+            if (eventname.Contains("<"))
+            {
+                Warn(warnings, WarnType.ERROR, "Fully invalid event '" + eventname + "', has '<...>' tags, for " + scriptName);
+                return;
+            }
+            dEvent matched = null;
+            List<string[]> switches;
+            string evtname = StripSwitches(warnings, eventname, scriptName, out switches);
+            foreach (dEvent evt in AllMeta.Events)
+            {
+                if (evt.Regex != null)
+                {
+                    if (evt.Regex.IsMatch(evtname))
+                    {
+                        matched = evt;
+                        break;
+                    }
+                    else
+                    {
+                        Logger.Output(LogType.DEBUG, "Can't match '" + evtname + "' to " + evt.Regex.ToString() + "!"); // TODO: Remove me
+                    }
+                }
+                else
+                {
+                    // TODO: match somehow?
+                    Logger.Output(LogType.DEBUG, "Event " + evt.Names[0] + " does not have a matcher regex!");
+                }
+            }
+            if (matched == null)
+            {
+                Warn(warnings, WarnType.MINOR, "Unable to recognize event '<<" + eventname
+                    + ">>' (Our system can currently only recognize a small fraction of events, so this does not yet mean much), for " + scriptName);
+            }
+            else
+            {
+                // TODO: Validate switches
             }
         }
 
@@ -260,6 +404,10 @@ namespace DenizenIRCBot
             string cmd = cmddata[0].ToLower();
             cmddata.RemoveAt(0);
             dCommand dcmd = getCmd(cmd);
+            if(cmddata.Contains("{"))
+            {
+                Warn(warnings, WarnType.MINOR, "Braces as raw arguments to a command (old-style block command?) in '<<" + command + ">>' for " + scriptName);
+            }
             if ((cmd == "case" || cmd == "default") && owner.ToLower().StartsWith("choose"))
             {
                 if ((cmd == "case" && cmddata.Count != 1) || (cmd == "default" && cmddata.Count != 0))
