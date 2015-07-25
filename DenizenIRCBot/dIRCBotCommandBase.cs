@@ -50,7 +50,12 @@ namespace DenizenIRCBot
                     break;
                 case "bs":
                 case "botsnack":
-                    // TODO
+                case "snack":
+                    BotsnackCommand(command);
+                    break;
+                case "lasers":
+                case "lzrbms":
+                case "laserbeams":
                     break;
                 case "seen":
                     SeenCommand(command);

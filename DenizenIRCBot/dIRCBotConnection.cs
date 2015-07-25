@@ -336,7 +336,7 @@ namespace DenizenIRCBot
                                                                 }
                                                             }
                                                             webtitle = webtitle.Trim().Replace("Citizens", "Cit.izens").Replace((char)0x01 + "amp", "&");
-                                                            Chat(chan.Name, ColorGeneral + ": Title --> " + ColorHighlightMinor + webtitle.Trim(), 1);
+                                                            Chat(chan.Name, ColorGeneral + "Title --> " + ColorHighlightMinor + webtitle.Trim(), 1);
                                                         }
                                                     }
                                                     catch (Exception ex)
