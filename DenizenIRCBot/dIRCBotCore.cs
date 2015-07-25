@@ -77,6 +77,7 @@ namespace DenizenIRCBot
         public void Init()
         {
             PrepareConfig();
+            LoadMeta(false);
             if (string.IsNullOrEmpty(ServerAddress))
             {
                 Logger.Output(LogType.ERROR, "No address given, quitting.");
@@ -87,7 +88,7 @@ namespace DenizenIRCBot
                 try
                 {
                     ConnectAndRun();
-                    throw new Exception("Somehow escape while loop?");
+                    throw new Exception("Somehow escaped while loop?");
                 }
                 catch (Exception ex)
                 {

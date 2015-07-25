@@ -58,11 +58,27 @@ namespace DenizenIRCBot
             Logger.Output(LogType.DEBUG, "Read BUKKIT meta");
         }
 
+        public void ReadDepenizenB()
+        {
+            DepenizenBLines = ReadMassiveRemoteZipFileButJavaCodeOnly("https://github.com/DenizenScript/Depenizen-For-Bukkit/archive/master.zip").Replace("\r", "").Split('\n');
+            Logger.Output(LogType.DEBUG, "Read Depenizen-For-Bukkit meta");
+        }
+
+        public void ReadDIRCBOT()
+        {
+            DIRCBOTLines = ReadMassiveRemoteZipFileButJavaCodeOnly("https://github.com/DenizenScript/dIRCBot/archive/master.zip").Replace("\r", "").Split('\n');
+            Logger.Output(LogType.DEBUG, "Read dIRCBot meta");
+        }
+
         public bool dmonkey = false;
 
         public string[] CoreLines = null;
 
         public string[] BukkitLines = null;
+
+        public string[] DepenizenBLines = null;
+
+        public string[] DIRCBOTLines = null;
 
         public Object MetaLock = new Object();
 
@@ -75,7 +91,9 @@ namespace DenizenIRCBot
                 BukkitLines = null;
                 Task.Factory.StartNew(() => { ReadCore(); });
                 Task.Factory.StartNew(() => { ReadBukkit(); });
-                while (CoreLines == null || BukkitLines == null)
+                Task.Factory.StartNew(() => { ReadDepenizenB(); });
+                Task.Factory.StartNew(() => { ReadDIRCBOT(); });
+                while (CoreLines == null || BukkitLines == null || DepenizenBLines == null || DIRCBOTLines == null)
                 {
                     Thread.Sleep(16);
                 }
@@ -83,15 +101,21 @@ namespace DenizenIRCBot
                 CoreMeta.LoadFrom(CoreLines);
                 BukkitMeta = new MetaSet();
                 BukkitMeta.LoadFrom(BukkitLines);
+                ExternalMeta = new MetaSet();
+                ExternalMeta.LoadFrom(DepenizenBLines);
+                ExternalMeta.LoadFrom(DIRCBOTLines);
                 AllMeta = new MetaSet();
                 AllMeta.TakeAllFrom(CoreMeta);
                 AllMeta.TakeAllFrom(BukkitMeta);
+                AllMeta.TakeAllFrom(ExternalMeta);
             }
         }
 
         public MetaSet CoreMeta;
 
         public MetaSet BukkitMeta;
+
+        public MetaSet ExternalMeta;
 
         public MetaSet AllMeta;
     }
@@ -154,25 +178,32 @@ namespace DenizenIRCBot
                     {
                         case "action":
                             nobj = new dAction();
+                            Actions.Add((dAction)nobj);
                             break;
                         case "example":
                         case "tutorial":
                             nobj = new dTutorial();
+                            Tutorials.Add((dTutorial)nobj);
                             break;
                         case "mechanism":
                             nobj = new dMechanism();
+                            Mechanisms.Add((dMechanism)nobj);
                             break;
                         case "tag":
                             nobj = new dTag();
+                            Tags.Add((dTag)nobj);
                             break;
                         case "command":
                             nobj = new dCommand();
+                            Commands.Add((dCommand)nobj);
                             break;
                         case "language":
                             nobj = new dLanguage();
+                            Languages.Add((dLanguage)nobj);
                             break;
                         case "event":
                             nobj = new dEvent();
+                            Events.Add((dEvent)nobj);
                             break;
                         case "requirement":
                             break;
