@@ -31,7 +31,28 @@ namespace DenizenIRCBot
 
         public Dictionary<string, dynamic> Data;
 
-        public List<string> ReadList(string path)
+        public bool IsList(string path)
+        {
+            List<object> res = ReadList(path);
+            return res != null && res.Count > 0;
+        }
+
+        public List<string> ReadStringList(string path)
+        {
+            List<object> data = ReadList(path);
+            if (data == null)
+            {
+                return null;
+            }
+            List<string> ndata = new List<string>(data.Count);
+            for (int i = 0; i < data.Count; i++)
+            {
+                ndata.Add(data[i] + "");
+            }
+            return ndata;
+        }
+
+        public List<object> ReadList(string path)
         {
             try
             {
@@ -52,17 +73,12 @@ namespace DenizenIRCBot
                 {
                     return null;
                 }
-                if (obj[data[i]] is List<object>)
+                if (obj[data[i]] is List<dynamic>)
                 {
-                    List<object> objs = (List<object>)obj[data[i]];
-                    List<string> nstr = new List<string>();
-                    for (int x = 0; x < objs.Count; x++)
-                    {
-                        nstr.Add(objs[x] + "");
-                    }
-                    return nstr;
+                    List<dynamic> objs = (List<dynamic>)obj[data[i]];
+                    return objs;
                 }
-                return (List<string>)obj[data[i]];
+                return null;
             }
             catch (Exception ex)
             {

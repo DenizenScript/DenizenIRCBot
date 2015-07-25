@@ -195,7 +195,7 @@ namespace DenizenIRCBot
         {
             lock (SaveLock)
             {
-                List<string> messages = Settings.ReadList("general.messages");
+                List<string> messages = Settings.ReadStringList("general.messages");
                 if (messages == null || messages.Count == 0)
                 {
                     return new List<string>();
@@ -232,7 +232,7 @@ namespace DenizenIRCBot
         {
             lock (SaveLock)
             {
-                List<string> messages = Settings.ReadList("general.messages");
+                List<string> messages = Settings.ReadStringList("general.messages");
                 if (messages == null)
                 {
                     messages = new List<string>();

@@ -62,7 +62,7 @@ namespace DenizenIRCBot
                 {
                     BaseChannels.Add(channel);
                 }
-                Prefixes = Configuration.ReadList("dircbot.prefixes").ToArray();
+                Prefixes = Configuration.ReadStringList("dircbot.prefixes").ToArray();
             }
             catch (Exception ex)
             {
