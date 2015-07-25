@@ -293,6 +293,9 @@ namespace DenizenIRCBot
                 case "object":
                     Objectd = var.Replace('\n', ' ');
                     break;
+                case "input":
+                    Input = var.Replace('\n', ' ');
+                    break;
                 case "tag":
                 case "tags":
                     Tags = var.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -326,7 +329,7 @@ namespace DenizenIRCBot
             switch (type)
             {
                 case "name":
-                case "attribute":
+                case "title":
                     Name = var.Replace('\n', ' ');
                     break;
                 case "script":

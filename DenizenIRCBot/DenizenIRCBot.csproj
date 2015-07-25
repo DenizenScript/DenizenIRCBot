@@ -72,6 +72,7 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="WebclientExtensions.cs" />
     <Compile Include="YAMLConfiguration.cs" />
+    <Compile Include="ZipStorer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

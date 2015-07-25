@@ -216,4 +216,9 @@ namespace DenizenIRCBot
             return webtoirc(text.Replace('§', ((char)0x01)));
         }
     }
+
+    public class IntHolder
+    {
+        public int Value = 0;
+    }
 }

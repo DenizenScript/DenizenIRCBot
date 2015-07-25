@@ -474,7 +474,14 @@ namespace DenizenIRCBot
                 }
                 else
                 {
-                    Logger.Output(LogType.DEBUG, "Sent: " + command.ToUpper() + " " + data);
+                    if (command.ToUpper() != "NS")
+                    {
+                        Logger.Output(LogType.DEBUG, "Sent: " + command.ToUpper() + " " + data);
+                    }
+                    else
+                    {
+                        Logger.Output(LogType.DEBUG, "Sent NS command");
+                    }
                     IRCSocket.Send(UTF8.GetBytes(command.ToUpper() + " " + data + "\n"));
                 }
             }

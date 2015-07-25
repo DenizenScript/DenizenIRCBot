@@ -559,6 +559,7 @@ namespace DenizenIRCBot
                 case "reload":
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
+                        LoadMeta(command.Arguments.Count > 0 && command.Arguments[0].ToLower().Contains("monkey"));
                         // TODO
                     }
                     break;
