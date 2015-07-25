@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DenizenIRCBot
 {
@@ -86,6 +88,8 @@ namespace DenizenIRCBot
 
         Object LaserLock = new Object();
 
+        IntHolder FireTime = new IntHolder();
+
         void LaserbeamsCommand(CommandDetails command)
         {
             lock (LaserLock)
@@ -100,6 +104,24 @@ namespace DenizenIRCBot
                     Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Do I look like a magician?! I can't charge lasers without snacks!");
                     return;
                 }
+                FireTime.Value++;
+                int ftime = FireTime.Value;
+                Task.Factory.StartNew(() =>
+                {
+                    Thread.Sleep((int)(5 * 60 * 1000 * (Utilities.random.NextDouble() / 2 + 0.5)));
+                    lock (LaserLock)
+                    {
+                        if (FireTime.Value == ftime)
+                        {
+                            Chat(command.Channel.Name, ColorGeneral + "UH OH! " + ColorHighlightMinor + "LASER BEAMS OVERCHARGED! " + ColorGeneral + " VOIDING NOW!");
+                            string target = command.Channel.Users[Utilities.random.Next(command.Channel.Users.Count)].Name;
+                            Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + target + ColorGeneral
+                                + " is hit for " + ColorHighlightMajor  + Math.Round(LaserPower * 1000) + ColorGeneral + " damage!");
+                            LasersCharged = false;
+                            FireTime.Value++;
+                        }
+                    }
+                });
                 int count = Utilities.random.Next(4) + 1;
                 LasersCharged = true;
                 LasersChargedAt = DateTime.Now;
@@ -147,6 +169,7 @@ namespace DenizenIRCBot
                         + command.User.Name + ColorGeneral + " fires at himself for " + ColorHighlightMajor + "0" + ColorGeneral + " damage!");
                     return;
                 }
+                FireTime.Value++;
                 string target = command.Arguments[0];
                 if (command.Channel.GetUser(target) == null)
                 {
@@ -158,7 +181,7 @@ namespace DenizenIRCBot
                 if (lpower <= 0)
                 {
                     Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Poo! " + ColorHighlightMajor + hit + ColorGeneral + " is consumed!");
-                    Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + command.User.Name + " just caught fire for some reason!");
+                    Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + command.User.Name + ColorGeneral + " just caught fire for some reason!");
                 }
                 else if (lpower <= 5 && Utilities.random.NextDouble() <= 0.5)
                 {
@@ -170,12 +193,12 @@ namespace DenizenIRCBot
                 else if (lpower <= 5)
                 {
                     Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Pew! " + ColorHighlightMajor + hit + ColorGeneral + " is consumed!");
-                    Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + target + " is hit by a small but painful beam!");
+                    Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + target + ColorGeneral + " is hit by a small but painful beam!");
                 }
                 else if (lpower <= 10)
                 {
                     Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Pew! Pew Pew! " + ColorHighlightMajor + hit + ColorGeneral + " is consumed!");
-                    Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + target + " is hit by a deadly beam!");
+                    Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + target + ColorGeneral + " is hit by a deadly beam!");
                 }
                 else
                 {
@@ -183,7 +206,7 @@ namespace DenizenIRCBot
                     string pew2 = ColorHighlightMajor + "P" + ColorHighlightMinor + "E" + ColorGeneral + "W" + ColorHighlightMajor + "! ";
                     string pew3 = ColorHighlightMinor + "P" + ColorGeneral + "E" + ColorHighlightMajor + "W" + ColorHighlightMinor + "! ";
                     Chat(command.Channel.Name, command.Pinger + ColorGeneral + pew + pew2 + pew3 + ColorHighlightMajor + hit + ColorGeneral + " is consumed!");
-                    Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + target + " is entirely obliterated! Hit for " + Math.Round(lpower * 1000) + " damage!");
+                    Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor + target + ColorGeneral + " is entirely obliterated! Hit for " + Math.Round(lpower * 1000) + " damage!");
                 }
             }
         }
