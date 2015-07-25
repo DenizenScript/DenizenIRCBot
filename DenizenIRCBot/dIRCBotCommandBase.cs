@@ -56,6 +56,12 @@ namespace DenizenIRCBot
                 case "lasers":
                 case "lzrbms":
                 case "laserbeams":
+                    LaserbeamsCommand(command);
+                    break;
+                case "fire":
+                case "fiyar":
+                case "fiar":
+                    FireCommand(command);
                     break;
                 case "seen":
                     SeenCommand(command);

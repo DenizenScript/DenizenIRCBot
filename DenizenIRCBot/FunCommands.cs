@@ -18,12 +18,15 @@ namespace DenizenIRCBot
                 Chat(command.Channel.Name, command.Pinger + ColorGeneral + "That command is written " + ColorHighlightMajor + Prefixes[0] + command.Name + " <food item>");
                 return;
             }
-            if (RecentSnacks.Count > 30)
-            {
-                RecentSnacks.RemoveAt(0);
-            }
             BotSnack snack = new BotSnack();
-            RecentSnacks.Add(snack);
+            lock (LaserLock)
+            {
+                if (RecentSnacks.Count > 30)
+                {
+                    RecentSnacks.RemoveAt(0);
+                }
+                RecentSnacks.Add(snack);
+            }
             snack.Giver = command.User.Name;
             snack.TimeGiven = DateTime.Now;
             snack.Target = command.Arguments[0];
@@ -56,6 +59,68 @@ namespace DenizenIRCBot
             else
             {
                 Chat(command.Channel.Name, command.Pinger + ColorGeneral + "WOW THAT " + ColorHighlightMajor + snack.Target + ColorGeneral + " WAS THE BEST SNACK I'VE EVER HAD!");
+            }
+        }
+
+        DateTime LasersChargedAt = DateTime.Now;
+
+        List<BotSnack> LaserFood = new List<BotSnack>();
+
+        double LaserPower = 0;
+
+        bool LasersCharged = false;
+
+        Object LaserLock = new Object();
+
+        void LaserbeamsCommand(CommandDetails command)
+        {
+            lock (LaserLock)
+            {
+                if (LasersCharged)
+                {
+                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Pew! ... Just kidding, I won't charge my lasers twice, unless you want something to explode :o");
+                    return;
+                }
+                if (RecentSnacks.Count < 4)
+                {
+                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Do I look like a magician?! I can't charge lasers without snacks!");
+                    return;
+                }
+                int count = Utilities.random.Next(4) + 1;
+                LasersCharged = true;
+                LaserFood = new List<BotSnack>();
+                LaserPower = 0;
+                for (int i = 0; i < count; i++)
+                {
+                    int choice = Utilities.random.Next(RecentSnacks.Count);
+                    BotSnack food = RecentSnacks[choice];
+                    RecentSnacks.RemoveAt(choice);
+                    LaserFood.Add(food);
+                    LaserPower += food.Deliciousness;
+                }
+                if (LaserPower <= 0)
+                {
+                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Lasers are now charged as good as they'll ever be.");
+                }
+                else if (LaserPower <= 5)
+                {
+                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Mini-beam charging, as ordered!");
+                }
+                else if (LaserPower <= 10)
+                {
+                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Laser-beam charging, as ordered!");
+                }
+                else
+                {
+                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Just hypothetically speaking, what would you say if I were to, oh I don't know, charge 5 laser beams at once?");
+                }
+            }
+        }
+
+        void FireCommand(CommandDetails command)
+        {
+            lock (LaserLock)
+            {
             }
         }
     }
