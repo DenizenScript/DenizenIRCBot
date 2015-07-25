@@ -7,6 +7,8 @@ namespace DenizenIRCBot
 {
     public abstract class dObject
     {
+        public string FileName = "";
+
         public string Group = "Ungrouped";
 
         public string Plugin = "";
@@ -39,7 +41,7 @@ namespace DenizenIRCBot
                     Deprecated = var.Replace('\n', ' ');
                     break;
                 default:
-                    Logger.Output(LogType.ERROR, "Invalid var type: " + type);
+                    Logger.Output(LogType.ERROR, "Invalid var type: " + type + " in " + FileName);
                     break;
             }
         }

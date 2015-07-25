@@ -52,13 +52,17 @@ namespace DenizenIRCBot
             Logger.Output(LogType.DEBUG, "Read CORE meta");
         }
 
-        public void ReaddBukkit()
+        public void ReadBukkit()
         {
+            BukkitLines = ReadMassiveRemoteZipFileButJavaCodeOnly("https://github.com/" + (dmonkey ? "mcmonkey4eva/Denizen" : "DenizenScript/Denizen-For-Bukkit") + "/archive/master.zip").Replace("\r", "").Split('\n');
+            Logger.Output(LogType.DEBUG, "Read BUKKIT meta");
         }
 
         public bool dmonkey = false;
 
         public string[] CoreLines = null;
+
+        public string[] BukkitLines = null;
 
         public Object MetaLock = new Object();
 
@@ -68,31 +72,70 @@ namespace DenizenIRCBot
             {
                 dmonkey = monkey_repo;
                 CoreLines = null;
+                BukkitLines = null;
                 Task.Factory.StartNew(() => { ReadCore(); });
-                while (CoreLines == null)
+                Task.Factory.StartNew(() => { ReadBukkit(); });
+                while (CoreLines == null || BukkitLines == null)
                 {
                     Thread.Sleep(16);
                 }
                 CoreMeta = new MetaSet();
                 CoreMeta.LoadFrom(CoreLines);
+                BukkitMeta = new MetaSet();
+                BukkitMeta.LoadFrom(BukkitLines);
                 AllMeta = new MetaSet();
+                AllMeta.TakeAllFrom(CoreMeta);
+                AllMeta.TakeAllFrom(BukkitMeta);
             }
         }
 
         public MetaSet CoreMeta;
+
+        public MetaSet BukkitMeta;
 
         public MetaSet AllMeta;
     }
 
     public class MetaSet
     {
+        public void TakeAllFrom(MetaSet set)
+        {
+            Objects.AddRange(set.Objects);
+            Actions.AddRange(set.Actions);
+            Tutorials.AddRange(set.Tutorials);
+            Mechanisms.AddRange(set.Mechanisms);
+            Tags.AddRange(set.Tags);
+            Commands.AddRange(set.Commands);
+            Languages.AddRange(set.Languages);
+            Events.AddRange(set.Events);
+        }
+        
         public List<dObject> Objects = new List<dObject>();
+
+        public List<dAction> Actions = new List<dAction>();
+
+        public List<dTutorial> Tutorials = new List<dTutorial>();
+
+        public List<dMechanism> Mechanisms = new List<dMechanism>();
+
+        public List<dTag> Tags = new List<dTag>();
+
+        public List<dCommand> Commands = new List<dCommand>();
+
+        public List<dLanguage> Languages =  new List<dLanguage>();
+
+        public List<dEvent> Events = new List<dEvent>();
 
         public void LoadFrom(string[] lines)
         {
+            string fname = "UNKNOWN";
             for (int i = 0; i < lines.Length; i++)
             {
                 string cline = lines[i].Trim();
+                if (cline.StartsWith("/<FILE:"))
+                {
+                    fname = cline.Substring("/<FILE:".Length);
+                }
                 if (!cline.StartsWith("//"))
                 {
                     continue;
@@ -131,14 +174,17 @@ namespace DenizenIRCBot
                         case "event":
                             nobj = new dEvent();
                             break;
+                        case "requirement":
+                            break;
                         default:
-                            Logger.Output(LogType.ERROR, "Unknown object type " + objtype);
+                            Logger.Output(LogType.ERROR, "Unknown object type " + objtype + " in " + fname);
                             break;
                     }
                     if (nobj == null)
                     {
                         continue;
                     }
+                    nobj.FileName = fname;
                     Objects.Add(nobj);
                     i++;
                     while (i < lines.Length)
@@ -146,7 +192,7 @@ namespace DenizenIRCBot
                         cline = lines[i].Trim();
                         if (!cline.StartsWith("//"))
                         {
-                            Logger.Output(LogType.ERROR, "Found line <<" + cline + ">> in the middle of an object declaration!");
+                            Logger.Output(LogType.ERROR, "Found line <<" + cline + ">> in the middle of an object declaration in " + fname);
                             i++;
                             continue;
                         }
@@ -161,7 +207,7 @@ namespace DenizenIRCBot
                         }
                         if (!cline.StartsWith("@"))
                         {
-                            Logger.Output(LogType.ERROR, "Found line '// " + cline + "' in the middle of an object declaration!");
+                            Logger.Output(LogType.ERROR, "Found line '// " + cline + "' in the middle of an object declaration in " + fname);
                             i++;
                             continue;
                         }
