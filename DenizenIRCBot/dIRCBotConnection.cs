@@ -106,7 +106,7 @@ namespace DenizenIRCBot
                         {
                             case "ping": // Respond to server-given PING's
                                 {
-                                    SendCommand("pong", data.Count > 0 ? data[1] : null);
+                                    SendCommand("PONG", data.Count > 0 ? data[1] : null);
                                 }
                                 break;
                             case "433": // Nickname In Use
@@ -170,7 +170,7 @@ namespace DenizenIRCBot
                                             Logger.Output(LogType.DEBUG, "Recognizing join of " + newuser.Name + " into " + chan.Name);
                                             if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greet", "false").StartsWith("t"))
                                             {
-                                                foreach (string msg in Configuration.ReadList("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greeting"))
+                                                foreach (string msg in Configuration.ReadStringList("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greeting"))
                                                 {
                                                     Notice(newuser.Name, msg.Replace("<BASE>", ColorGeneral).Replace("<MAJOR>", ColorHighlightMajor).Replace("<MINOR>", ColorHighlightMinor));
                                                 }
@@ -277,6 +277,14 @@ namespace DenizenIRCBot
                                     data[1] = data[1].Substring(1);
                                     string privmsg = Utilities.Concat(data, 1);
                                     Logger.Output(LogType.INFO, "User " + user + " spoke in channel " + channel + ", saying " + privmsg);
+                                    if (privmsg == actionchr + "VERSION" + actionchr)
+                                    {
+                                        Notice(user.Substring(0, user.IndexOf('!')), actionchr.ToString() + "VERSION " + Configuration.Read("dircbot.version", "DenizenBot vMisconfigured") + actionchr.ToString());
+                                    }
+                                    else if (privmsg.StartsWith(actionchr + "PING "))
+                                    {
+                                        Notice(user.Substring(0, user.IndexOf('!')), privmsg);
+                                    }
                                     IRCChannel chan = null;
                                     foreach (IRCChannel chann in Channels)
                                     {
