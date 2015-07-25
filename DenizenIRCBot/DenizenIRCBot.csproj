@@ -57,6 +57,7 @@
     <Compile Include="dIRCBotConnection.cs" />
     <Compile Include="dIRCBotCore.cs" />
     <Compile Include="dScriptValidator.cs" />
+    <Compile Include="FunCommands.cs" />
     <Compile Include="IRCChannel.cs" />
     <Compile Include="IRCUser.cs" />
     <Compile Include="Logger.cs" />
