@@ -195,7 +195,6 @@ namespace DenizenIRCBot
                                     {
                                         if (channel == chan.Name)
                                         {
-                                            chan.Users.Clear();
                                             chan.Users.Add(new IRCUser(Name + "!" + Name + "@"));
                                             foreach (string usr in users)
                                             {

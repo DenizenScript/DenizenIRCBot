@@ -187,7 +187,7 @@ namespace DenizenIRCBot
                 {
                     Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Pew! " + ColorHighlightMajor + hit + ColorGeneral + " is consumed!");
                     Chat(command.Channel.Name, ColorGeneral + "Wow! " + ColorHighlightMajor
-                        + command.Channel.Users[Utilities.random.Next(command.Channel.Users.Count)].Name
+                        + command.Channel.Users[Utilities.random.Next(command.Channel.Users.Count)].Name + ColorGeneral
                         + " is hit by a small but painful beam!");
                 }
                 else if (lpower <= 5)

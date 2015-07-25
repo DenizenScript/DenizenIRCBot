@@ -571,7 +571,21 @@ namespace DenizenIRCBot
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
                         LoadMeta(command.Arguments.Count > 0 && command.Arguments[0].ToLower().Contains("monkey"));
-                        // TODO
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "I have reloaded the source files and now have "
+                            + ColorHighlightMajor + AllMeta.Commands.Count + ColorGeneral + " commands (" + ExternalMeta.Commands.Count + " external, "
+                            + CoreMeta.Commands.Count + " core), "
+                            + ColorHighlightMajor + AllMeta.Events.Count + ColorGeneral + " events (" + ExternalMeta.Events.Count + " external, "
+                            + CoreMeta.Events.Count + " core), "
+                            + ColorHighlightMajor + AllMeta.Tags.Count + ColorGeneral + " tags (" + ExternalMeta.Tags.Count + " external, "
+                            + CoreMeta.Tags.Count + " core), "
+                            + ColorHighlightMajor + AllMeta.Mechanisms.Count + ColorGeneral + " mechanisms (" + ExternalMeta.Mechanisms.Count + " external, "
+                            + CoreMeta.Mechanisms.Count + " core), "
+                            + ColorHighlightMajor + AllMeta.Tutorials.Count + ColorGeneral + " tutorials (" + ExternalMeta.Tutorials.Count + " external, "
+                            + CoreMeta.Tutorials.Count + " core), "
+                            + ColorHighlightMajor + AllMeta.Languages.Count + ColorGeneral + " language infos (" + ExternalMeta.Languages.Count + " external, "
+                            + CoreMeta.Languages.Count + " core), "
+                            + ColorHighlightMajor + AllMeta.Actions.Count + ColorGeneral + " actions (" + ExternalMeta.Actions.Count + " external, "
+                            + CoreMeta.Actions.Count + " core) all loaded!");
                     }
                     break;
                 case "quotes":
@@ -581,7 +595,8 @@ namespace DenizenIRCBot
                     // TODO
                     break;
                 case "readlogs":
-                    if (!command.User.OP)
+                    if (!command.User.OP
+                        || !Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".admin", "false").StartsWith("t"))
                     {
                         Chat(command.Channel.Name, ColorGeneral + "You can't do that!");
                     }
@@ -591,7 +606,8 @@ namespace DenizenIRCBot
                     }
                     break;
                 case "debugtoggle":
-                    if (!command.User.OP)
+                    if (!command.User.OP
+                        || !Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".admin", "false").StartsWith("t"))
                     {
                         Chat(command.Channel.Name, ColorGeneral + "You can't do that!");
                     }
