@@ -8,6 +8,8 @@ namespace DenizenIRCBot
 {
     public abstract class dObject
     {
+        public string BasicName = "";
+
         public string FileName = "";
 
         public string Group = "Ungrouped";
@@ -44,6 +46,34 @@ namespace DenizenIRCBot
                 default:
                     Logger.Output(LogType.ERROR, "Invalid var type: " + type + " in " + FileName);
                     break;
+            }
+        }
+
+        public virtual void ShowToChannel(dIRCBot bot, CommandDetails command)
+        {
+            if (!string.IsNullOrEmpty(Group))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + ":: In group: " + bot.ColorHighlightMajor + Group, 1);
+            }
+            if (!string.IsNullOrEmpty(Plugin))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + ":: Requires the plugin(s): " + bot.ColorHighlightMajor + Plugin, 1);
+            }
+            if (!string.IsNullOrEmpty(Warning))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + ":: WARNING: " + bot.ColorHighlightMajor + Warning, 2);
+            }
+            if (!string.IsNullOrEmpty(Deprecated))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + ":: DEPRECATED: " + bot.ColorHighlightMajor + Deprecated, 2);
+            }
+            if (!string.IsNullOrEmpty(Video))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + ":: Video on the subject:" + bot.ColorLink + " " + Video, 1);
+            }
+            if (command.Arguments.Count >= 2 && command.Arguments[1].ToLower().StartsWith("f"))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + ":: Found in internal file: " + FileName, 2);
             }
         }
     }
@@ -91,6 +121,7 @@ namespace DenizenIRCBot
                 case "events":
                 case "names":
                     Names = var.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    BasicName = Names[0];
                     break;
                 case "switch":
                     Switches.Add(var);
@@ -119,6 +150,7 @@ namespace DenizenIRCBot
             {
                 case "name":
                     Name = var.Replace('\n', ' ').Trim();
+                    BasicName = Name;
                     break;
                 case "description":
                     Description = var.Replace('\n', ' ').Trim();
@@ -161,13 +193,14 @@ namespace DenizenIRCBot
             {
                 case "name":
                     Name = var.Replace('\n', ' ').Trim();
+                    BasicName = Name;
                     break;
                 case "info":
                 case "syntax":
                     Info = var.Replace('\n', ' ').Trim();
                     break;
                 case "description":
-                    Description = var.Replace('\n', ' ').Trim();
+                    Description = var.Replace('\n', ' ').Trim(); // TODO: Multiline?
                     break;
                 case "author":
                     Author = var.Replace('\n', ' ').Trim();
@@ -192,6 +225,61 @@ namespace DenizenIRCBot
                     base.ApplyVar(type, var);
                     break;
             }
+        }
+
+        public override void ShowToChannel(dIRCBot bot, CommandDetails command)
+        {
+            bot.Chat(command.Channel.Name, command.Pinger + bot.ColorGeneral + "Found: " + bot.ColorHighlightMajor + Name + ": " + Short, 2);
+            bot.Chat(command.Channel.Name, bot.ColorGeneral + "Syntax: " + bot.ColorHighlightMajor + Info, 2); // TODO Highlight correctly!
+            string arg = command.Arguments.Count >= 2 ? command.Arguments[1].ToLower() : "";
+            if (arg.StartsWith("a"))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + "Author: " + bot.ColorHighlightMajor + Author, 1);
+            }
+            if (arg.StartsWith("d"))
+            {
+                if (bot.Chat(command.Channel.Name, bot.ColorGeneral + "Description: " + bot.ColorHighlightMajor + Description, 3) == 0)
+                {
+                    bot.Chat(command.Channel.Name, bot.ColorGeneral + "And more..." + bot.ColorLink + " http://mcmonkey.org/denizen/cmds" + Name);
+                }
+            }
+            if (arg.StartsWith("s"))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + "Stability: " + bot.ColorHighlightMajor + Stable, 1);
+            }
+            if (arg.StartsWith("r"))
+            {
+                bot.Chat(command.Channel.Name, bot.ColorGeneral + "Required Arguments: " + bot.ColorHighlightMajor + Reqs, 1);
+            }
+            if (arg.StartsWith("t"))
+            {
+                int limit = 5;
+                foreach (string str in Tags)
+                {
+                    // TODO: Dig up tag help short description
+                    limit = bot.Chat(command.Channel.Name, bot.ColorGeneral + "Tag: " + str, limit);
+                }
+                if (limit == 0)
+                {
+                    bot.Chat(command.Channel.Name, bot.ColorGeneral + "And more..." + bot.ColorLink + " http://mcmonkey.org/denizen/cmds" + Name);
+                }
+            }
+            if (arg.StartsWith("u"))
+            {
+                int limit = 5;
+                foreach (string str in Usage)
+                {
+                    foreach (string use in str.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        limit = bot.Chat(command.Channel.Name, bot.ColorGeneral + "Usage: " + use, limit);
+                    }
+                }
+                if (limit == 0)
+                {
+                    bot.Chat(command.Channel.Name, bot.ColorGeneral + "And more..." + bot.ColorLink + " http://mcmonkey.org/denizen/cmds" + Name);
+                }
+            }
+            base.ShowToChannel(bot, command);
         }
     }
 
@@ -220,6 +308,7 @@ namespace DenizenIRCBot
                 case "attribute":
                     Name = var.Replace('\n', ' ').Trim();
                     Alt = TagCleanse(Name);
+                    BasicName = Name;
                     break;
                 case "returns":
                     Returns = var.Replace('\n', ' ').Trim();
@@ -292,6 +381,7 @@ namespace DenizenIRCBot
                 case "name":
                 case "attribute":
                     Name = var.Replace('\n', ' ').Trim();
+                    BasicName = Name;
                     break;
                 case "object":
                     Objectd = var.Replace('\n', ' ').Trim();
@@ -334,6 +424,7 @@ namespace DenizenIRCBot
                 case "name":
                 case "title":
                     Name = var.Replace('\n', ' ').Trim();
+                    BasicName = Name;
                     break;
                 case "script":
                 case "code":
@@ -381,6 +472,7 @@ namespace DenizenIRCBot
                 case "action":
                 case "actions":
                     Names = var.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    BasicName = Names[0];
                     break;
                 case "context":
                     Context = var.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();

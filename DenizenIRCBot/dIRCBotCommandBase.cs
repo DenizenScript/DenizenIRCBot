@@ -132,7 +132,7 @@ namespace DenizenIRCBot
                 case "c":
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
-                        // TODO
+                        CmdCommand(command);
                     }
                     break;
                 case "evt":

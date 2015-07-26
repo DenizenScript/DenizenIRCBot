@@ -64,6 +64,7 @@
     <Compile Include="IRCUser.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MessagingCommands.cs" />
+    <Compile Include="MetaCommands.cs" />
     <Compile Include="MetaObjects.cs" />
     <Compile Include="MetaReadingEngine.cs" />
     <Compile Include="MinecraftCommands.cs" />
