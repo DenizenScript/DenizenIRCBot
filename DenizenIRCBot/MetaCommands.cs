@@ -7,7 +7,7 @@ namespace DenizenIRCBot
 {
     public partial class dIRCBot
     {
-        bool MetaCommandIntro<T>(CommandDetails command, string type, string shorttype, List<T> aobjects, List<T> cobjects, List<T> xobjects, List<T> bobjects, bool autoSearch) where T : dObject
+        bool MetaCommandIntro<T>(CommandDetails command, string type, string shorttype, List<T> aobjects, List<T> cobjects, List<T> xobjects, List<T> bobjects, bool autoSearch, bool allowList) where T : dObject
         {
             if (command.Arguments.Count < 1)
             {
@@ -23,7 +23,14 @@ namespace DenizenIRCBot
             }
             if (arg == "list")
             {
-                ListdObject(command, cobjects, xobjects, bobjects, type);
+                if (!allowList)
+                {
+                    return true;
+                }
+                else
+                {
+                    ListdObject(command, cobjects, xobjects, bobjects, type);
+                }
                 return false;
             }
             if (autoSearch)
@@ -79,26 +86,59 @@ namespace DenizenIRCBot
             {
                 sb.Append(obj.BasicName).Append(' ');
             }
-            Chat(command.Channel.Name, command.Pinger + ColorGeneral + sb.ToString(), 5);
+            int limit = Chat(command.Channel.Name, command.Pinger + ColorGeneral + sb.ToString(), 7);
             sb = new StringBuilder();
             sb.Append("Bukkit " + objecttype + "s: ");
             foreach (T obj in bobjects)
             {
                 sb.Append(obj.BasicName).Append(' ');
             }
-            Chat(command.Channel.Name, command.Pinger + ColorGeneral + sb.ToString(), 5);
+            limit = Chat(command.Channel.Name, command.Pinger + ColorGeneral + sb.ToString(), limit);
             sb = new StringBuilder();
             sb.Append("External " + objecttype + "s: ");
             foreach (T obj in xobjects)
             {
                 sb.Append(obj.BasicName).Append(' ');
             }
-            Chat(command.Channel.Name, command.Pinger + ColorGeneral + sb.ToString(), 5);
+            limit = Chat(command.Channel.Name, command.Pinger + ColorGeneral + sb.ToString(), limit);
         }
         
         void CmdCommand(CommandDetails command)
         {
-            if (!MetaCommandIntro(command, "command", "cmds", AllMeta.Commands, CoreMeta.Commands, ExternalMeta.Commands, BukkitMeta.Commands, true))
+            if (!MetaCommandIntro(command, "command", "cmds", AllMeta.Commands, CoreMeta.Commands, ExternalMeta.Commands, BukkitMeta.Commands, true, true))
+            {
+                return;
+            }
+        }
+
+        void TagCommand(CommandDetails command)
+        {
+            if (!MetaCommandIntro(command, "tag", "tags", AllMeta.Tags, CoreMeta.Tags, ExternalMeta.Tags, BukkitMeta.Tags, true, false))
+            {
+                return;
+            }
+            // TODO: Advanced tag search
+        }
+
+        void MechCommand(CommandDetails command)
+        {
+            if (!MetaCommandIntro(command, "mechanism", "mecs", AllMeta.Mechanisms, CoreMeta.Mechanisms, ExternalMeta.Mechanisms, BukkitMeta.Mechanisms, true, false))
+            {
+                return;
+            }
+        }
+
+        void LangCommand(CommandDetails command)
+        {
+            if (!MetaCommandIntro(command, "language explanation", "lngs", AllMeta.Languages, CoreMeta.Languages, ExternalMeta.Languages, BukkitMeta.Languages, true, true))
+            {
+                return;
+            }
+        }
+
+        void TutCommand(CommandDetails command)
+        {
+            if (!MetaCommandIntro(command, "tutorial", "tuts", AllMeta.Tutorials, CoreMeta.Tutorials, ExternalMeta.Tutorials, BukkitMeta.Tutorials, true, true))
             {
                 return;
             }

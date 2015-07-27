@@ -153,7 +153,7 @@ namespace DenizenIRCBot
                 case "mechanisms":
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
-                        // TODO
+                        MechCommand(command);
                     }
                     break;
                 case "language":
@@ -172,7 +172,7 @@ namespace DenizenIRCBot
                 case "lingo":
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
-                        // TODO
+                        LangCommand(command);
                     }
                     break;
                 case "tutorial":
@@ -189,7 +189,7 @@ namespace DenizenIRCBot
                 case "examps":
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
-                        // TODO
+                        TutCommand(command);
                     }
                     break;
                 case "tag":
@@ -197,7 +197,7 @@ namespace DenizenIRCBot
                 case "t":
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t"))
                     {
-                        // TODO
+                        TagCommand(command);
                     }
                     break;
                 case "vid":
