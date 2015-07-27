@@ -229,6 +229,7 @@ namespace DenizenIRCBot
                                     }
                                 }
                                 break;
+                                // TODO: Kick
                             case "quit": // Someone left the server
                                 {
                                     IRCUser quitter = new IRCUser(user);

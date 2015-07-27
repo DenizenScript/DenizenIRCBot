@@ -28,9 +28,9 @@ namespace DenizenIRCBot
                 case "url":
                 case "greet":
                     {
-                    Chat(command.Channel.Name, command.Pinger + ColorGeneral +
-                        "Hello! I am a bot designed to assist with Denizen Scripting! I have a website too, at" +
-                        ColorLink + " http://mcmonkey.org/logs " + ColorGeneral + "!");
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral +
+                            "Hello! I am a bot designed to assist with Denizen Scripting! I have a website too, at" +
+                            ColorLink + " http://mcmonkey.org/logs " + ColorGeneral + "!");
                     }
                     break;
                 case "delay":
@@ -43,42 +43,58 @@ namespace DenizenIRCBot
                     }
                     break;
                 case "regex":
-                    // TODO
+                    {
+                        // TODO
+                    }
                     break;
                 case "regexvalue":
-                    // TODO
+                    {
+                        // TODO
+                    }
                     break;
                 case "bs":
                 case "botsnack":
                 case "snack":
-                    BotsnackCommand(command);
+                    {
+                        BotsnackCommand(command);
+                    }
                     break;
                 case "lasers":
                 case "lzrbms":
                 case "laserbeams":
-                    LaserbeamsCommand(command);
+                    {
+                        LaserbeamsCommand(command);
+                    }
                     break;
                 case "fire":
                 case "fiyar":
                 case "fiar":
-                    FireCommand(command);
+                    {
+                        FireCommand(command);
+                    }
                     break;
                 case "seen":
-                    SeenCommand(command);
+                    {
+                        SeenCommand(command);
+                    }
                     break;
                 case "recent":
                 case "recentseen":
                 case "seenrecently":
                 case "recently":
                 case "recentlyseen":
-                    RecentCommand(command);
+                    {
+                        RecentCommand(command);
+                    }
                     break;
                 case "msg":
                 case "send":
                 case "tell":
                 case "mail":
                 case "message":
-                    MessageCommand(command);
+                    {
+                        MessageCommand(command);
+                    }
                     break;
                 case "remind":
                 case "rem":
@@ -86,7 +102,9 @@ namespace DenizenIRCBot
                 case "tellmelater":
                 case "delayedmsg":
                 case "delayedmessage":
-                    ReminderCommand(command);
+                    {
+                        ReminderCommand(command);
+                    }
                     break;
                 case "ts":
                 case "ts3":
@@ -120,7 +138,7 @@ namespace DenizenIRCBot
                             cmddet.Arguments.RemoveAt(0);
                             cmddet.Pinger = command.Pinger;
                             cmddet.User = command.User;
-                            cmddet.Channel= command.Channel;
+                            cmddet.Channel = command.Channel;
                             TryCommand(cmddet);
                         }
                     }
@@ -241,7 +259,18 @@ namespace DenizenIRCBot
                 case "mathematics":
                 case "calculate":
                 case "calc":
-                    // TODO
+                    {
+                        // TODO
+                    }
+                    break;
+                case "wolfram":
+                case "advancedmath":
+                case "wolframalpha":
+                case "alpha":
+                case "wa":
+                    {
+                        // TODO
+                    }
                     break;
                 case "repository":
                 case "repo":
@@ -379,7 +408,9 @@ namespace DenizenIRCBot
                 case "pastie":
                 case "pastee":
                 case "paste":
-                    // TODO
+                    {
+                        // TODO
+                    }
                     break;
                 case "debug":
                 case "db":
@@ -559,6 +590,14 @@ namespace DenizenIRCBot
                 case "mcping":
                     {
                         MCPingCommand(command);
+                    }
+                    break;
+                case "mojang":
+                case "mojangstatus":
+                case "mcstatus":
+                case "minecraftstatus":
+                    {
+                        // TODO
                     }
                     break;
                 case "d":
