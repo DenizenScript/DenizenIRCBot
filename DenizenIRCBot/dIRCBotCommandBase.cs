@@ -479,6 +479,12 @@ namespace DenizenIRCBot
                         }
                     }
                     break;
+                case "ipstalk":
+                    if (command.User.OP && Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".admin", "false").StartsWith("t"))
+                    {
+                        IPStalkCommand(command);
+                    }
+                    break;
                 case "log":
                 case "logs":
                     if (Configuration.Read("dircbot.irc.channels." + command.Channel.Name.Replace("#", "") + ".has_log_page", "false").StartsWith("t"))

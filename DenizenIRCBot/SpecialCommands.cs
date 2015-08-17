@@ -45,8 +45,8 @@ namespace DenizenIRCBot
                                         {
                                             data = data.Replace(C_S_COLOR + Utilities.FormatNumber(x), "");
                                         }
-                                        string[] splits = data.Split(new char[] { ' ' }, 4);
-                                        if (splits.Length == 4 && !splits[2].Contains("*"))
+                                        string[] splits = data.Replace(" AM", "").Replace(" PM", "").Split(new char[] { ' ' }, 4);
+                                        if (splits.Length == 4)
                                         {
                                             string[] date = splits[0].Split('/');
                                             string[] time = splits[1].Split(':');
@@ -54,7 +54,7 @@ namespace DenizenIRCBot
                                             {
                                                 Logger.Output(LogType.DEBUG, "Found " + splits[1] + " instead of a 3-length timestamp");
                                             }
-                                            else
+                                            else if (splits[2].StartsWith("<") && splits[2].EndsWith(">") && !splits[3].StartsWith("*"))
                                             {
                                                 string name = splits[2].Substring(1, splits[2].Length - 2);
                                                 string message = splits[3];
@@ -73,6 +73,13 @@ namespace DenizenIRCBot
                                                 ch = ch.Substring(ch.LastIndexOf('/') + 1);
                                                 user.SetSeen("in #" + ch + ", saying " + message, dt);
                                             }
+                                            else if (splits[2] == "*" && splits[3].EndsWith(") joined."))
+                                            {
+                                                int ind = splits[3].IndexOf(' ');
+                                                string name = splits[3].Substring(0, ind);
+                                                string ip = splits[3].Substring(ind + 1, ((splits[3].Length - ") joined.".Length) - ind) - 1);
+                                                SeenUser(name, ip, false);
+                                            }
                                         }
                                     }
                                 }
@@ -85,6 +92,8 @@ namespace DenizenIRCBot
                     }
                 }
             }
+            saveSeenList();
+            Chat("#monkeybot", ColorGeneral + "Finished reading log files.");
         }
     }
 }

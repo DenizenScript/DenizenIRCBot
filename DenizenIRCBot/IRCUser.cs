@@ -16,7 +16,8 @@ namespace DenizenIRCBot
                 .Replace('!', '_').Replace('#', '_').Replace('$', '_').Replace('%', '_').Replace('^', '_')
                 .Replace('&', '_').Replace('*', '_').Replace('(', '_').Replace(')', '_').Replace('+', '_')
                 .Replace('=', '_').Replace('[', '_').Replace(']', '_').Replace('{', '_').Replace('}', '_')
-                .Replace('<', '_').Replace('>', '_').Replace(',', '_').Replace('/', '_').Replace('\\', '_') + ".yml";
+                .Replace('<', '_').Replace('>', '_').Replace(',', '_').Replace('/', '_').Replace('\\', '_')
+                .Replace(':', '_').Replace(';', '_').Replace('\'', '_').Replace('\"', '_')+ ".yml";
         }
 
         public string GetFileName()
@@ -63,7 +64,7 @@ namespace DenizenIRCBot
                     }
                     catch (Exception ex)
                     {
-                        Logger.Output(LogType.ERROR, "Loading settings for " + fileName + ": " + ex.ToString());
+                        Logger.Output(LogType.ERROR, "Loading settings for " + fileName + "(" + mask + ") : " + ex.ToString());
                     }
                     if (Settings == null)
                     {
@@ -257,7 +258,7 @@ namespace DenizenIRCBot
             }
             catch (Exception ex)
             {
-                Logger.Output(LogType.ERROR, "Saving settings for " + fileName + ": " + ex.ToString());
+                Logger.Output(LogType.ERROR, "Saving settings for " + fileName + "(" + OriginalMask + ") : " + ex.ToString());
             }
         }
 

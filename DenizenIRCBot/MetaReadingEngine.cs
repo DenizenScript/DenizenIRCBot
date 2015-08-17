@@ -22,7 +22,7 @@ namespace DenizenIRCBot
             }
             catch (Exception ex)
             {
-                Logger.Output(LogType.ERROR, "Failed to read MassiveRemoteZip: " + ex.ToString());
+                Logger.Output(LogType.ERROR, "Failed to read MassiveRemoteZip: " + ex.ToString() + " for " + url);
                 return "";
             }
             wc.Dispose();

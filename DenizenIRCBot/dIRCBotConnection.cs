@@ -140,6 +140,10 @@ namespace DenizenIRCBot
                                 break;
                             case "332": // Topic for channel
                                 {
+                                    foreach (string achannel in BaseChannels)
+                                    {
+                                        SendCommand("JOIN", "#" + achannel);
+                                    }
                                     string channel = data[1].ToLower();
                                     string topic = Utilities.Concat(data, 2).Substring(1);
                                     Logger.Output(LogType.INFO, "Topic for channel: " + channel);
@@ -166,6 +170,7 @@ namespace DenizenIRCBot
                                         if (channel == chan.Name)
                                         {
                                             IRCUser newuser = new IRCUser(user);
+                                            SeenUser(newuser.Name, newuser.IP);
                                             chan.Users.Add(newuser);
                                             Logger.Output(LogType.DEBUG, "Recognizing join of " + newuser.Name + " into " + chan.Name);
                                             if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greet", "false").StartsWith("t"))
@@ -262,6 +267,7 @@ namespace DenizenIRCBot
                                             if (chan.Users[i].Name.ToLower() == name)
                                             {
                                                 Logger.Output(LogType.DEBUG, "Recognizing rename of " + chan.Users[i].Name + " to " + nicknew);
+                                                SeenUser(nicknew, renamer.IP);
                                                 IRCUser theusr = chan.Users[i];
                                                 chan.Users.RemoveAt(i--);
                                                 chan.Users.Add(new IRCUser(nicknew + "!" + theusr.Ident + "@" + theusr.IP) { Voice = theusr.Voice, OP = theusr.OP, EverHadVoice = theusr.EverHadVoice });
