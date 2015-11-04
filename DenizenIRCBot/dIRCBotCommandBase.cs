@@ -272,6 +272,18 @@ namespace DenizenIRCBot
                         // TODO
                     }
                     break;
+                case "rate":
+                case "ratelimit":
+                    {
+                        RateLimitCommand(command);
+                    }
+                    break;
+                case "git":
+                case "github":
+                    {
+                        GitHubCommand(command);
+                    }
+                    break;
                 case "repository":
                 case "repo":
                 case "repos":

@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -58,8 +59,13 @@
     <Compile Include="dIRCBotCommandBase.cs" />
     <Compile Include="dIRCBotConnection.cs" />
     <Compile Include="dIRCBotCore.cs" />
+    <Compile Include="GitHubEngine.cs" />
     <Compile Include="dScriptValidator.cs" />
     <Compile Include="FunCommands.cs" />
+    <Compile Include="GitHub\GitHubClient.cs" />
+    <Compile Include="GitHub\Json\RateLimit.cs" />
+    <Compile Include="GitHub\Json\Repository.cs" />
+    <Compile Include="GitHub\RepositoryManager.cs" />
     <Compile Include="IRCChannel.cs" />
     <Compile Include="IRCUser.cs" />
     <Compile Include="Logger.cs" />

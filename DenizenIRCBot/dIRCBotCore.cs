@@ -78,6 +78,7 @@ namespace DenizenIRCBot
         {
             PrepareConfig();
             LoadMeta(false);
+            InitGitHub();
             if (string.IsNullOrEmpty(ServerAddress))
             {
                 Logger.Output(LogType.ERROR, "No address given, quitting.");
