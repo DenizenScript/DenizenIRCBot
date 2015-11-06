@@ -4,23 +4,38 @@ using System.Linq;
 using System.Text;
 using DenizenIRCBot.GitHub;
 using DenizenIRCBot.GitHub.Json;
+using System.IO;
 
 namespace DenizenIRCBot
 {
     public partial class dIRCBot
     {
         public GitHubClient GitHub;
+        public YAMLConfiguration GitHubConfig;
 
         void InitGitHub()
         {
-            GitHub = new GitHubClient() { ClientToken = Configuration.Read("dircbot.github.token", "") };
-            GitHub.FetchRateLimit();
-            foreach (string author in Configuration.Data["dircbot"]["github"]["repositories"].Keys)
+            try
             {
-                foreach (string repository in Configuration.Data["dircbot"]["github"]["repositories"][author].Keys)
+                GitHub = new GitHubClient() { ClientToken = Configuration.Read("dircbot.github.token", "") };
+                GitHubConfig = new YAMLConfiguration(File.ReadAllText("data/repositories.yml"));
+                GitHub.FetchRateLimit();
+                foreach (string author in GitHubConfig.GetKeys(null))
                 {
-                    GitHub.WatchRepository(author + "/" + repository);
+                    foreach (string repository in GitHubConfig.GetKeys(author))
+                    {
+                        YAMLConfiguration repoConfig = GitHubConfig.GetConfigurationSection(author + "." + repository);
+                        bool hasIssues = repoConfig.Read("has_issues", "false").StartsWith("t");
+                        bool hasComments = repoConfig.Read("has_comments", "false").StartsWith("t");
+                        bool hasPulls = repoConfig.Read("has_pulls", "false").StartsWith("t");
+                        GitHub.WatchRepository(author + "/" + repository, hasIssues, hasComments, hasPulls);
+                    }
                 }
+                GitHub.StartWatching();
+            }
+            catch (Exception ex)
+            {
+                Logger.Output(LogType.ERROR, "Failed to initialize GitHubEngine: " + ex.Message);
             }
         }
         

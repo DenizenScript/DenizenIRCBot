@@ -79,6 +79,7 @@ namespace DenizenIRCBot
             PrepareConfig();
             LoadMeta(false);
             InitGitHub();
+            Bitly.Init(Configuration.Read("dircbot.bitly.main", ""), Configuration.Read("dircbot.bitly.backup", ""));
             if (string.IsNullOrEmpty(ServerAddress))
             {
                 Logger.Output(LogType.ERROR, "No address given, quitting.");

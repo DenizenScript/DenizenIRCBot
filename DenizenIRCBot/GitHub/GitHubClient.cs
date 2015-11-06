@@ -19,16 +19,10 @@ namespace DenizenIRCBot.GitHub
 
         public void FetchRateLimit()
         {
-            RateLimit = GetObjectFromResponse<RateLimit>(Request("rate_limit"));
+            RateLimit = Utilities.GetObjectFromWebResponse<RateLimit>(Request("rate_limit"));
         }
 
-        public T GetObjectFromResponse<T>(HttpWebResponse response)
-        {
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
-            return (T)ser.ReadObject(response.GetResponseStream());
-        }
-
-        public HttpWebResponse Request(string path)
+        public HttpWebResponse Request(string path, Dictionary<string, string> headers = null)
         {
             HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(GITHUB_URL + path);
             wr.ContentType = "application/json";
@@ -36,6 +30,13 @@ namespace DenizenIRCBot.GitHub
             wr.Method = "GET";
             wr.UserAgent = "DenizenBot";
             wr.Headers.Add("Authorization", "token " + ClientToken);
+            if (headers != null)
+            {
+                foreach (string key in headers.Keys)
+                {
+                    wr.Headers.Add(key, headers[key]);
+                }
+            }
             return (HttpWebResponse)wr.GetResponse();
         }
     }

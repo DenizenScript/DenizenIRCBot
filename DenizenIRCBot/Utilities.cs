@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Runtime.Serialization.Json;
 using System.Text;
 
 namespace DenizenIRCBot
@@ -267,6 +269,12 @@ namespace DenizenIRCBot
             // our last action in the above loop was to switch d and p, so p now
             // actually has the most recent cost counts
             return p[n];
+        }
+
+        public static T GetObjectFromWebResponse<T>(HttpWebResponse response)
+        {
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+            return (T)ser.ReadObject(response.GetResponseStream());
         }
     }
 

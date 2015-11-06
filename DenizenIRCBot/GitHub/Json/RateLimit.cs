@@ -36,21 +36,20 @@ namespace DenizenIRCBot.GitHub.Json
 
         [DataMember]
         Resources resources;
+
         [DataContract]
         class Resources
         {
-            [DataMember]
-            public Core core;
-            [DataContract]
-            public class Core
-            {
-                [DataMember]
-                public int limit;
-                [DataMember]
-                public int remaining;
-                [DataMember]
-                public int reset;
-            }
+            [DataMember] public Data core;
+            [DataMember] public Data search;
+        }
+
+        [DataContract]
+        class Data
+        {
+            [DataMember] public int limit;
+            [DataMember] public int remaining;
+            [DataMember] public int reset;
         }
     }
 }

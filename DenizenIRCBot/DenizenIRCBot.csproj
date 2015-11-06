@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bitly.cs" />
     <Compile Include="CommandDetails.cs" />
     <Compile Include="dIRCBotColors.cs" />
     <Compile Include="dIRCBotCommandBase.cs" />
@@ -63,6 +64,10 @@
     <Compile Include="dScriptValidator.cs" />
     <Compile Include="FunCommands.cs" />
     <Compile Include="GitHub\GitHubClient.cs" />
+    <Compile Include="GitHub\Json\Event.cs" />
+    <Compile Include="GitHub\Json\Payload\CommitCommentPayload.cs" />
+    <Compile Include="GitHub\Json\Payload\IssuesPayload.cs" />
+    <Compile Include="GitHub\Json\Payload\PushEventPayload.cs" />
     <Compile Include="GitHub\Json\RateLimit.cs" />
     <Compile Include="GitHub\Json\Repository.cs" />
     <Compile Include="GitHub\RepositoryManager.cs" />
