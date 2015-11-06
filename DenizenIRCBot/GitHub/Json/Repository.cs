@@ -13,6 +13,7 @@ namespace DenizenIRCBot.GitHub.Json
     {
 
         public GitHubClient GitHub;
+        public dIRCBot Bot;
 
         string LastEventId;
         Dictionary<string, string> Conditional;
@@ -33,7 +34,10 @@ namespace DenizenIRCBot.GitHub.Json
                 string[] strings = ParseEventInfo(currEvent);
                 foreach (string message in strings)
                 {
-                    dIRCBot.CurrentInstance.Chat("#denizen-dev", message);
+                    foreach (string chan in Bot.AnnounceGitChannels)
+                    {
+                        Bot.Chat(chan, message);
+                    }
                 }
             }
             AnnounceCommits();
@@ -91,13 +95,12 @@ namespace DenizenIRCBot.GitHub.Json
                             return new string[0];
                         }
                         IssuesPayload payload = new IssuesPayload(parse);
-                        dIRCBot b = dIRCBot.CurrentInstance;
                         return new string[]
                         {
-                            b.ColorGeneral + "[" + b.ColorHighlightMinor + parse.Repo.name + b.ColorGeneral + "] "
-                                    + b.ColorHighlightMajor + parse.Actor.login + b.ColorGeneral + " " + payload.Action + " an issue: "
-                                    + b.ColorHighlightMajor + payload.Title + b.ColorGeneral + " (" + b.ColorHighlightMajor + payload.Number
-                                    + b.ColorGeneral + ") --" + b.ColorLink  + " " + payload.ShortUrl
+                            Bot.ColorGeneral + "[" + Bot.ColorHighlightMinor + parse.Repo.name + Bot.ColorGeneral + "] "
+                                    + Bot.ColorHighlightMajor + parse.Actor.login + Bot.ColorGeneral + " " + payload.Action + " an issue: "
+                                    + Bot.ColorHighlightMajor + payload.Title + Bot.ColorGeneral + " (" + Bot.ColorHighlightMajor + payload.Number
+                                    + Bot.ColorGeneral + ") --" + Bot.ColorLink  + " " + payload.ShortUrl
                         };
                     }
                 case "IssueCommentEvent":
@@ -107,13 +110,12 @@ namespace DenizenIRCBot.GitHub.Json
                             return new string[0];
                         }
                         IssuesPayload payload = new IssuesPayload(parse);
-                        dIRCBot b = dIRCBot.CurrentInstance;
                         return new string[]
                         {
-                            b.ColorGeneral + "[" + b.ColorHighlightMinor + parse.Repo.name + b.ColorGeneral + "] "
-                                    + b.ColorHighlightMajor + parse.Actor.login + b.ColorGeneral + " commented on an issue: "
-                                    + b.ColorHighlightMajor + payload.Title + b.ColorGeneral + " (" + b.ColorHighlightMajor + payload.Number
-                                    + b.ColorGeneral + ") --" + b.ColorLink  + " " + payload.ShortUrl
+                            Bot.ColorGeneral + "[" + Bot.ColorHighlightMinor + parse.Repo.name + Bot.ColorGeneral + "] "
+                                    + Bot.ColorHighlightMajor + parse.Actor.login + Bot.ColorGeneral + " commented on an issue: "
+                                    + Bot.ColorHighlightMajor + payload.Title + Bot.ColorGeneral + " (" + Bot.ColorHighlightMajor + payload.Number
+                                    + Bot.ColorGeneral + ") --" + Bot.ColorLink  + " " + payload.ShortUrl
                         };
                     }
                 case "PullRequestEvent":
@@ -123,13 +125,12 @@ namespace DenizenIRCBot.GitHub.Json
                             return new string[0];
                         }
                         IssuesPayload payload = new IssuesPayload(parse);
-                        dIRCBot b = dIRCBot.CurrentInstance;
                         return new string[]
                         {
-                            b.ColorGeneral + "[" + b.ColorHighlightMinor + parse.Repo.name + b.ColorGeneral + "] "
-                                    + b.ColorHighlightMajor + parse.Actor.login + b.ColorGeneral + " " + payload.Action + " a pull request: "
-                                    + b.ColorHighlightMajor + payload.Title + b.ColorGeneral + " (" + b.ColorHighlightMajor + payload.Number
-                                    + b.ColorGeneral + ") --" + b.ColorLink  + " " + payload.ShortUrl
+                            Bot.ColorGeneral + "[" + Bot.ColorHighlightMinor + parse.Repo.name + Bot.ColorGeneral + "] "
+                                    + Bot.ColorHighlightMajor + parse.Actor.login + Bot.ColorGeneral + " " + payload.Action + " a pull request: "
+                                    + Bot.ColorHighlightMajor + payload.Title + Bot.ColorGeneral + " (" + Bot.ColorHighlightMajor + payload.Number
+                                    + Bot.ColorGeneral + ") --" + Bot.ColorLink  + " " + payload.ShortUrl
                         };
                     }
                 case "PullRequestReviewCommentEvent":
@@ -139,13 +140,12 @@ namespace DenizenIRCBot.GitHub.Json
                             return new string[0];
                         }
                         IssuesPayload payload = new IssuesPayload(parse);
-                        dIRCBot b = dIRCBot.CurrentInstance;
                         return new string[]
                         {
-                            b.ColorGeneral + "[" + b.ColorHighlightMinor + parse.Repo.name + b.ColorGeneral + "] "
-                                    + b.ColorHighlightMajor + parse.Actor.login + b.ColorGeneral + " commented on a pull request: "
-                                    + b.ColorHighlightMajor + payload.Title + b.ColorGeneral + " (" + b.ColorHighlightMajor + payload.Number
-                                    + b.ColorGeneral + ") --" + b.ColorLink  + " " + payload.ShortUrl
+                            Bot.ColorGeneral + "[" + Bot.ColorHighlightMinor + parse.Repo.name + Bot.ColorGeneral + "] "
+                                    + Bot.ColorHighlightMajor + parse.Actor.login + Bot.ColorGeneral + " commented on a pull request: "
+                                    + Bot.ColorHighlightMajor + payload.Title + Bot.ColorGeneral + " (" + Bot.ColorHighlightMajor + payload.Number
+                                    + Bot.ColorGeneral + ") --" + Bot.ColorLink  + " " + payload.ShortUrl
                         };
                     }
                 case "CommitCommentEvent":
@@ -155,12 +155,11 @@ namespace DenizenIRCBot.GitHub.Json
                             return new string[0];
                         }
                         CommitCommentPayload payload = new CommitCommentPayload(parse);
-                        dIRCBot b = dIRCBot.CurrentInstance;
                         return new string[]
                         {
-                            b.ColorGeneral + "[" + b.ColorHighlightMinor + parse.Repo.name + b.ColorGeneral + "] "
-                                    + b.ColorHighlightMajor + parse.Actor.login + b.ColorGeneral + " commented on a commit: "
-                                    + b.ColorHighlightMajor + payload.CommitId + b.ColorGeneral + " --" + b.ColorLink  + " " + payload.ShortUrl
+                            Bot.ColorGeneral + "[" + Bot.ColorHighlightMinor + parse.Repo.name + Bot.ColorGeneral + "] "
+                                    + Bot.ColorHighlightMajor + parse.Actor.login + Bot.ColorGeneral + " commented on a commit: "
+                                    + Bot.ColorHighlightMajor + payload.CommitId + Bot.ColorGeneral + " --" + Bot.ColorLink  + " " + payload.ShortUrl
                         };
                     }
                 case "PushEvent":
@@ -183,7 +182,6 @@ namespace DenizenIRCBot.GitHub.Json
 
         private void AnnounceCommits()
         {
-            dIRCBot b = dIRCBot.CurrentInstance;
             foreach (string Ref in WaitingCommits.Keys)
             {
                 List<string> authors = new List<string>();
@@ -193,8 +191,8 @@ namespace DenizenIRCBot.GitHub.Json
                 foreach (Event.SimplifiedCommit commit in commits)
                 {
                     string author = commit.author.name;
-                    lines[l] = "  " + b.ColorHighlightMajor + author + b.ColorGeneral + ": " + commit.message.Replace("\n", " - ")
-                        + " --" + b.ColorLink + " " + commit.ShortUrl;
+                    lines[l] = "  " + Bot.ColorHighlightMajor + author + Bot.ColorGeneral + ": " + commit.message.Replace("\n", " - ")
+                        + " --" + Bot.ColorLink + " " + commit.ShortUrl;
                     if (!authors.Contains(author))
                     {
                         authors.Add(author);
@@ -203,12 +201,15 @@ namespace DenizenIRCBot.GitHub.Json
                 }
                 string authorMsg = authors[0] + (authors.Count > 2 ? " and " + (authors.Count - 1) + " others"
                     : authors.Count > 1 ? " and " + authors[1] : "");
-                lines[0] = b.ColorGeneral + "[" + b.ColorHighlightMinor + FullName + b.ColorGeneral + "] "
-                    + b.ColorHighlightMajor + authorMsg + b.ColorGeneral + " pushed " + commits.Count + " commits to '"
-                    + b.ColorHighlightMinor + Ref + "' branch";
+                lines[0] = Bot.ColorGeneral + "[" + Bot.ColorHighlightMinor + FullName + Bot.ColorGeneral + "] "
+                    + Bot.ColorHighlightMajor + authorMsg + Bot.ColorGeneral + " pushed " + commits.Count + " commits to '"
+                    + Bot.ColorHighlightMinor + Ref + Bot.ColorGeneral + "' branch";
                 foreach (string line in lines)
                 {
-                    b.Chat("#denizen-dev", line);
+                    foreach (string chan in Bot.AnnounceGitChannels)
+                    {
+                        Bot.Chat(chan, line);
+                    }
                 }
             }
             WaitingCommits.Clear();

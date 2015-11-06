@@ -13,6 +13,7 @@ namespace DenizenIRCBot.GitHub
 
         public static readonly string GITHUB_URL = "https://api.github.com/";
 
+        public dIRCBot Bot;
         public string ClientToken;
 
         public RateLimit RateLimit;

@@ -12,13 +12,22 @@ namespace DenizenIRCBot
     {
         public GitHubClient GitHub;
         public YAMLConfiguration GitHubConfig;
+        public List<string> AnnounceGitChannels;
 
         void InitGitHub()
         {
             try
             {
-                GitHub = new GitHubClient() { ClientToken = Configuration.Read("dircbot.github.token", "") };
+                GitHub = new GitHubClient() { Bot = this, ClientToken = Configuration.Read("dircbot.github.token", "") };
                 GitHubConfig = new YAMLConfiguration(File.ReadAllText("data/repositories.yml"));
+                AnnounceGitChannels = new List<string>();
+                foreach (IRCChannel chan in Channels)
+                {
+                    if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".announce_github", "false").StartsWith("t"))
+                    {
+                        AnnounceGitChannels.Add(chan.Name);
+                    }
+                }
                 GitHub.FetchRateLimit();
                 foreach (string author in GitHubConfig.GetKeys(null))
                 {

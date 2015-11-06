@@ -40,10 +40,11 @@ namespace DenizenIRCBot.GitHub
                 return;
             }
             repository.GitHub = this;
+            repository.Bot = Bot;
             repository.HasIssues = hasIssues;
             repository.HasComments = hasComments;
             repository.HasPulls = hasPulls;
-            // TODO: moar stuff!
+            // TODO: moar stuff?
             repository.InitEvents();
 
         }

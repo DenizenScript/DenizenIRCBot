@@ -12,10 +12,6 @@ namespace DenizenIRCBot
 {
     public partial class dIRCBot
     {
-        /// <summary>
-        /// The current instance of the bot.
-        /// </summary>
-        public static dIRCBot CurrentInstance;
 
         /// <summary>
         /// The server address connected to.
@@ -46,7 +42,6 @@ namespace DenizenIRCBot
         /// </summary>
         void ConnectAndRun()
         {
-            CurrentInstance = this;
             Logger.Output(LogType.INFO, "Connecting to " + ServerAddress + ":" + ServerPort + " as user " + Name + "...");
             IRCSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IRCSocket.Connect(ServerAddress, ServerPort);
