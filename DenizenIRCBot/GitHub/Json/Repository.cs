@@ -195,7 +195,7 @@ namespace DenizenIRCBot.GitHub.Json
                     string author = commit.author.name;
                     lines[l] = "  " + b.ColorHighlightMajor + author + b.ColorGeneral + ": " + commit.message.Replace("\n", " - ")
                         + " --" + b.ColorLink + " " + commit.ShortUrl;
-                    if (!author.Contains(author))
+                    if (!authors.Contains(author))
                     {
                         authors.Add(author);
                     }
