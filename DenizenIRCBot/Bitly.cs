@@ -63,12 +63,12 @@ namespace DenizenIRCBot
         [DataContract]
         private class BitlyResponse
         {
-            [DataMember] public Data data;
+            [DataMember] public Data data = null;
 
             [DataContract]
             public class Data
             {
-                [DataMember] public String url;
+                [DataMember] public string url = null;
             }
         }
     }

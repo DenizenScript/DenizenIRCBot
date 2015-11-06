@@ -335,16 +335,16 @@ namespace DenizenIRCBot.GitHub.Json
         private bool FetchComments;
         private bool FetchPulls;
 
-        [DataMember] string name;
-        [DataMember] string full_name;
-        [DataMember] string html_url;
-        [DataMember] string url;
-        [DataMember] string issues_url;
-        [DataMember] string pulls_url;
-        [DataMember] string commits_url;
-        [DataMember] string events_url;
-        [DataMember] Repository parent;
-        [DataMember] bool fork;
-        [DataMember] bool has_issues;
+        [DataMember] string name = null;
+        [DataMember] string full_name = null;
+        [DataMember] string html_url = null;
+        [DataMember] string url = null;
+        [DataMember] string issues_url = null;
+        [DataMember] string pulls_url = null;
+        [DataMember] string commits_url = null;
+        [DataMember] string events_url = null;
+        [DataMember] Repository parent = null;
+        [DataMember] bool fork = false;
+        [DataMember] bool has_issues = false;
     }
 }

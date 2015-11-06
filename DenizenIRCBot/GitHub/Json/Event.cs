@@ -49,12 +49,12 @@ namespace DenizenIRCBot.GitHub.Json
             }
         }
 
-        [DataMember] string id;
-        [DataMember] string type;
-        [DataMember] SimplifiedUser actor;
-        [DataMember] SimplifiedRepository repo;
-        [DataMember] string created_at;
-        [DataMember] Load payload;
+        [DataMember] string id = null;
+        [DataMember] string type = null;
+        [DataMember] SimplifiedUser actor = null;
+        [DataMember] SimplifiedRepository repo = null;
+        [DataMember] string created_at = null;
+        [DataMember] Load payload = null;
 
         public Load Payload
         {
@@ -67,12 +67,13 @@ namespace DenizenIRCBot.GitHub.Json
         [DataContract]
         public class Load
         {
-            [DataMember] public string action;
-            [DataMember] public SimplifiedIssue issue;
-            [DataMember] public SimplifiedIssue pull_request;
-            [DataMember] public SimplifiedComment comment;
-            [DataMember(Name = "ref")] public string _ref;
-            [DataMember] public List<SimplifiedCommit> commits;
+            // TODO: Consistency -> Make these private or others public!
+            [DataMember] public string action = null;
+            [DataMember] public SimplifiedIssue issue = null;
+            [DataMember] public SimplifiedIssue pull_request = null;
+            [DataMember] public SimplifiedComment comment = null;
+            [DataMember(Name = "ref")] public string _ref = null;
+            [DataMember] public List<SimplifiedCommit> commits = null;
         }
 
         [DataContract]
