@@ -14,22 +14,22 @@ namespace DenizenIRCBot
             if (string.IsNullOrEmpty(input))
             {
                 Logger.Output(LogType.DEBUG, "Empty YAML config");
-                Data = new Dictionary<string, dynamic>();
+                Data = new Dictionary<object, object>();
             }
             else
             {
                 Deserializer des = new Deserializer();
-                Data = des.Deserialize<Dictionary<string, dynamic>>(new StringReader(input));
+                Data = des.Deserialize<Dictionary<object, object>>(new StringReader(input));
                 Logger.Output(LogType.DEBUG, "YAML Config with " + Data.Keys.Count + " root keys");
             }
         }
 
-        public YAMLConfiguration(Dictionary<string, dynamic> datas)
+        public YAMLConfiguration(Dictionary<object, object> datas)
         {
             Data = datas;
         }
 
-        public Dictionary<string, dynamic> Data;
+        public Dictionary<object, object> Data;
 
         public bool IsList(string path)
         {
@@ -62,7 +62,7 @@ namespace DenizenIRCBot
                 while (i < data.Length - 1)
                 {
                     dynamic nobj = obj.ContainsKey(data[i]) ? obj[data[i]] : null;
-                    if (nobj == null || !(nobj is Dictionary<string, dynamic> || nobj is Dictionary<string, object> || nobj is Dictionary<object, object>))
+                    if (nobj == null || !(nobj is Dictionary<object, object>))
                     {
                         return null;
                     }
@@ -73,9 +73,9 @@ namespace DenizenIRCBot
                 {
                     return null;
                 }
-                if (obj[data[i]] is List<dynamic>)
+                if (obj[data[i]] is List<object>)
                 {
-                    List<dynamic> objs = (List<dynamic>)obj[data[i]];
+                    List<object> objs = (List<object>)obj[data[i]];
                     return objs;
                 }
                 return null;
@@ -93,22 +93,23 @@ namespace DenizenIRCBot
             {
                 string[] data = path.Split('.');
                 int i = 0;
-                dynamic obj = Data;
+                object obj = Data;
                 while (i < data.Length - 1)
                 {
-                    dynamic nobj = obj.ContainsKey(data[i]) ? obj[data[i]] : null;
-                    if (nobj == null || !(nobj is Dictionary<string, dynamic> || nobj is Dictionary<string, object> || nobj is Dictionary<object, object>))
+                    // TODO: TryGetValue?
+                    object nobj = ((Dictionary<object, object>)obj).ContainsKey(data[i]) ? ((Dictionary<object, object>)obj)[data[i]] : null;
+                    if (nobj == null || !(nobj is Dictionary<object, object>))
                     {
                         return def;
                     }
                     obj = nobj;
                     i++;
                 }
-                if (!obj.ContainsKey(data[i]))
+                if (!((Dictionary<object, object>)obj).ContainsKey(data[i]))
                 {
                     return def;
                 }
-                return obj[data[i]].ToString();
+                return ((Dictionary<object, object>)obj)[data[i]].ToString();
             }
             catch (Exception ex)
             {
@@ -128,30 +129,35 @@ namespace DenizenIRCBot
             {
                 if (string.IsNullOrEmpty(path))
                 {
-                    return new List<string>(Data.Keys);
+                    List<string> atemp = new List<string>();
+                    foreach (object xtobj in Data.Keys)
+                    {
+                        atemp.Add(xtobj + "");
+                    }
+                    return atemp;
                 }
                 string[] data = path.Split('.');
                 int i = 0;
-                dynamic obj = Data;
+                object obj = Data;
                 while (i < data.Length - 1)
                 {
-                    dynamic nobj = obj.ContainsKey(data[i]) ? obj[data[i]] : null;
-                    if (nobj == null || !(nobj is Dictionary<string, dynamic> || nobj is Dictionary<string, object> || nobj is Dictionary<object, object>))
+                    dynamic nobj = ((Dictionary<object, object>)obj).ContainsKey(data[i]) ? ((Dictionary<object, object>)obj)[data[i]] : null;
+                    if (nobj == null || !(nobj is Dictionary<object, object>))
                     {
                         return new List<string>();
                     }
                     obj = nobj;
                     i++;
                 }
-                if (!obj.ContainsKey(data[i]))
+                if (!((Dictionary<object, object>)obj).ContainsKey(data[i]))
                 {
                     Logger.Output(LogType.DEBUG, "Missing entry for GetKeys");
                     return new List<string>();
                 }
-                dynamic tobj = obj[data[i]];
+                object tobj = ((Dictionary<object, object>)obj)[data[i]];
                 if (tobj is Dictionary<object, object>)
                 {
-                    Dictionary<object, object>.KeyCollection objs = tobj.Keys;
+                    Dictionary<object, object>.KeyCollection objs = ((Dictionary<object, object>)tobj).Keys;
                     List<string> toret = new List<string>();
                     foreach (object o in objs)
                     {
@@ -164,7 +170,12 @@ namespace DenizenIRCBot
                     Logger.Output(LogType.DEBUG, "Invalid object type for GetKeys");
                     return new List<string>();
                 }
-                return new List<string>(tobj.Keys);
+                List<string> temp = new List<string>();
+                foreach (object xtobj in ((Dictionary<object, object>)tobj).Keys)
+                {
+                    temp.Add(xtobj + "");
+                }
+                return temp;
             }
             catch (Exception ex)
             {
@@ -183,37 +194,28 @@ namespace DenizenIRCBot
                 }
                 string[] data = path.Split('.');
                 int i = 0;
-                dynamic obj = Data;
+                object obj = Data;
                 while (i < data.Length - 1)
                 {
-                    dynamic nobj = obj.ContainsKey(data[i]) ? obj[data[i]] : null;
-                    if (nobj == null || !(nobj is Dictionary<string, dynamic> || nobj is Dictionary<string, object> || nobj is Dictionary<object, object>))
+                    // TODO: TryGetValue?
+                    object nobj = ((Dictionary<object, object>)obj).ContainsKey(data[i]) ? ((Dictionary<object, object>)obj)[data[i]] : null;
+                    if (nobj == null || !(nobj is Dictionary<object, object>))
                     {
                         return null;
                     }
                     obj = nobj;
                     i++;
                 }
-                if (!obj.ContainsKey(data[i]))
+                if (!((Dictionary<object, object>)obj).ContainsKey(data[i]))
                 {
                     return null;
                 }
-                dynamic tobj = obj[data[i]];
-                if (tobj is Dictionary<object, object>)
-                {
-                    Dictionary<object, object> dict = (Dictionary<object, object>)tobj;
-                    Dictionary<string, object> ndict = new Dictionary<string, object>();
-                    foreach (object fobj in dict.Keys)
-                    {
-                        ndict.Add(fobj + "", dict[fobj]);
-                    }
-                    return new YAMLConfiguration(ndict);
-                }
-                if (!(tobj is Dictionary<string, dynamic> || tobj is Dictionary<string, object>))
+                object tobj = ((Dictionary<object, object>)obj)[data[i]];
+                if (!(tobj is Dictionary<object, object>))
                 {
                     return null;
                 }
-                return new YAMLConfiguration(tobj);
+                return new YAMLConfiguration((Dictionary<object, object>)tobj);
             }
             catch (Exception ex)
             {
@@ -226,25 +228,25 @@ namespace DenizenIRCBot
         {
             string[] data = path.Split('.');
             int i = 0;
-            dynamic obj = Data;
+            object obj = Data;
             while (i < data.Length - 1)
             {
-                dynamic nobj = obj.ContainsKey(data[i]) ? obj[data[i]] : null;
-                if (nobj == null || !(nobj is Dictionary<string, dynamic> || nobj is Dictionary<string, object> || nobj is Dictionary<object, object>))
+                dynamic nobj = ((Dictionary<object, object>)obj).ContainsKey(data[i]) ? ((Dictionary<object, object>)obj)[data[i]] : null;
+                if (nobj == null || !(nobj is Dictionary<object, object>))
                 {
                     nobj = new Dictionary<dynamic, dynamic>();
-                    obj[data[i]] = nobj;
+                    ((Dictionary<object, object>)obj)[data[i]] = nobj;
                 }
                 obj = nobj;
                 i++;
             }
             if (val == null)
             {
-                obj.Remove(data[i]);
+                ((Dictionary<object, object>)obj).Remove(data[i]);
             }
             else
             {
-                obj[data[i]] = val;
+                ((Dictionary<object, object>)obj)[data[i]] = val;
             }
         }
 

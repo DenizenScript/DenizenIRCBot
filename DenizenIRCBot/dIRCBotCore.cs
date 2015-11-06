@@ -58,7 +58,7 @@ namespace DenizenIRCBot
                 ServerPort = Utilities.StringToUShort(Configuration.Read("dircbot.irc.port", ""));
                 Name = Configuration.Read("dircbot.irc.username", "");
                 BaseChannels.Clear();
-                foreach (string channel in Configuration.Data["dircbot"]["irc"]["channels"].Keys) // TODO: GetKeys()
+                foreach (string channel in Configuration.GetKeys("dircbot.irc.channels"))
                 {
                     BaseChannels.Add(channel);
                 }
