@@ -368,7 +368,7 @@ namespace DenizenIRCBot
                                         Logger.Output(LogType.INFO, "Null user sent message to channel!");
                                         break;
                                     }
-                                    if (String.IsNullOrEmpty(iuser.IP))
+                                    if (string.IsNullOrEmpty(iuser.IP))
                                     {
                                         iuser.ParseMask(user);
                                     }
@@ -434,7 +434,7 @@ namespace DenizenIRCBot
                                                 }
                                             }
                                         }
-                                        Task.Factory.StartNew(() =>
+                                        new Task(() =>
                                         {
                                             try
                                             {
@@ -448,7 +448,7 @@ namespace DenizenIRCBot
                                                 }
                                                 Logger.Output(LogType.ERROR, "Command parsing of " + details.Name + ":: " + ex.ToString());
                                             }
-                                        });
+                                        }).Start();
                                     }
                                 }
                                 break;

@@ -95,7 +95,14 @@ namespace DenizenIRCBot
             }
             if (IPHistory == null)
             {
-                IPHistory = new YAMLConfiguration(File.ReadAllText("data/iphistory.yml"));
+                if (File.Exists("data/iphistory.yml"))
+                {
+                    IPHistory = new YAMLConfiguration(File.ReadAllText("data/iphistory.yml"));
+                }
+                else
+                {
+                    IPHistory = new YAMLConfiguration("");
+                }
             }
             List<string> paths = new List<string>();
             string basepath = getippath(ip);
