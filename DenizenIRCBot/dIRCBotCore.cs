@@ -54,9 +54,9 @@ namespace DenizenIRCBot
             {
                 Deserializer des = new Deserializer();
                 Configuration = new YAMLConfiguration(GetConfig());
-                ServerAddress = Configuration.Read("dircbot.irc.server", "");
-                ServerPort = Utilities.StringToUShort(Configuration.Read("dircbot.irc.port", ""));
-                Name = Configuration.Read("dircbot.irc.username", "");
+                ServerAddress = Configuration.ReadString("dircbot.irc.server", "");
+                ServerPort = Utilities.StringToUShort(Configuration.ReadString("dircbot.irc.port", ""));
+                Name = Configuration.ReadString("dircbot.irc.username", "");
                 BaseChannels.Clear();
                 foreach (string channel in Configuration.GetKeys("dircbot.irc.channels"))
                 {
@@ -79,7 +79,7 @@ namespace DenizenIRCBot
             PrepareConfig();
             LoadMeta(false);
             InitGitHub();
-            Bitly.Init(Configuration.Read("dircbot.bitly.main", ""), Configuration.Read("dircbot.bitly.backup", ""));
+            Bitly.Init(Configuration.ReadString("dircbot.bitly.main", ""), Configuration.ReadString("dircbot.bitly.backup", ""));
             if (string.IsNullOrEmpty(ServerAddress))
             {
                 Logger.Output(LogType.ERROR, "No address given, quitting.");

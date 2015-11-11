@@ -105,12 +105,12 @@ namespace DenizenIRCBot
 
         public string GetSeen(int time)
         {
-            string l_time = Settings.Read("general.last_seen." + time + ".time", null);
+            string l_time = Settings.ReadString("general.last_seen." + time + ".time", null);
             if (l_time == null)
             {
                 return null;
             }
-            string l_doing = Settings.Read("general.last_seen." + time + ".doing", null);
+            string l_doing = Settings.ReadString("general.last_seen." + time + ".doing", null);
             DateTime dt = Utilities.StringToDate(l_time).ToLocalTime();
             return Utilities.FormatDateRelative(dt) + " " + l_doing;
         }
@@ -122,7 +122,7 @@ namespace DenizenIRCBot
 
         public void SetSeen(string doing, DateTime dt)
         {
-            string l5_time = Settings.Read("general.last_seen.5.time", null);
+            string l5_time = Settings.ReadString("general.last_seen.5.time", null);
             if (l5_time != null)
             {
                 DateTime l5_dt = Utilities.StringToDate(l5_time);
@@ -131,7 +131,7 @@ namespace DenizenIRCBot
                     return;
                 }
             }
-            string l4_time = Settings.Read("general.last_seen.4.time", null);
+            string l4_time = Settings.ReadString("general.last_seen.4.time", null);
             if (l4_time != null)
             {
                 DateTime l4_dt = Utilities.StringToDate(l4_time);
@@ -141,11 +141,11 @@ namespace DenizenIRCBot
                     Settings.Set("general.last_seen.5.doing", doing);
                     return;
                 }
-                string l4_doing = Settings.Read("general.last_seen.4.doing", null);
+                string l4_doing = Settings.ReadString("general.last_seen.4.doing", null);
                 Settings.Set("general.last_seen.5.time", l4_time);
                 Settings.Set("general.last_seen.5.doing", l4_doing);
             }
-            string l3_time = Settings.Read("general.last_seen.3.time", null);
+            string l3_time = Settings.ReadString("general.last_seen.3.time", null);
             if (l3_time != null)
             {
                 DateTime l3_dt = Utilities.StringToDate(l3_time);
@@ -155,11 +155,11 @@ namespace DenizenIRCBot
                     Settings.Set("general.last_seen.4.doing", doing);
                     return;
                 }
-                string l3_doing = Settings.Read("general.last_seen.3.doing", null);
+                string l3_doing = Settings.ReadString("general.last_seen.3.doing", null);
                 Settings.Set("general.last_seen.4.time", l3_time);
                 Settings.Set("general.last_seen.4.doing", l3_doing);
             }
-            string l2_time = Settings.Read("general.last_seen.2.time", null);
+            string l2_time = Settings.ReadString("general.last_seen.2.time", null);
             if (l2_time != null)
             {
                 DateTime l2_dt = Utilities.StringToDate(l2_time);
@@ -169,11 +169,11 @@ namespace DenizenIRCBot
                     Settings.Set("general.last_seen.3.doing", doing);
                     return;
                 }
-                string l2_doing = Settings.Read("general.last_seen.2.doing", null);
+                string l2_doing = Settings.ReadString("general.last_seen.2.doing", null);
                 Settings.Set("general.last_seen.3.time", l2_time);
                 Settings.Set("general.last_seen.3.doing", l2_doing);
             }
-            string l1_time = Settings.Read("general.last_seen.1.time", null);
+            string l1_time = Settings.ReadString("general.last_seen.1.time", null);
             if (l1_time != null)
             {
                 DateTime l1_dt = Utilities.StringToDate(l1_time);
@@ -183,7 +183,7 @@ namespace DenizenIRCBot
                     Settings.Set("general.last_seen.2.doing", doing);
                     return;
                 }
-                string l1_doing = Settings.Read("general.last_seen.1.doing", null);
+                string l1_doing = Settings.ReadString("general.last_seen.1.doing", null);
                 Settings.Set("general.last_seen.2.time", l1_time);
                 Settings.Set("general.last_seen.2.doing", l1_doing);
             }

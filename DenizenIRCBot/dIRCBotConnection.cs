@@ -46,7 +46,7 @@ namespace DenizenIRCBot
             IRCSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IRCSocket.Connect(ServerAddress, ServerPort);
             Logger.Output(LogType.INFO, "Connected to " + IRCSocket.RemoteEndPoint.ToString());
-            string host = Configuration.Read("dircbot.irc.host", "unknown");
+            string host = Configuration.ReadString("dircbot.irc.host", "unknown");
             SendCommand("USER", Name + " " + host + " " + host + " :" + Name);
             SendCommand("NICK", Name);
             string receivedAlready = string.Empty;
@@ -174,7 +174,7 @@ namespace DenizenIRCBot
                                             SeenUser(newuser.Name, newuser.IP);
                                             chan.Users.Add(newuser);
                                             Logger.Output(LogType.DEBUG, "Recognizing join of " + newuser.Name + " into " + chan.Name);
-                                            if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greet", "false").StartsWith("t"))
+                                            if (Configuration.ReadString("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greet", "false").StartsWith("t"))
                                             {
                                                 foreach (string msg in Configuration.ReadStringList("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greeting"))
                                                 {
@@ -304,7 +304,7 @@ namespace DenizenIRCBot
                                     {
                                         break;
                                     }
-                                    if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".link_read", "false").StartsWith("t"))
+                                    if (Configuration.ReadString("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".link_read", "false").StartsWith("t"))
                                     {
                                         foreach (string str in data)
                                         {
@@ -373,7 +373,7 @@ namespace DenizenIRCBot
                                         iuser.ParseMask(user);
                                     }
                                     CheckReminders(iuser, chan);
-                                    if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".record_seen", "false").StartsWith("t"))
+                                    if (Configuration.ReadString("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".record_seen", "false").StartsWith("t"))
                                     {
                                         Task.Factory.StartNew(() =>
                                         {

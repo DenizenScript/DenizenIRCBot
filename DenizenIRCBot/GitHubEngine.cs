@@ -18,12 +18,12 @@ namespace DenizenIRCBot
         {
             try
             {
-                GitHub = new GitHubClient() { Bot = this, ClientToken = Configuration.Read("dircbot.github.token", "") };
+                GitHub = new GitHubClient() { Bot = this, ClientToken = Configuration.ReadString("dircbot.github.token", "") };
                 GitHubConfig = new YAMLConfiguration(File.ReadAllText("data/repositories.yml"));
                 AnnounceGitChannels = new List<string>();
                 foreach (IRCChannel chan in Channels)
                 {
-                    if (Configuration.Read("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".announce_github", "false").StartsWith("t"))
+                    if (Configuration.ReadString("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".announce_github", "false").StartsWith("t"))
                     {
                         AnnounceGitChannels.Add(chan.Name);
                     }
@@ -34,9 +34,9 @@ namespace DenizenIRCBot
                     foreach (string repository in GitHubConfig.GetKeys(author))
                     {
                         YAMLConfiguration repoConfig = GitHubConfig.GetConfigurationSection(author + "." + repository);
-                        bool hasIssues = repoConfig.Read("has_issues", "false").StartsWith("t");
-                        bool hasComments = repoConfig.Read("has_comments", "false").StartsWith("t");
-                        bool hasPulls = repoConfig.Read("has_pulls", "false").StartsWith("t");
+                        bool hasIssues = repoConfig.ReadString("has_issues", "false").StartsWith("t");
+                        bool hasComments = repoConfig.ReadString("has_comments", "false").StartsWith("t");
+                        bool hasPulls = repoConfig.ReadString("has_pulls", "false").StartsWith("t");
                         GitHub.WatchRepository(author + "/" + repository, hasIssues, hasComments, hasPulls);
                     }
                 }

@@ -72,7 +72,7 @@ namespace DenizenIRCBot
 
         public void dScriptCheckScript(List<String> warnings, string scriptname, YAMLConfiguration script)
         {
-            string script_type = script.Read("type", null);
+            string script_type = script.ReadString("type", null);
             if (string.IsNullOrEmpty(script_type))
             {
                 Warn(warnings, WarnType.ERROR, "Missing script type for script '" + scriptname + "'! Ignoring contents.");

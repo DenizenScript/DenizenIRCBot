@@ -35,7 +35,7 @@ namespace DenizenIRCBot
                 return;
             }
             IRCUser user = new IRCUser(command.Arguments[0]);
-            string IP = user.Settings.Read("general.minecraft_server_ip", null);
+            string IP = user.Settings.ReadString("general.minecraft_server_ip", null);
             if (IP == null)
             {
                 IP = command.Arguments[0];
