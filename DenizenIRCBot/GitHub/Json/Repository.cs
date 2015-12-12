@@ -45,6 +45,11 @@ namespace DenizenIRCBot.GitHub.Json
 
         private List<Event> FetchNewEvents()
         {
+            if (GitHub == null)
+            {
+                Logger.Output(LogType.ERROR, "GitHub client is null!");
+                return new List<Event>();
+            }
             HttpWebResponse response;
             try
             {
@@ -54,16 +59,31 @@ namespace DenizenIRCBot.GitHub.Json
             {
                 if (((HttpWebResponse)ex.Response).StatusCode != HttpStatusCode.NotModified)
                 {
-                    Logger.Output(LogType.ERROR, "Error while fetching events: " + ex.Message);
+                    Logger.Output(LogType.ERROR, "Error while fetching events: " + ex.ToString());
                 }
+                return new List<Event>();
+            }
+            if (response == null)
+            {
+                Logger.Output(LogType.ERROR, "Web response is null!");
                 return new List<Event>();
             }
             Conditional["If-None-Match"] = response.GetResponseHeader("ETag");
             List<Event> events = Utilities.GetObjectFromWebResponse<List<Event>>(response);
+            if (events == null)
+            {
+                Logger.Output(LogType.ERROR, "Events list is null!");
+                return new List<Event>();
+            }
             string BackupLast = null;
             for (int i = events.Count - 1; i >= 0; i--)
             {
                 Event currEvent = events[i];
+                if (currEvent == null)
+                {
+                    Logger.Output(LogType.ERROR, "Event is null!");
+                    return new List<Event>();
+                }
                 string id = currEvent.Id;
                 BackupLast = id;
                 events.RemoveAt(i);

@@ -172,7 +172,6 @@ namespace DenizenIRCBot
                 if (cline.StartsWith("<--["))
                 {
                     string objtype = cline.Substring(4, cline.Length - 5).ToLower();
-                    Logger.Output(LogType.DEBUG, "Found object of type " + objtype);
                     dObject nobj = null;
                     switch (objtype)
                     {
@@ -264,7 +263,6 @@ namespace DenizenIRCBot
                             value += "\n" + cline;
                             i++;
                         }
-                        Logger.Output(LogType.DEBUG, ":: Applying " + typer.ToLower() + " = " + value);
                         nobj.ApplyVar(typer.ToLower(), value);
                         i++;
                     }

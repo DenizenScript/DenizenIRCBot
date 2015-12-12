@@ -23,7 +23,7 @@ namespace DenizenIRCBot
                 AnnounceGitChannels = new List<string>();
                 foreach (IRCChannel chan in Channels)
                 {
-                    if (Configuration.ReadString("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".announce_github", "false").StartsWith("t"))
+                    if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + chan.Name.Replace("#", "") + ".announce_github", "false").StartsWith("t"))
                     {
                         AnnounceGitChannels.Add(chan.Name);
                     }

@@ -37,6 +37,8 @@ namespace DenizenIRCBot
 
         public List<IRCChannel> Channels = new List<IRCChannel>();
 
+        volatile bool resending = false;
+
         /// <summary>
         /// Connects to the IRC server and runs the bot.
         /// </summary>
@@ -46,7 +48,7 @@ namespace DenizenIRCBot
             IRCSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IRCSocket.Connect(ServerAddress, ServerPort);
             Logger.Output(LogType.INFO, "Connected to " + IRCSocket.RemoteEndPoint.ToString());
-            string host = Configuration.ReadString("dircbot.irc.host", "unknown");
+            string host = Configuration.ReadString("dircbot.irc-servers." + ServerName + ".host", "unknown");
             SendCommand("USER", Name + " " + host + " " + host + " :" + Name);
             SendCommand("NICK", Name);
             string receivedAlready = string.Empty;
@@ -113,14 +115,14 @@ namespace DenizenIRCBot
                             case "433": // Nickname In Use
                                 {
                                     SendCommand("NICK", Name + "_" + Utilities.random.Next(999));
-                                    SendCommand("NS", "identify " + Name + " " + Configuration.Read("dircbot.irc.nickserv.password", ""));
+                                    SendCommand("NS", "identify " + Name + " " + Configuration.Read("dircbot.irc-servers." + ServerName + ".nickserv.password", ""));
                                     SendCommand("NS", "ghost " + Name);
                                     SendCommand("NICK", Name);
                                 }
                                 break;
                             case "376": // End of MOTD -> Ready To Join And Identify
                                 {
-                                    SendCommand("NS", "identify " + Configuration.Read("dircbot.irc.nickserv.password", ""));
+                                    SendCommand("NS", "identify " + Configuration.Read("dircbot.irc-servers." + ServerName + ".nickserv.password", ""));
                                     Channels.Clear();
                                     foreach (string channel in BaseChannels)
                                     {
@@ -132,19 +134,32 @@ namespace DenizenIRCBot
                                 }
                                 break;
                             case "477": // Error joining channel
+                                resending = true;
+                                Task.Factory.StartNew(() =>
                                 {
+                                    Thread.Sleep(5000);
                                     foreach (string channel in BaseChannels)
                                     {
                                         SendCommand("JOIN", "#" + channel);
                                     }
-                                }
+                                    resending = false;
+                                });
                                 break;
                             case "332": // Topic for channel
                                 {
-                                    foreach (string achannel in BaseChannels)
+                                    if (!resending)
                                     {
-                                        SendCommand("JOIN", "#" + achannel);
+                                        Task.Factory.StartNew(() =>
+                                        {
+                                            Thread.Sleep(5000);
+                                            foreach (string achannel in BaseChannels)
+                                            {
+                                                SendCommand("JOIN", "#" + achannel);
+                                            }
+                                            resending = false;
+                                        });
                                     }
+                                    resending = true;
                                     string channel = data[1].ToLower();
                                     string topic = Utilities.Concat(data, 2).Substring(1);
                                     Logger.Output(LogType.INFO, "Topic for channel: " + channel);
@@ -174,9 +189,9 @@ namespace DenizenIRCBot
                                             SeenUser(newuser.Name, newuser.IP);
                                             chan.Users.Add(newuser);
                                             Logger.Output(LogType.DEBUG, "Recognizing join of " + newuser.Name + " into " + chan.Name);
-                                            if (Configuration.ReadString("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greet", "false").StartsWith("t"))
+                                            if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + chan.Name.Replace("#", "") + ".greet", "false").StartsWith("t"))
                                             {
-                                                foreach (string msg in Configuration.ReadStringList("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".greeting"))
+                                                foreach (string msg in Configuration.ReadStringList("dircbot.irc-servers." + ServerName + ".channels." + chan.Name.Replace("#", "") + ".greeting"))
                                                 {
                                                     Notice(newuser.Name, msg.Replace("<BASE>", ColorGeneral).Replace("<MAJOR>", ColorHighlightMajor).Replace("<MINOR>", ColorHighlightMinor));
                                                 }
@@ -304,7 +319,7 @@ namespace DenizenIRCBot
                                     {
                                         break;
                                     }
-                                    if (Configuration.ReadString("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".link_read", "false").StartsWith("t"))
+                                    if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + chan.Name.Replace("#", "") + ".link_read", "false").StartsWith("t"))
                                     {
                                         foreach (string str in data)
                                         {
@@ -373,7 +388,7 @@ namespace DenizenIRCBot
                                         iuser.ParseMask(user);
                                     }
                                     CheckReminders(iuser, chan);
-                                    if (Configuration.ReadString("dircbot.irc.channels." + chan.Name.Replace("#", "") + ".record_seen", "false").StartsWith("t"))
+                                    if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + chan.Name.Replace("#", "") + ".record_seen", "false").StartsWith("t"))
                                     {
                                         Task.Factory.StartNew(() =>
                                         {
@@ -386,6 +401,10 @@ namespace DenizenIRCBot
                                                 Logger.Output(LogType.ERROR, "SEEN user " + iuser.OriginalMask + ": " + ex.ToString());
                                             }
                                         });
+                                    }
+                                    if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + chan.Name.Replace("#", "") + ".has_log_page", "false").StartsWith("t"))
+                                    {
+                                        Log(chan.Name, Utilities.FormatDate(DateTime.Now) + " <" + iuser.Name + "> " + privmsg);
                                     }
                                     bool cmd = false;
                                     List<string> cmds = new List<string>(data);
@@ -502,6 +521,19 @@ namespace DenizenIRCBot
             }
         }
 
+        Object LogLock = new Object();
+
+        public void Log(string channel, string message)
+        {
+            lock (LogLock)
+            {
+                DateTime now = DateTime.Now;
+                string fold = "logs/" + ServerName.ToLower() + "/" + channel.ToLower().Replace("#", "") + "/" + now.Year + "/" + now.Month + "/";
+                System.IO.Directory.CreateDirectory(fold);
+                System.IO.File.AppendAllText(fold + now.Day + ".log", message + "\n");
+            }
+        }
+
         /// <summary>
         /// Send a chat message to a channel.
         /// Optionally, specify a maximum message split up.
@@ -522,14 +554,16 @@ namespace DenizenIRCBot
                 return chats;
             }
             SendCommand("PRIVMSG", channel + " :" + message.Replace("\n", "\\n").Replace("\r", "\\r"));
+            if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + channel.Replace("#", "") + ".has_log_page", "false").StartsWith("t"))
+            {
+                Log(channel, Utilities.FormatDate(DateTime.Now) + " <" + Name + "> " + message.Replace("\n", "\\n").Replace("\r", "\\r"));
+            }
             return limit - 1;
         }
 
         /// <summary>
         /// Send an IRC NOTICE to a user.
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="data"></param>
         public void Notice(string user, string data)
         {
             SendCommand("NOTICE", user + " :" + data);

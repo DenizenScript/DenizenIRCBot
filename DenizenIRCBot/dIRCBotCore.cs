@@ -21,14 +21,38 @@ namespace DenizenIRCBot
         /// </summary>
         static void Main(string[] args)
         {
-            dIRCBot core = new dIRCBot();
-            core.Init();
+            Console.WriteLine("Initializing!");
+            Configuration = new YAMLConfiguration(GetConfig());
+            List<Task> tasks = new List<Task>();
+            foreach (string server in Configuration.GetKeys("dircbot.irc-servers"))
+            {
+                Console.WriteLine("Preparing server: " + server);
+                tasks.Add(Task.Factory.StartNew(() =>
+                {
+                    dIRCBot core = new dIRCBot();
+                    core.ServerName = server;
+                    core.Init();
+                }));
+            }
+            while (tasks.Count > 0)
+            {
+                for (int i = 0; i < tasks.Count; i++)
+                {
+                    if (tasks[i].IsCompleted)
+                    {
+                        tasks.RemoveAt(i--);
+                    }
+                }
+                Thread.Sleep(1);
+            }
         }
+
+        public string ServerName;
 
         /// <summary>
         /// Reads the config file as a string.
         /// </summary>
-        string GetConfig()
+        static string GetConfig()
         {
             try
             {
@@ -44,7 +68,7 @@ namespace DenizenIRCBot
         /// <summary>
         /// The bot's configuration data (config.yml).
         /// </summary>
-        public YAMLConfiguration Configuration;
+        public static YAMLConfiguration Configuration;
 
         public string[] Prefixes = null;
 
@@ -52,13 +76,11 @@ namespace DenizenIRCBot
         {
             try
             {
-                Deserializer des = new Deserializer();
-                Configuration = new YAMLConfiguration(GetConfig());
-                ServerAddress = Configuration.ReadString("dircbot.irc.server", "");
-                ServerPort = Utilities.StringToUShort(Configuration.ReadString("dircbot.irc.port", ""));
-                Name = Configuration.ReadString("dircbot.irc.username", "");
+                ServerAddress = Configuration.ReadString("dircbot.irc-servers." + ServerName + ".server", "");
+                ServerPort = Utilities.StringToUShort(Configuration.ReadString("dircbot.irc-servers." + ServerName + ".port", ""));
+                Name = Configuration.ReadString("dircbot.irc-servers." + ServerName + ".username", "");
                 BaseChannels.Clear();
-                foreach (string channel in Configuration.GetKeys("dircbot.irc.channels"))
+                foreach (string channel in Configuration.GetKeys("dircbot.irc-servers." + ServerName + ".channels"))
                 {
                     BaseChannels.Add(channel);
                 }

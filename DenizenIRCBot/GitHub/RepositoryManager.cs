@@ -65,7 +65,7 @@ namespace DenizenIRCBot.GitHub
                         }
                         catch (Exception ex)
                         {
-                            Logger.Output(LogType.ERROR, "Error while announcing events: " + ex.Message);
+                            Logger.Output(LogType.ERROR, "Error while announcing events: " + ex.ToString());
                         }
                     }
                 }
