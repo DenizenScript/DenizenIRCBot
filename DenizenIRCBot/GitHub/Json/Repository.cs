@@ -41,7 +41,20 @@ namespace DenizenIRCBot.GitHub.Json
                     Logger.Output(LogType.INFO, "[GitHub] " + message);
                     foreach (string chan in Bot.AnnounceGitChannels)
                     {
-                        Bot.Chat(chan, message);
+                        List<string> white = dIRCBot.Configuration.ReadStringList("dircbot.irc-servers." + Bot.ServerName + ".channels." + chan.Replace("#", "") + ".github_whitelist");
+                        if (white == null)
+                        {
+                            Bot.Chat(chan, message);
+                            continue;
+                        }
+                        foreach (string str in white)
+                        {
+                            if (FullName.Contains(str))
+                            {
+                                Bot.Chat(chan, message);
+                                break;
+                            }
+                        }
                     }
                 }
             }
