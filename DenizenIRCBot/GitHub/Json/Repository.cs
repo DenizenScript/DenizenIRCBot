@@ -32,8 +32,13 @@ namespace DenizenIRCBot.GitHub.Json
             foreach (Event currEvent in FetchNewEvents())
             {
                 string[] strings = ParseEventInfo(currEvent);
+                if (strings.Length == 0)
+                {
+                    Logger.Output(LogType.DEBUG, "Empty event string output!");
+                }
                 foreach (string message in strings)
                 {
+                    Logger.Output(LogType.INFO, "[GitHub] " + message);
                     foreach (string chan in Bot.AnnounceGitChannels)
                     {
                         Bot.Chat(chan, message);
@@ -45,6 +50,7 @@ namespace DenizenIRCBot.GitHub.Json
 
         private List<Event> FetchNewEvents()
         {
+            Logger.Output(LogType.DEBUG, "Fetching events for " + FullName);
             if (GitHub == null)
             {
                 Logger.Output(LogType.ERROR, "GitHub client is null!");
@@ -61,11 +67,17 @@ namespace DenizenIRCBot.GitHub.Json
                 {
                     Logger.Output(LogType.ERROR, "Error while fetching events: " + ex.ToString());
                 }
+                Logger.Output(LogType.DEBUG, "Unmodified for " + FullName);
                 return new List<Event>();
             }
             if (response == null)
             {
                 Logger.Output(LogType.ERROR, "Web response is null!");
+                return new List<Event>();
+            }
+            if (Conditional == null)
+            {
+                Logger.Output(LogType.ERROR, "Conditional is null!");
                 return new List<Event>();
             }
             Conditional["If-None-Match"] = response.GetResponseHeader("ETag");
@@ -101,6 +113,7 @@ namespace DenizenIRCBot.GitHub.Json
                 LastEventId = BackupLast;
             }
             events.Reverse();
+            Logger.Output(LogType.INFO, "Have events for " + FullName);
             return events;
         }
 

@@ -21,11 +21,12 @@ namespace DenizenIRCBot
                 GitHub = new GitHubClient() { Bot = this, ClientToken = Configuration.ReadString("dircbot.github.token", "") };
                 GitHubConfig = new YAMLConfiguration(File.ReadAllText("data/repositories.yml"));
                 AnnounceGitChannels = new List<string>();
-                foreach (IRCChannel chan in Channels)
+                foreach (string chan in BaseChannels)
                 {
-                    if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + chan.Name.Replace("#", "") + ".announce_github", "false").StartsWith("t"))
+                    if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + chan.Replace("#", "") + ".announce_github", "false").StartsWith("t"))
                     {
-                        AnnounceGitChannels.Add(chan.Name);
+                        Logger.Output(LogType.INFO, "Watching commits in channel: " + chan);
+                        AnnounceGitChannels.Add("#" + chan);
                     }
                 }
                 GitHub.FetchRateLimit();
@@ -38,13 +39,14 @@ namespace DenizenIRCBot
                         bool hasComments = repoConfig.ReadString("has_comments", "false").StartsWith("t");
                         bool hasPulls = repoConfig.ReadString("has_pulls", "false").StartsWith("t");
                         GitHub.WatchRepository(author + "/" + repository, hasIssues, hasComments, hasPulls);
+                        Logger.Output(LogType.INFO, "Watching: " + author + "/" + repository);
                     }
                 }
                 GitHub.StartWatching();
             }
             catch (Exception ex)
             {
-                Logger.Output(LogType.ERROR, "Failed to initialize GitHubEngine: " + ex.Message);
+                Logger.Output(LogType.ERROR, "Failed to initialize GitHubEngine: " + ex.ToString());
             }
         }
         
