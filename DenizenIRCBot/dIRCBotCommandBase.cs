@@ -269,7 +269,30 @@ namespace DenizenIRCBot
                 case "alpha":
                 case "wa":
                     {
-                        // TODO
+                        if (command.Arguments.Count > 0)
+                        {
+                            WolframAlpha.QueryResult output = WolframAlpha.Query(string.Join(" ", command.Arguments), command.User.IP);
+                            string result = output.Result;
+                            if (output.Error || !output.Success || result == null)
+                            {
+                                if (output.Suggestion != null)
+                                {
+                                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Sorry, I don't know the definition of that. Did you mean '" + output.Suggestion + "'?");
+                                }
+                                else
+                                {
+                                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + "There was an error while parsing that statement.");
+                                }
+                            }
+                            else
+                            {
+                                if (output.SpellCheck != null)
+                                {
+                                    Chat(command.Channel.Name, command.Pinger + ColorGeneral + output.SpellCheck);
+                                }
+                                Chat(command.Channel.Name, command.Pinger + ColorGeneral + output.Input + " = " + output.Result);
+                            }
+                        }
                     }
                     break;
                 case "rate":

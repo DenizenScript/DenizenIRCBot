@@ -86,6 +86,7 @@
     <Compile Include="UserHistoryCommands.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="WebclientExtensions.cs" />
+    <Compile Include="WolframAlpha.cs" />
     <Compile Include="YAMLConfiguration.cs" />
     <Compile Include="ZipStorer.cs" />
   </ItemGroup>

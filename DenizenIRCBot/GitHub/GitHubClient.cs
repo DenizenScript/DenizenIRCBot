@@ -10,7 +10,6 @@ namespace DenizenIRCBot.GitHub
 {
     public partial class GitHubClient
     {
-
         public static readonly string GITHUB_URL = "https://api.github.com/";
 
         public dIRCBot Bot;
