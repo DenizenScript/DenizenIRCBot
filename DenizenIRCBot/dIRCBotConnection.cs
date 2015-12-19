@@ -553,6 +553,20 @@ namespace DenizenIRCBot
                 chats = Chat(channel, second, chats);
                 return chats;
             }
+            foreach (string ping in Configuration.ReadStringList("dircbot.irc-servers." + ServerName + ".channels." + channel.Replace("#", "") + ".anti_ping"))
+            {
+                int num = -2;
+                while (true)
+                {
+                    num = message.IndexOf(ping, num + 2);
+                    if (num != -1)
+                    {
+                        message = message.Insert(num + 1, ".");
+                        continue;
+                    }
+                    break;
+                }
+            }
             SendCommand("PRIVMSG", channel + " :" + message.Replace("\n", "\\n").Replace("\r", "\\r"));
             if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + channel.Replace("#", "") + ".has_log_page", "false").StartsWith("t"))
             {
