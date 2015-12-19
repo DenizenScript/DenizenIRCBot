@@ -50,6 +50,16 @@ namespace DenizenIRCBot
             return ndata;
         }
 
+        public List<string> ReadStringList(string path, List<string> def)
+        {
+            List<string> list = ReadStringList(path);
+            if (list != null)
+            {
+                return list;
+            }
+            return def;
+        }
+
         public List<object> ReadList(string path)
         {
             string[] data = path.Split('.');

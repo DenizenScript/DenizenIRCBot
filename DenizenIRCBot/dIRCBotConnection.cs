@@ -553,7 +553,7 @@ namespace DenizenIRCBot
                 chats = Chat(channel, second, chats);
                 return chats;
             }
-            foreach (string ping in Configuration.ReadStringList("dircbot.irc-servers." + ServerName + ".channels." + channel.Replace("#", "") + ".anti_ping"))
+            foreach (string ping in Configuration.ReadStringList("dircbot.irc-servers." + ServerName + ".channels." + channel.Replace("#", "") + ".anti_ping", new List<string>()))
             {
                 int num = -2;
                 while (true)
