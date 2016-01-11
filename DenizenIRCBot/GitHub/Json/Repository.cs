@@ -5,6 +5,8 @@ using System.Text;
 using System.Runtime.Serialization;
 using System.Net;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DenizenIRCBot.GitHub.Json
 {
@@ -250,24 +252,33 @@ namespace DenizenIRCBot.GitHub.Json
                 lines[0] = Bot.ColorGeneral + "[" + Bot.ColorHighlightMinor + FullName + Bot.ColorGeneral + "] "
                     + Bot.ColorHighlightMajor + authorMsg + Bot.ColorGeneral + " pushed " + commits.Count + " commits to '"
                     + Bot.ColorHighlightMinor + Ref + Bot.ColorGeneral + "' branch";
+                int time = 0;
                 foreach (string line in lines)
                 {
                     foreach (string chan in Bot.AnnounceGitChannels)
                     {
                         List<string> white = dIRCBot.Configuration.ReadStringList("dircbot.irc-servers." + Bot.ServerName + ".channels." + chan.Replace("#", "") + ".github_whitelist");
-                        if (white == null)
+                        int itime = time;
+                        time += 500;
+                        Task.Factory.StartNew(() =>
                         {
-                            Bot.Chat(chan, line);
-                            continue;
-                        }
-                        foreach (string str in white)
-                        {
-                            if (FullName.Contains(str))
+                            Thread.Sleep(itime);
+                            if (white == null)
                             {
                                 Bot.Chat(chan, line);
-                                break;
                             }
-                        }
+                            else
+                            {
+                                foreach (string str in white)
+                                {
+                                    if (FullName.Contains(str))
+                                    {
+                                        Bot.Chat(chan, line);
+                                        break;
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
             }

@@ -166,7 +166,7 @@ namespace DenizenIRCBot
                 if (!LasersCharged)
                 {
                     Chat(command.Channel.Name, command.Pinger + ColorGeneral + "PEW! PEW PEW! " + ColorHighlightMajor
-                        + command.User.Name + ColorGeneral + " fires at himself for " + ColorHighlightMajor + "0" + ColorGeneral + " damage!");
+                        + command.User.Name + ColorGeneral + " fires at themself for " + ColorHighlightMajor + "0" + ColorGeneral + " damage!");
                     return;
                 }
                 FireTime.Value++;

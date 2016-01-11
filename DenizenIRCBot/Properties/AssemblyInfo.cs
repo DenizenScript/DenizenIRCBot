@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Denizen Scripting Team")]
 [assembly: AssemblyProduct("DenizenIRCBot")]
-[assembly: AssemblyCopyright("Copyright © Denizen Script 2015")]
+[assembly: AssemblyCopyright("Copyright © Denizen Script 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
