@@ -73,6 +73,7 @@
     <Compile Include="GitHub\RepositoryManager.cs" />
     <Compile Include="GoogleSearch.cs" />
     <Compile Include="IRCChannel.cs" />
+    <Compile Include="IRCMessage.cs" />
     <Compile Include="IRCUser.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MessagingCommands.cs" />

@@ -38,7 +38,7 @@ namespace DenizenIRCBot
 
         public List<IRCChannel> Channels = new List<IRCChannel>();
 
-        public Dictionary<string, Dictionary<string, List<string>>> RecentMessages = new Dictionary<string, Dictionary<string, List<string>>>();
+        public List<IRCMessage> RecentMessages = new List<IRCMessage>();
 
         volatile bool resending = false;
 
@@ -296,6 +296,22 @@ namespace DenizenIRCBot
                                     }
                                 }
                                 break;
+                            case "action": // Action message
+                                {
+                                    string channel = data[0].ToLower();
+                                    data[1] = data[1].Substring(1);
+                                    string action = Utilities.Concat(data, 1);
+                                    IRCChannel chan = null;
+                                    foreach (IRCChannel chann in Channels)
+                                    {
+                                        if (chann.Name == channel)
+                                        {
+                                            chan = chann;
+                                        }
+                                    }
+                                    RecentMessages.Insert(0, new IRCMessage(chan, chan.GetUser(user), action, true));
+                                }
+                                break;
                             case "privmsg": // Chat message
                                 {
                                     string channel = data[0].ToLower();
@@ -327,46 +343,23 @@ namespace DenizenIRCBot
                                     if (match.Success)
                                     {
                                         string value = match.Groups[1].Value;
-                                        string s_user = match.Groups[3].Success ? match.Groups[3].Value.ToLower() : null;
-                                        if (RecentMessages.ContainsKey(channel))
+                                        string s_user = match.Groups[3].Success ? match.Groups[3].Value : null;
+                                        foreach (IRCMessage msg in RecentMessages)
                                         {
-                                            int num = -1;
-                                            string final = null;
-                                            foreach (KeyValuePair<string, List<string>> kvp in RecentMessages[channel])
+                                            if (msg.Channel.Name != chan.Name || (s_user != null && s_user.ToLower() != msg.User.Name.ToLower()))
                                             {
-                                                if (s_user != null && kvp.Key.ToLower() != s_user)
-                                                {
-                                                    continue;
-                                                }
-                                                for (int i = 0; i < kvp.Value.Count; i++)
-                                                {
-                                                    if (Regex.Match(kvp.Value[i], value, RegexOptions.IgnoreCase).Success)
-                                                    {
-                                                        num = i;
-                                                        final = Regex.Replace(kvp.Value[i], value, match.Groups[2].Value, RegexOptions.IgnoreCase);
-                                                        s_user = kvp.Key;
-                                                        goto end_s;
-                                                    }
-                                                }
+                                                continue;
                                             }
-                                            end_s:
-                                            if (num != -1)
+                                            if (Regex.Match(msg.Message, value, RegexOptions.IgnoreCase).Success)
                                             {
-                                                RecentMessages[channel][s_user][num] = final;
-                                                Chat(chan.Name, ColorGeneral + "<" + s_user + "> " + final);
+                                                msg.Message = Regex.Replace(msg.Message, value, match.Groups[2].Value, RegexOptions.IgnoreCase);
+                                                string prefix = msg.Action ? "* " + msg.User.Name : "<" + msg.User.Name + "> ";
+                                                Chat(chan.Name, ColorGeneral + prefix + msg.Message);
                                                 goto post_s;
                                             }
                                         }
                                     }
-                                    if (!RecentMessages.ContainsKey(channel))
-                                    {
-                                        RecentMessages[channel] = new Dictionary<string, List<string>>();
-                                    }
-                                    if (!RecentMessages[channel].ContainsKey(iuser.Name))
-                                    {
-                                        RecentMessages[channel][iuser.Name] = new List<string>();
-                                    }
-                                    RecentMessages[channel][iuser.Name].Add(privmsg);
+                                    RecentMessages.Insert(0, new IRCMessage(chan, iuser, privmsg));
                                     post_s:
                                     if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + chan.Name.Replace("#", "") + ".link_read", "false").StartsWith("t"))
                                     {
