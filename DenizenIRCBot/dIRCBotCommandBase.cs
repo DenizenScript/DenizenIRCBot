@@ -295,6 +295,31 @@ namespace DenizenIRCBot
                         }
                     }
                     break;
+                case "g":
+                case "google":
+                case "ggl":
+                    {
+                        if (command.Arguments.Count > 0)
+                        {
+                            GoogleSearch.Response response = GoogleSearch.Search(command.Arguments[0]);
+                            if (response == null)
+                            {
+                                Chat(command.Channel.Name, command.Pinger + ColorHighlightMajor + "Error! Response not found.");
+                            }
+                            else if (response.responseStatus != 200)
+                            {
+                                Chat(command.Channel.Name, command.Pinger + ColorHighlightMinor + "Query failed: " + response.responseDetails);
+                            }
+                            else
+                            {
+                                GoogleSearch.Data data = response.responseData;
+                                GoogleSearch.Result result = data.results[0];
+                                string content = result.Content.Replace("\n", "").Replace("<b>", S_BOLD).Replace("</b>", ColorGeneral);
+                                Chat(command.Channel.Name, command.Pinger + ColorGeneral + "[Result found in " + data.cursor.searchResultTime + "] " + content + " -- " + result.Url);
+                            }
+                        }
+                    }
+                    break;
                 case "rate":
                 case "ratelimit":
                     {
@@ -572,7 +597,6 @@ namespace DenizenIRCBot
                 case "how":
                 case "s":
                 case "f":
-                case "g":
                 case "w":
                 case "meta":
                 case "metainfo":
