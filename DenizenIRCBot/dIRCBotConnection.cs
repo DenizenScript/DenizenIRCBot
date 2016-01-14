@@ -296,22 +296,6 @@ namespace DenizenIRCBot
                                     }
                                 }
                                 break;
-                            case "action": // Action message
-                                {
-                                    string channel = data[0].ToLower();
-                                    data[1] = data[1].Substring(1);
-                                    string action = Utilities.Concat(data, 1);
-                                    IRCChannel chan = null;
-                                    foreach (IRCChannel chann in Channels)
-                                    {
-                                        if (chann.Name == channel)
-                                        {
-                                            chan = chann;
-                                        }
-                                    }
-                                    RecentMessages.Insert(0, new IRCMessage(chan, chan.GetUser(user), action, true));
-                                }
-                                break;
                             case "privmsg": // Chat message
                                 {
                                     string channel = data[0].ToLower();
@@ -339,6 +323,11 @@ namespace DenizenIRCBot
                                         break;
                                     }
                                     IRCUser iuser = chan.GetUser(user);
+                                    if (privmsg.StartsWith(actionchr + "ACTION "))
+                                    {
+                                        RecentMessages.Insert(0, new IRCMessage(chan, iuser, privmsg.Substring((actionchr + "ACTION ").Length, privmsg.Length-1-(actionchr + "ACTION ").Length), true));
+                                        goto post_s;
+                                    }
                                     Match match = Regex.Match(privmsg, "^s/([^/]+)/([^/]+)/?([^\\s/]+)?", RegexOptions.IgnoreCase);
                                     if (match.Success)
                                     {
@@ -353,7 +342,7 @@ namespace DenizenIRCBot
                                             if (Regex.Match(msg.Message, value, RegexOptions.IgnoreCase).Success)
                                             {
                                                 msg.Message = Regex.Replace(msg.Message, value, match.Groups[2].Value, RegexOptions.IgnoreCase);
-                                                string prefix = msg.Action ? "* " + msg.User.Name : "<" + msg.User.Name + "> ";
+                                                string prefix = msg.Action ? "* " + msg.User.Name + " " : "<" + msg.User.Name + "> ";
                                                 Chat(chan.Name, ColorGeneral + prefix + msg.Message);
                                                 goto post_s;
                                             }
