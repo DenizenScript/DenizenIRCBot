@@ -301,7 +301,7 @@ namespace DenizenIRCBot
                     {
                         if (command.Arguments.Count > 0)
                         {
-                            GoogleSearch.Response response = GoogleSearch.Search(command.Arguments[0]);
+                            GoogleSearch.Response response = GoogleSearch.Search(Utilities.Concat(command.Arguments));
                             if (response == null)
                             {
                                 Chat(command.Channel.Name, command.Pinger + ColorHighlightMajor + "Error! Response not found.");
