@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace DenizenIRCBot
@@ -697,6 +698,43 @@ namespace DenizenIRCBot
                 case "qs":
                 case "q":
                     // TODO
+                    break;
+                case "roll":
+                case "dice":
+                    {
+                        int dice = 1;
+                        int sides = 6;
+                        if (command.Arguments.Count > 0)
+                        {
+                            Match match = Regex.Match(command.Arguments[0], @"(\d+)?d(\d+)");
+                            if (match.Success)
+                            {
+                                if (match.Groups[1].Success)
+                                {
+                                    dice = Utilities.StringToInt(match.Groups[1].Value);
+                                }
+                                sides = Utilities.StringToInt(match.Groups[2].Value);
+                            }
+                        }
+                        if (dice > 100 || sides > 100)
+                        {
+                            Chat(command.Channel.Name, ColorGeneral + "Maximum roll is 100d100.");
+                        }
+                        else
+                        {
+                            int total = 0;
+                            StringBuilder sb = new StringBuilder("You rolled: ");
+                            for (int i = 0; i < dice; i++)
+                            {
+                                int roll = (int)(Utilities.random.NextDouble() * sides) + 1;
+                                sb.Append(roll).Append(", ");
+                                total += roll;
+                            }
+                            string msg = sb.ToString();
+                            Chat(command.Channel.Name, ColorGeneral + msg.Substring(0, msg.Length-2));
+                            Chat(command.Channel.Name, ColorGeneral + "Total roll: " + total);
+                        }
+                    }
                     break;
                 case "readlogs":
                     if (!command.User.OP
