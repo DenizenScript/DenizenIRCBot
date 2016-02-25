@@ -43,8 +43,9 @@ namespace DenizenIRCBot
                         tasks.RemoveAt(i--);
                     }
                 }
-                Thread.Sleep(1);
+                Thread.Sleep(100);
             }
+            Logger.Output(LogType.INFO, "Quitting cleanly.");
         }
 
         public string ServerName;
@@ -98,32 +99,43 @@ namespace DenizenIRCBot
         /// </summary>
         public void Init()
         {
-            PrepareConfig();
-            LoadMeta(false);
-            InitGitHub();
-            Bitly.Init(Configuration.ReadString("dircbot.bitly.main", ""), Configuration.ReadString("dircbot.bitly.backup", ""));
-            WolframAlpha.Init(Configuration.ReadString("dircbot.wolfram.appid", ""));
-            if (string.IsNullOrEmpty(ServerAddress))
+            try
             {
-                Logger.Output(LogType.ERROR, "No address given, quitting.");
-                return;
-            }
-            while (true)
-            {
-                try
+                PrepareConfig();
+                LoadMeta(false);
+                InitGitHub();
+                Bitly.Init(Configuration.ReadString("dircbot.bitly.main", ""), Configuration.ReadString("dircbot.bitly.backup", ""));
+                WolframAlpha.Init(Configuration.ReadString("dircbot.wolfram.appid", ""));
+                if (string.IsNullOrEmpty(ServerAddress))
                 {
-                    ConnectAndRun();
-                    throw new Exception("Somehow escaped while loop?");
+                    Logger.Output(LogType.ERROR, "No address given, quitting.");
+                    return;
                 }
-                catch (Exception ex)
+                while (true)
                 {
-                    if (ex is ThreadAbortException)
+                    try
                     {
-                        throw ex;
+                        ConnectAndRun();
+                        throw new Exception("Somehow escaped while loop?");
                     }
-                    Logger.Output(LogType.ERROR, "Error in primary run: " + ex.ToString());
-                    Thread.Sleep(5000);
+                    catch (Exception ex)
+                    {
+                        if (ex is ThreadAbortException)
+                        {
+                            throw ex;
+                        }
+                        Logger.Output(LogType.ERROR, "Error in primary run: " + ex.ToString());
+                        Thread.Sleep(5000);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.Output(LogType.ERROR, "Full exception: " + ex.ToString());
+            }
+            finally
+            {
+                Logger.Output(LogType.ERROR, "RIP IN PEACE, BOT NOW DEAD!");
             }
         }
     }
