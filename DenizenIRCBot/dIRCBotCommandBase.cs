@@ -316,7 +316,8 @@ namespace DenizenIRCBot
                                 GoogleSearch.SearchInfo searchInfo = response.searchInformation;
                                 List<GoogleSearch.ResponseItem> items = response.items;
                                 GoogleSearch.ResponseItem result = items[0];
-                                Chat(command.Channel.Name, command.Pinger + ColorGeneral + "[Result found in " + searchInfo.formattedSearchTime + "] " + result.snippet + " -- " + result.link);
+                                String snippet = result.snippet.Replace("\\n", "");
+                                Chat(command.Channel.Name, command.Pinger + ColorGeneral + "[Result found in " + searchInfo.formattedSearchTime + "] " + snippet + " -- " + result.link);
                             }
                         }
                     }
