@@ -307,16 +307,16 @@ namespace DenizenIRCBot
                             {
                                 Chat(command.Channel.Name, command.Pinger + ColorHighlightMajor + "Error! Response not found.");
                             }
-                            else if (response.responseStatus != 200)
+                            else if (response.items.Count == 0)
                             {
-                                Chat(command.Channel.Name, command.Pinger + ColorHighlightMinor + "Query failed: " + response.responseDetails);
+                                Chat(command.Channel.Name, command.Pinger + ColorHighlightMinor + "No search results found.");
                             }
                             else
                             {
-                                GoogleSearch.Data data = response.responseData;
-                                GoogleSearch.Result result = data.results[0];
-                                string content = result.Content.Replace("\n", "").Replace("<b>", S_BOLD).Replace("</b>", ColorGeneral);
-                                Chat(command.Channel.Name, command.Pinger + ColorGeneral + "[Result found in " + data.cursor.searchResultTime + "] " + content + " -- " + result.Url);
+                                GoogleSearch.SearchInfo searchInfo = response.searchInformation;
+                                List<GoogleSearch.ResponseItem> items = response.items;
+                                GoogleSearch.ResponseItem result = items[0];
+                                Chat(command.Channel.Name, command.Pinger + ColorGeneral + "[Result found in " + searchInfo.formattedSearchTime + "] " + result.snippet + " -- " + result.link);
                             }
                         }
                     }

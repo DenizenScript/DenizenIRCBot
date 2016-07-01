@@ -9,7 +9,7 @@ namespace DenizenIRCBot
 {
     public class GoogleSearch
     {
-        public static readonly string GOOGLE_URL = "http://ajax.googleapis.com/ajax/services/search/web?rsz=1&v=1.0&q=";
+        public static readonly string GOOGLE_URL = "https://www.googleapis.com/customsearch/v1?cx=003567170677611767604%3At5ozk0b_f54&key=AIzaSyBDFMRuDix-v6KcvU6Hp9qw2dcTcU549Oo&q=";
 
         public static Response Search(string input)
         {
@@ -21,46 +21,25 @@ namespace DenizenIRCBot
         [DataContract]
         public class Response
         {
-            [DataMember] public Data responseData;
-            [DataMember] public string responseDetails;
-            [DataMember] public int responseStatus;
+            [DataMember] public List<ResponseItem> items;
+            [DataMember] public SearchInfo searchInformation;
         }
 
         [DataContract]
-        public class Data
+        public class ResponseItem
         {
-            [DataMember] public List<Result> results;
-            [DataMember] public Cursor cursor;
-
-            [DataContract]
-            public class Cursor
-            {
-                [DataMember] public long estimatedResultCount;
-                [DataMember] public double searchResultTime;
-            }
+            [DataMember] public string title;
+            [DataMember] public string link;
+            [DataMember] public string snippet;
         }
 
         [DataContract]
-        public class Result
+        public class SearchInfo
         {
-            public string Url
-            {
-                get
-                {
-                    return Uri.UnescapeDataString(url);
-                }
-            }
-
-            public string Content
-            {
-                get
-                {
-                    return content;
-                }
-            }
-
-            [DataMember] string url;
-            [DataMember] string content;
+            [DataMember] public double searchTime;
+            [DataMember] public string formattedSearchTime;
+            [DataMember] public long totalResults;
+            [DataMember] public string formattedTotalResults;
         }
     }
 }
