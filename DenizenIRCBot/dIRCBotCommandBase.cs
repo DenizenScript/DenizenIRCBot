@@ -302,7 +302,7 @@ namespace DenizenIRCBot
                     {
                         if (command.Arguments.Count > 0)
                         {
-                            GoogleSearch.Response response = GoogleSearch.Search(Utilities.Concat(command.Arguments));
+                            GoogleResponse response = GoogleSearch.Search(Utilities.Concat(command.Arguments));
                             if (response == null)
                             {
                                 Chat(command.Channel.Name, command.Pinger + ColorHighlightMajor + "Error! Response not found.");
@@ -313,11 +313,37 @@ namespace DenizenIRCBot
                             }
                             else
                             {
-                                GoogleSearch.SearchInfo searchInfo = response.searchInformation;
-                                List<GoogleSearch.ResponseItem> items = response.items;
-                                GoogleSearch.ResponseItem result = items[0];
+                                GoogleSearchInfo searchInfo = response.searchInformation;
+                                List<GoogleResponseItem> items = response.items;
+                                GoogleResponseItem result = items[0];
                                 String snippet = result.snippet.Replace("\\n", "");
                                 Chat(command.Channel.Name, command.Pinger + ColorGeneral + "[Result found in " + searchInfo.formattedSearchTime + "] " + snippet + " -- " + result.link);
+                            }
+                        }
+                    }
+                    break;
+                case "u":
+                case "urban":
+                    {
+                        if (command.Arguments.Count > 0)
+                        {
+                            UrbanResponse response = UrbanDictionary.Search(Utilities.Concat(command.Arguments));
+                            if (response == null)
+                            {
+                                Chat(command.Channel.Name, command.Pinger + ColorHighlightMajor + "Error! Response not found.");
+                            }
+                            else if (response.result_type == "no_results" || response.list.Count == 0)
+                            {
+                                Chat(command.Channel.Name, command.Pinger + ColorHighlightMinor + "No search results found.");
+                            }
+                            else
+                            {
+                                int num = Utilities.random.Next(response.list.Count);
+                                UrbanDefinition definition = response.list[num];
+                                string defString = definition.definition.Replace("\n\n", " ").Replace("\n", " ").Replace("\r", "");
+                                string exampleString = definition.example.Replace("\n\n", " ").Replace("\n", " ").Replace("\r", "");
+                                Chat(command.Channel.Name, command.Pinger + ColorGeneral + definition.word + " (" + definition.defid + "): " + defString);
+                                Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Example: " + exampleString);
                             }
                         }
                     }
