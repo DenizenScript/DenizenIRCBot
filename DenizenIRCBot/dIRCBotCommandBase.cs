@@ -659,6 +659,11 @@ namespace DenizenIRCBot
                         Chat(command.Channel.Name, ColorGeneral + "Beginner's Guide[Outdated] -" + ColorLink + " http://bit.ly/1bHkByR");
                     }
                     break;
+                case "versions":
+                    {
+                        Chat(command.Channel.Name, command.Pinger + ColorGeneral + "You can find the latest builds for any minecraft server here:" + ColorLink + "  http://wiki.citizensnpcs.co/Versions");
+                    }
+                    break;
                 case "yes":
                     {
                         Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Yes.   Si.   Ja.   Oui.   Da.");
