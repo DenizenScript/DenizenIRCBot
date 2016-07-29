@@ -659,6 +659,15 @@ namespace DenizenIRCBot
                         Chat(command.Channel.Name, ColorGeneral + "Beginner's Guide[Outdated] -" + ColorLink + " http://bit.ly/1bHkByR");
                     }
                     break;
+                case "version":
+                case "versions":
+                    {
+                        if ((Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + command.Channel.Name.Replace("#", "") + ".denizen_meta", "false").StartsWith("t")) || (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + command.Channel.Name.Replace("#", "") + ".citizens_meta", "false").StartsWith("t")))
+                        {
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Go here to find the most compatible builds for your minecraft server version:" + ColorLink + " http://wiki.citizensnpcs.co/Versions");
+                        }
+                    }
+                    break;
                 case "yes":
                     {
                         Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Yes.   Si.   Ja.   Oui.   Da.");
