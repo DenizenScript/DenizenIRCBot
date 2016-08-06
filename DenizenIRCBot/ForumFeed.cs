@@ -28,7 +28,7 @@ namespace DenizenIRCBot
         {
             while (true)
             {
-                Thread.Sleep(5000);
+                Thread.Sleep(20000);
                 try
                 {
                     CheckForumFeed();
@@ -61,7 +61,7 @@ namespace DenizenIRCBot
                 return;
             }
             WebRequest request = WebRequest.Create(url);
-            request.Timeout = 10000;
+            request.Timeout = 20000;
             using (WebResponse response = request.GetResponse())
             {
                 if (request == null)
@@ -93,7 +93,7 @@ namespace DenizenIRCBot
                         if (!pubDatesKnown.Contains(pdate))
                         {
                             pubDatesKnown.Add(pdate);
-                            string info = Bot.ColorGeneral + "[Forums] " + Bot.ColorHighlightMinor + item.Authors.First().Name + " "
+                            string info = Bot.ColorGeneral + "[Forums] " + Bot.ColorHighlightMinor + item.Authors.First().Name
                                 + Bot.ColorGeneral + " posted: <<" + Bot.ColorHighlightMajor + item.Title.Text + Bot.ColorGeneral + ">>:"
                                 + Bot.ColorLink + " " + (item.Links.Count > 0 ? item.Links.First().Uri.ToString() : "<<no url provided>>");
                             Logger.Output(LogType.INFO, "Found " + info);
