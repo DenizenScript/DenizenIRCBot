@@ -92,6 +92,8 @@ namespace DenizenIRCBot
                 Logger.Output(LogType.ERROR, "Failed to load config: " + ex.GetType().Name + ": " + ex.Message);
             }
         }
+
+        public ForumFeed Forum;
         
         /// <summary>
         /// Launches the IRC Bot.
@@ -104,6 +106,7 @@ namespace DenizenIRCBot
                 PrepareConfig();
                 LoadMeta(false);
                 InitGitHub();
+                Forum = new ForumFeed(this);
                 Bitly.Init(Configuration.ReadString("dircbot.bitly.main", ""), Configuration.ReadString("dircbot.bitly.backup", ""));
                 WolframAlpha.Init(Configuration.ReadString("dircbot.wolfram.appid", ""));
                 if (string.IsNullOrEmpty(ServerAddress))

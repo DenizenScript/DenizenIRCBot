@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,6 +61,7 @@
     <Compile Include="dIRCBotCommandBase.cs" />
     <Compile Include="dIRCBotConnection.cs" />
     <Compile Include="dIRCBotCore.cs" />
+    <Compile Include="ForumFeed.cs" />
     <Compile Include="GitHubEngine.cs" />
     <Compile Include="dScriptValidator.cs" />
     <Compile Include="FunCommands.cs" />

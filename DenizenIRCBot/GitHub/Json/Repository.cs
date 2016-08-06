@@ -128,7 +128,7 @@ namespace DenizenIRCBot.GitHub.Json
                 LastEventId = BackupLast;
             }
             events.Reverse();
-            Logger.Output(LogType.INFO, "Have events for " + FullName);
+            Logger.Output(LogType.DEBUG, "Have events for " + FullName);
             return events;
         }
 
