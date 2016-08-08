@@ -396,7 +396,7 @@ namespace DenizenIRCBot
                                                                     webtitle += web[x].ToString();
                                                                 }
                                                             }
-                                                            webtitle = webtitle.Trim().Replace("Citizens", "Cit.izens").Replace((char)0x01 + "amp", "&");
+                                                            webtitle = webtitle.Trim().Replace((char)0x01 + "amp", "&");
                                                             Chat(chan.Name, ColorGeneral + "Title --> " + ColorHighlightMinor + webtitle.Trim(), 1);
                                                         }
                                                     }
@@ -564,6 +564,8 @@ namespace DenizenIRCBot
             }
         }
 
+        Regex urltester = new Regex("http(s?)\\://[^\\s].*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         /// <summary>
         /// Send a chat message to a channel.
         /// Optionally, specify a maximum message split up.
@@ -591,7 +593,10 @@ namespace DenizenIRCBot
                     num = message.IndexOf(ping, num + 2);
                     if (num != -1)
                     {
-                        message = message.Insert(num + 1, ".");
+                        if (!urltester.IsMatch(message.Substring(0, num)))
+                        {
+                            message = message.Insert(num + 1, ".");
+                        }
                         continue;
                     }
                     break;

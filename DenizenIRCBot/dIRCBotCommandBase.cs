@@ -381,7 +381,7 @@ namespace DenizenIRCBot
                         }
                         if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + command.Channel.Name.Replace("#", "") + ".citizens_meta", "false").StartsWith("t"))
                         {
-                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Post Denizen issues here:" + ColorLink + " https://github.com/CitizensDev/Citizens2/issues");
+                            Chat(command.Channel.Name, command.Pinger + ColorGeneral + "Post Citizens issues here:" + ColorLink + " https://github.com/CitizensDev/Citizens2/issues");
                         }
                     }
                     break;
