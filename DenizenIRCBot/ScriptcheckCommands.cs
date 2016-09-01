@@ -18,14 +18,19 @@ namespace DenizenIRCBot
                 return null;
             }
             string cmd = command.Arguments[0];
-            if (!cmd.StartsWith("http://mcmonkey.org/haste/") && !cmd.StartsWith("http://mcmonkey.org/paste/"))
+            if (!cmd.StartsWith("http://one.denizenscript.com/haste/") && !cmd.StartsWith("http://one.denizenscript.com/paste/")
+                && !cmd.StartsWith("https://one.denizenscript.com/haste/") && !cmd.StartsWith("https://one.denizenscript.com/paste/"))
             {
-                Chat(command.Channel.Name, command.Pinger + ColorGeneral + "I am only trained to read pastes from" + ColorLink + " http://mcmonkey.org/haste");
+                Chat(command.Channel.Name, command.Pinger + ColorGeneral + "I am only trained to read pastes from" + ColorLink + " http://one.denizenscript.com/haste");
                 return null;
             }
             if (!cmd.EndsWith(".txt"))
             {
                 cmd = cmd + ".txt";
+            }
+            if (cmd.StartsWith("https://"))
+            {
+                cmd = "http://" + cmd.Substring("https://".Length);
             }
             string outp = null;
             try
