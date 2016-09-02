@@ -301,12 +301,13 @@ namespace DenizenIRCBot
                                     string channel = data[0].ToLower();
                                     data[1] = data[1].Substring(1);
                                     string privmsg = Utilities.Concat(data, 1);
+                                    bool isPM = !channel.StartsWith("#");
                                     Logger.Output(LogType.INFO, "User " + user + " spoke in channel " + channel + ", saying " + privmsg);
-                                    if (privmsg == actionchr + "VERSION" + actionchr)
+                                    if (isPM && privmsg == actionchr + "VERSION" + actionchr)
                                     {
                                         Notice(user.Substring(0, user.IndexOf('!')), actionchr.ToString() + "VERSION " + Configuration.Read("dircbot.version", "DenizenBot vMisconfigured") + actionchr.ToString());
                                     }
-                                    else if (privmsg.StartsWith(actionchr + "PING "))
+                                    else if (isPM && privmsg.StartsWith(actionchr + "PING "))
                                     {
                                         Notice(user.Substring(0, user.IndexOf('!')), privmsg);
                                     }
@@ -323,9 +324,10 @@ namespace DenizenIRCBot
                                         break;
                                     }
                                     IRCUser iuser = chan.GetUser(user);
+                                    OnMessage(channel, iuser.Name, privmsg);
                                     if (privmsg.StartsWith(actionchr + "ACTION "))
                                     {
-                                        RecentMessages.Insert(0, new IRCMessage(chan, iuser, privmsg.Substring((actionchr + "ACTION ").Length, privmsg.Length-1-(actionchr + "ACTION ").Length), true));
+                                        RecentMessages.Insert(0, new IRCMessage(chan, iuser, privmsg.Substring((actionchr + "ACTION ").Length, privmsg.Length - 1 - (actionchr + "ACTION ").Length), true));
                                         goto post_s;
                                     }
                                     Match match = Regex.Match(privmsg, "^s/([^/]+)/([^/]+)/?([^\\s/]+)?", RegexOptions.IgnoreCase);
@@ -602,10 +604,12 @@ namespace DenizenIRCBot
                     break;
                 }
             }
-            SendCommand("PRIVMSG", channel + " :" + message.Replace("\n", "\\n").Replace("\r", "\\r"));
+            string clean = message.Replace("\n", "\\n").Replace("\r", "\\r");
+            SendCommand("PRIVMSG", channel + " :" + clean);
+            OnMessage(channel, Name, clean);
             if (Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + channel.Replace("#", "") + ".has_log_page", "false").StartsWith("t"))
             {
-                Log(channel, Utilities.FormatDate(DateTime.Now) + " <" + Name + "> " + message.Replace("\n", "\\n").Replace("\r", "\\r"));
+                Log(channel, Utilities.FormatDate(DateTime.Now) + " <" + Name + "> " + clean);
             }
             return limit - 1;
         }

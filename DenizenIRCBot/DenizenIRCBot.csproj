@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DenizenIRCBot</RootNamespace>
     <AssemblyName>DenizenIRCBot</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -37,8 +37,27 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Discord.Net">
+      <HintPath>.\Discord.Net.dll</HintPath>
+    </Reference>
     <Reference Include="DnDns">
       <HintPath>.\DnDns.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx">
+      <HintPath>.\Nito.AsyncEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Concurrent">
+      <HintPath>.\Nito.AsyncEx.Concurrent.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment">
+      <HintPath>.\Nito.AsyncEx.Enlightenment.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>.\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,6 +69,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WebSocket4Net">
+      <HintPath>.\WebSocket4Net.dll</HintPath>
+    </Reference>
     <Reference Include="YamlDotNet">
       <HintPath>.\YamlDotNet.dll</HintPath>
     </Reference>
@@ -57,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Bitly.cs" />
     <Compile Include="CommandDetails.cs" />
+    <Compile Include="dDiscordBot.cs" />
     <Compile Include="dIRCBotColors.cs" />
     <Compile Include="dIRCBotCommandBase.cs" />
     <Compile Include="dIRCBotConnection.cs" />

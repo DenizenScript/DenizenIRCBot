@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
+using System.Text.RegularExpressions;
 
 namespace DenizenIRCBot
 {
@@ -16,6 +17,46 @@ namespace DenizenIRCBot
     {
         public static Encoding UTF8 = new UTF8Encoding(false);
 
+        public static dDiscordBot DiscordBot;
+
+        public static List<dIRCBot> PresentBots = new List<dIRCBot>();
+
+        public static Object presentBotsLock = new Object();
+
+        public static void DiscordMessage(ulong channel, string author, string message)
+        {
+            lock (presentBotsLock)
+            {
+                foreach (dIRCBot bot in PresentBots)
+                {
+                    ulong rch = ulong.Parse(Configuration.ReadString("dircbot.irc-servers." + bot.ServerName + ".discord_bridge.discord_channel", "0"));
+                    if (rch != 0 && channel == rch)
+                    {
+                        string ich = Configuration.ReadString("dircbot.irc-servers." + bot.ServerName + ".discord_bridge.irc_channel", null);
+                        if (ich != null)
+                        {
+                            bot.Chat(ich, bot.ColorGeneral + "[Discord] <" + bot.ColorHighlightMajor + author + bot.ColorGeneral + "> " + bot.ColorHighlightMinor + message, 2);
+                        }
+                    }
+                }
+            }
+        }
+
+        static Regex stripColor = new Regex(C_S_COLOR + "[0-9][0-9]?", RegexOptions.Compiled);
+
+        public void OnMessage(string channel, string author, string message)
+        {
+            string ich = Configuration.ReadString("dircbot.irc-servers." + ServerName + ".discord_bridge.irc_channel", null);
+            if (ich != null && ich.ToLowerInvariant() == channel.ToLowerInvariant())
+            {
+                ulong rch = ulong.Parse(Configuration.ReadString("dircbot.irc-servers." + ServerName + ".discord_bridge.discord_channel", "0"));
+                if (rch != 0)
+                {
+                    DiscordBot.Message(rch, "[IRC] <" + author + "> " + stripColor.Replace(message, ""));
+                }
+            }
+        }
+
         /// <summary>
         /// Global program entry point.
         /// </summary>
@@ -24,12 +65,18 @@ namespace DenizenIRCBot
             Console.WriteLine("Initializing!");
             Configuration = new YAMLConfiguration(GetConfig());
             List<Task> tasks = new List<Task>();
+            DiscordBot = new dDiscordBot();
+            Task.Factory.StartNew(() => DiscordBot.Init(Configuration));
             foreach (string server in Configuration.GetKeys("dircbot.irc-servers"))
             {
                 Console.WriteLine("Preparing server: " + server);
                 tasks.Add(Task.Factory.StartNew(() =>
                 {
                     dIRCBot core = new dIRCBot();
+                    lock (presentBotsLock)
+                    {
+                        PresentBots.Add(core);
+                    }
                     core.ServerName = server;
                     core.Init();
                 }));
