@@ -23,36 +23,60 @@ namespace DenizenIRCBot
 
         public static Object presentBotsLock = new Object();
 
+        static bool NoBounce = false;
+
         public static void DiscordMessage(ulong channel, string author, string message)
         {
+            NoBounce = true;
             lock (presentBotsLock)
             {
                 foreach (dIRCBot bot in PresentBots)
                 {
-                    ulong rch = ulong.Parse(Configuration.ReadString("dircbot.irc-servers." + bot.ServerName + ".discord_bridge.discord_channel", "0"));
-                    if (rch != 0 && channel == rch)
+                    List<string> keys = Configuration.GetKeys("dircbot.irc-servers." + bot.ServerName + ".discord_bridge");
+                    if (keys == null)
                     {
-                        string ich = Configuration.ReadString("dircbot.irc-servers." + bot.ServerName + ".discord_bridge.irc_channel", null);
-                        if (ich != null)
+                        continue;
+                    }
+                    foreach (string key in keys)
+                    {
+                        ulong rch = ulong.Parse(Configuration.ReadString("dircbot.irc-servers." + bot.ServerName + ".discord_bridge." + key + ".discord_channel", "0"));
+                        if (rch != 0 && channel == rch)
                         {
-                            bot.Chat(ich, bot.ColorGeneral + "[Discord] <" + bot.ColorHighlightMajor + author + bot.ColorGeneral + "> " + bot.ColorHighlightMinor + message, 2);
+                            string ich = Configuration.ReadString("dircbot.irc-servers." + bot.ServerName + ".discord_bridge." + key + ".irc_channel", null);
+                            if (ich != null)
+                            {
+                                bot.Chat(ich, bot.ColorGeneral + "[Discord] <" + bot.ColorHighlightMajor + author + bot.ColorGeneral + "> " + bot.ColorHighlightMinor + message, 2);
+                            }
                         }
                     }
                 }
             }
+            NoBounce = false;
         }
 
         static Regex stripColor = new Regex(C_S_COLOR + "[0-9][0-9]?", RegexOptions.Compiled);
 
         public void OnMessage(string channel, string author, string message)
         {
-            string ich = Configuration.ReadString("dircbot.irc-servers." + ServerName + ".discord_bridge.irc_channel", null);
-            if (ich != null && ich.ToLowerInvariant() == channel.ToLowerInvariant())
+            List<string> keys = Configuration.GetKeys("dircbot.irc-servers." + ServerName + ".discord_bridge");
+            if (keys == null)
             {
-                ulong rch = ulong.Parse(Configuration.ReadString("dircbot.irc-servers." + ServerName + ".discord_bridge.discord_channel", "0"));
-                if (rch != 0)
+                return;
+            }
+            if (NoBounce)
+            {
+                return;
+            }
+            foreach (string key in keys)
+            {
+                string ich = Configuration.ReadString("dircbot.irc-servers." + ServerName + ".discord_bridge." + key + ".irc_channel", null);
+                if (ich != null && ich.ToLowerInvariant() == channel.ToLowerInvariant())
                 {
-                    DiscordBot.Message(rch, "[IRC] <" + author + "> " + stripColor.Replace(message, ""));
+                    ulong rch = ulong.Parse(Configuration.ReadString("dircbot.irc-servers." + ServerName + ".discord_bridge." + key + ".discord_channel", "0"));
+                    if (rch != 0)
+                    {
+                        DiscordBot.Message(rch, "[IRC] <" + author + "> " + stripColor.Replace(message, ""));
+                    }
                 }
             }
         }

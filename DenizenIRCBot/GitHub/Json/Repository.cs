@@ -65,7 +65,7 @@ namespace DenizenIRCBot.GitHub.Json
 
         private List<Event> FetchNewEvents()
         {
-            Logger.Output(LogType.DEBUG, "Fetching events for " + FullName);
+            //Logger.Output(LogType.DEBUG, "Fetching events for " + FullName);
             if (GitHub == null)
             {
                 Logger.Output(LogType.ERROR, "GitHub client is null!");
@@ -82,7 +82,7 @@ namespace DenizenIRCBot.GitHub.Json
                 {
                     Logger.Output(LogType.ERROR, "Error while fetching events: " + ex.ToString());
                 }
-                Logger.Output(LogType.DEBUG, "Unmodified for " + FullName);
+                //Logger.Output(LogType.DEBUG, "Unmodified for " + FullName);
                 return new List<Event>();
             }
             if (response == null)
