@@ -587,9 +587,18 @@ namespace DenizenIRCBot
             }
             if (message.Length > 400)
             {
+                int cap = 400;
+                for (int i = 400; i >= 200; i--)
+                {
+                    if (message[i] == ' ')
+                    {
+                        cap = i;
+                        break;
+                    }
+                }
                 // TODO: possibly split on the word, not the letter?
-                string first = message.Substring(0, 400);
-                string second = ColorGeneral + "[Continued] " + message.Substring(400);
+                string first = message.Substring(0, cap);
+                string second = ColorGeneral + "[Continued] " + message.Substring(cap + 1);
                 int chats = Chat(channel, first, limit);
                 chats = Chat(channel, second, chats);
                 return chats;
