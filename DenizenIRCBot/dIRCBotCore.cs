@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace DenizenIRCBot
 {
@@ -24,6 +25,15 @@ namespace DenizenIRCBot
         public static Object presentBotsLock = new Object();
 
         static bool NoBounce = false;
+
+        public static void Restart()
+        {
+            if (File.Exists("./start.sh"))
+            {
+                Process.Start("sh", "./start.sh");
+                Environment.Exit(0);
+            }
+        }
 
         public static void DiscordMessage(ulong channel, string author, string message)
         {

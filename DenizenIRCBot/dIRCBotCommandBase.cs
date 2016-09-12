@@ -786,6 +786,20 @@ namespace DenizenIRCBot
                         Chat(command.Channel.Name, ColorGeneral + "Debugging now " + ColorHighlightMajor + (Logger.Debugging ? "ON" : "OFF"));
                     }
                     break;
+                case "restart":
+                    if (!command.User.OP
+                        || !Configuration.ReadString("dircbot.irc-servers." + ServerName + ".channels." + command.Channel.Name.Replace("#", "") + ".admin", "false").StartsWith("t"))
+                    {
+                        Chat(command.Channel.Name, ColorGeneral + "You can't do that!");
+                    }
+                    else
+                    {
+                        Chat(command.Channel.Name, ColorGeneral + "Restarting...");
+                        Restart();
+                        Thread.Sleep(1000);
+                        Chat(command.Channel.Name, ColorGeneral + "Well! That didn't seem to work.");
+                    }
+                    break;
                 default:
                     // Unknown command.
                     break;

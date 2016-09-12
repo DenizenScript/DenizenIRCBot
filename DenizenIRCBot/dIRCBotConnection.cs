@@ -42,6 +42,8 @@ namespace DenizenIRCBot
 
         volatile bool resending = false;
 
+        public DateTime Started = DateTime.Now;
+
         /// <summary>
         /// Connects to the IRC server and runs the bot.
         /// </summary>
@@ -57,6 +59,11 @@ namespace DenizenIRCBot
             string receivedAlready = string.Empty;
             while (true)
             {
+                if ((DateTime.Now.Hour == 6 || DateTime.Now.Hour == 18) && DateTime.Now.Minute >= 29 && DateTime.Now.Minute <= 31
+                    && DateTime.Now.Subtract(Started).TotalMinutes > 10)
+                {
+                    Restart();
+                }
                 long timePassed = 0;
                 bool pinged = false;
                 Stopwatch sw = new Stopwatch();
