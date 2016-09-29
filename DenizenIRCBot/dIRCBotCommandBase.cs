@@ -420,7 +420,8 @@ namespace DenizenIRCBot
                 case "don":
                     {
                         Chat(command.Channel.Name, ColorGeneral + "Donate to fullwall (Head of the Citizens project) at:" + ColorLink + " http://bit.ly/19UVDtp");
-                        Chat(command.Channel.Name, ColorGeneral + "Donate to mcmonkey (Current head of Denizen development) at:" + ColorLink + " " + "http://mcmonkey.org/donate");
+                        Chat(command.Channel.Name, ColorGeneral + "Donate to mcmonkey (Current head of Denizen development) at:" + ColorLink + " http://mcmonkey.org/donate");
+                        Chat(command.Channel.Name, ColorGeneral + "Donate to Morphan1 (Denizen developer and head of Depenizen) at:" + ColorLink + " http://morphanone.com/donate");
                     }
                     break;
                 case "potion":
