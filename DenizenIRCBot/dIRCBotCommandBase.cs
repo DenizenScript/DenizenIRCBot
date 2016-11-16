@@ -261,7 +261,23 @@ namespace DenizenIRCBot
                 case "calculate":
                 case "calc":
                     {
-                        // TODO
+                        if (command.Arguments.Count > 0)
+                        {
+                            string input = Utilities.Concat(command.Arguments);
+                            string err;
+                            List<MathOperation> calc = MonkeyMath.Parse(input, out err);
+                            if (err != null)
+                            {
+                                Chat(command.Channel.Name, ColorGeneral + "Failed: " + err);
+                                return;
+                            }
+                            if (!MonkeyMath.Verify(calc, MonkeyMath.BaseFunctions, out err))
+                            {
+                                Chat(command.Channel.Name, ColorGeneral + "Failed to verify: " + err);
+                                return;
+                            }
+                            Chat(command.Channel.Name, ColorGeneral + input + " = " + MonkeyMath.Calculate(calc, MonkeyMath.BaseFunctions));
+                        }
                     }
                     break;
                 case "wolfram":
@@ -730,37 +746,65 @@ namespace DenizenIRCBot
                 case "roll":
                 case "dice":
                     {
-                        int dice = 1;
-                        int sides = 6;
-                        if (command.Arguments.Count > 0)
+                        if (command.Arguments.Count == 0)
                         {
-                            Match match = Regex.Match(command.Arguments[0], @"(\d+)?d(\d+)");
-                            if (match.Success)
+                            Chat(command.Channel.Name, ColorGeneral + "That command is written as: " + Prefixes[0] + "roll <count>d[sides] <operations>");
+                            break;
+                        }
+                        string input = Utilities.Concat(command.Arguments).ToLowerInvariant();
+                        Match match = Regex.Match(input, @"(\d+)?d(\d+)");
+                        if (match.Success)
+                        {
+                            while (match.Success)
                             {
+                                int dice = 1;
                                 if (match.Groups[1].Success)
                                 {
                                     dice = Utilities.StringToInt(match.Groups[1].Value);
                                 }
-                                sides = Utilities.StringToInt(match.Groups[2].Value);
+                                int sides = Utilities.StringToInt(match.Groups[2].Value);
+                                if (dice > 100 || sides > 100)
+                                {
+                                    Chat(command.Channel.Name, ColorGeneral + "Maximum roll is 100d100.");
+                                    break;
+                                }
+                                StringBuilder sb = new StringBuilder();
+                                if (dice > 1)
+                                {
+                                    sb.Append("(");
+                                }
+                                for (int i = 0; i < dice; i++)
+                                {
+                                    int roll = (int)(Utilities.random.NextDouble() * sides) + 1;
+                                    sb.Append(roll).Append(" + ");
+                                }
+                                sb.Remove(sb.Length - 3, 3);
+                                if (dice > 1)
+                                {
+                                    sb.Append(")");
+                                }
+                                string final = sb.Length == 0 ? "0" : sb.ToString();
+                                input = input.Substring(0, match.Index) + final + input.Substring(match.Index + match.Length);
+                                match = Regex.Match(input, @"(\d+)?d(\d+)");
                             }
-                        }
-                        if (dice > 100 || sides > 100)
-                        {
-                            Chat(command.Channel.Name, ColorGeneral + "Maximum roll is 100d100.");
+                            string err;
+                            List<MathOperation> calc = MonkeyMath.Parse(input, out err);
+                            if (err != null)
+                            {
+                                Chat(command.Channel.Name, ColorGeneral + "Failed: " + err);
+                                break;
+                            }
+                            Chat(command.Channel.Name, ColorGeneral + "You rolled: " + input);
+                            if (!MonkeyMath.Verify(calc, MonkeyMath.BaseFunctions, out err))
+                            {
+                                Chat(command.Channel.Name, ColorGeneral + "Failed to verify: " + err);
+                                return;
+                            }
+                            Chat(command.Channel.Name, ColorGeneral + "Total roll: " + MonkeyMath.Calculate(calc, MonkeyMath.BaseFunctions));
                         }
                         else
                         {
-                            int total = 0;
-                            StringBuilder sb = new StringBuilder("You rolled: ");
-                            for (int i = 0; i < dice; i++)
-                            {
-                                int roll = (int)(Utilities.random.NextDouble() * sides) + 1;
-                                sb.Append(roll).Append(", ");
-                                total += roll;
-                            }
-                            string msg = sb.ToString();
-                            Chat(command.Channel.Name, ColorGeneral + msg.Substring(0, msg.Length-2));
-                            Chat(command.Channel.Name, ColorGeneral + "Total roll: " + total);
+                            Chat(command.Channel.Name, ColorGeneral + "You must specify at least set of dice to roll!");
                         }
                     }
                     break;
