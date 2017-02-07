@@ -707,7 +707,7 @@ namespace DenizenIRCBot
                 case "mcstatus":
                 case "minecraftstatus":
                     {
-                        // TODO
+                        MojangStatusCommand(command);
                     }
                     break;
                 case "d":

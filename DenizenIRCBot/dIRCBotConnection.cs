@@ -352,7 +352,7 @@ namespace DenizenIRCBot
                                             {
                                                 msg.Message = Regex.Replace(msg.Message, value, match.Groups[2].Value, RegexOptions.IgnoreCase);
                                                 string prefix = msg.Action ? "* " + msg.User.Name + " " : "<" + msg.User.Name + "> ";
-                                                Chat(chan.Name, ColorGeneral + prefix + msg.Message);
+                                                Chat(chan.Name, ColorGeneral + prefix + msg.Message, 2);
                                                 goto post_s;
                                             }
                                         }

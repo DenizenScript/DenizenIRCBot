@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
+using System.IO;
 
 namespace DenizenIRCBot
 {
@@ -185,6 +186,64 @@ namespace DenizenIRCBot
             finally
             {
                 sock.Close();
+            }
+        }
+
+        private static readonly JavaScriptSerializer Json = new JavaScriptSerializer();
+        private const string STATUS_API = "https://status.mojang.com/check";
+
+        private const string WEBSITE = "minecraft.net",
+                             SESSION = "session.minecraft.net",
+                             ACCOUNT = "account.mojang.com",
+                             AUTH = "auth.mojang.com",
+                             SKINS = "skins.minecraft.net",
+                             AUTH_SERVER = "authserver.mojang.com",
+                             SESSION_SERVER = "sessionserver.mojang.com",
+                             API = "api.mojang.com",
+                             TEXTURES = "textures.minecraft.net";
+
+        void MojangStatusCommand(CommandDetails command)
+        {
+            WebRequest request = WebRequest.Create(STATUS_API);
+            using (WebResponse response = request.GetResponse())
+            {
+                using (Stream stream = response.GetResponseStream())
+                {
+                    List<Dictionary<string, string>> status = Json.Deserialize<List<Dictionary<string, string>>>(new StreamReader(stream, Encoding.UTF8).ReadToEnd());
+                    Dictionary<string, string> allStatus = new Dictionary<string, string>();
+                    foreach (Dictionary<string, string> dictionary in status)
+                    {
+                        foreach (string key in dictionary.Keys)
+                        {
+                            allStatus.Add(key, dictionary[key]);
+                        }
+                    }
+                    Chat(command.Channel.Name, command.Pinger + ColorGeneral
+                        + "Website: " + TranslateStatus(allStatus[WEBSITE]) + "; "
+                        + "Session: " + TranslateStatus(allStatus[SESSION]) + "; "
+                        + "Account: " + TranslateStatus(allStatus[ACCOUNT]) + "; "
+                        + "Auth: " + TranslateStatus(allStatus[AUTH]) + "; "
+                        + "Skins: " + TranslateStatus(allStatus[SKINS]) + "; "
+                        + "Auth Server: " + TranslateStatus(allStatus[AUTH_SERVER]) + "; "
+                        + "Session Server: " + TranslateStatus(allStatus[SESSION_SERVER]) + "; "
+                        + "API: " + TranslateStatus(allStatus[API]) + "; "
+                        + "Textures: " + TranslateStatus(allStatus[TEXTURES]));
+                }
+            }
+        }
+
+        string TranslateStatus(string status)
+        {
+            switch (status.ToLower())
+            {
+                case "green":
+                    return S_GREEN + "OK" + ColorGeneral;
+                case "yellow":
+                    return S_YELLOW + "SLOW" + ColorGeneral;
+                case "red":
+                    return S_RED + "DOWN" + ColorGeneral;
+                default:
+                    return "UNKNOWN STATUS";
             }
         }
     }
