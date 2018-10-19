@@ -16,3 +16,4 @@ animations/
 *.yml
 data/
 logs/
+.vs/
